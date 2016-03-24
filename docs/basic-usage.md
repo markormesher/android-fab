@@ -6,10 +6,10 @@ The `FloatingActionButton` view must be placed at the root of your layout, above
 
 For example:
 
-```<uk.co.markormesher.androidfab.FloatingActionButton
-    android:id="@+id/fab"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"/>```
+    <uk.co.markormesher.androidfab.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 ## Setting the Icon
 
@@ -19,13 +19,13 @@ The icon displayed in the FAB should be set with `fab.setIcon(...)`, passing in 
 
 A click listener can be added to the FAB in the same way as any other button:
 
-```FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-fab.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-        // ...
-    }
-});
+    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+    fab.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            // ...
+        }
+    });
 
 ## Speed-Dial Menus
 
