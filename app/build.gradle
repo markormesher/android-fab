@@ -1,0 +1,107 @@
+buildscript {
+	repositories {
+		jcenter()
+	}
+
+	dependencies {
+		classpath 'com.android.tools.build:gradle:1.3.0'
+		classpath 'me.tatarka:gradle-retrolambda:3.2.3'
+		classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
+	}
+
+	configurations.classpath.exclude group: 'com.android.tools.external.lombok'
+}
+
+def version = new Properties()
+version['code'] = 1
+version['name'] = '0.0.1'
+
+def secrets = getSecrets()
+
+apply plugin: 'me.tatarka.retrolambda'
+
+apply plugin: 'com.android.application'
+android {
+	// required by retrolambda
+	compileOptions {
+		sourceCompatibility JavaVersion.VERSION_1_8
+		targetCompatibility JavaVersion.VERSION_1_8
+	}
+
+	compileSdkVersion 23
+	buildToolsVersion "23.0.2"
+
+	defaultConfig {
+		applicationId "uk.co.markormesher.androidfab.app"
+
+		minSdkVersion 12
+		targetSdkVersion 23
+
+		versionCode version['code']
+		versionName version['name']
+
+		testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+	}
+
+	signingConfigs {
+		main {
+			storeFile secrets.isEmpty() ? null : file(secrets['KEYSTORE_PATH'])
+			storePassword secrets['KEYSTORE_PASSWORD']
+			keyAlias secrets['KEYSTORE_KEY_ALIAS']
+			keyPassword secrets['KEYSTORE_KEY_PASSWORD']
+		}
+	}
+
+	buildTypes {
+		release {
+			// signing
+			//noinspection GroovyAssignabilityCheck
+			signingConfig signingConfigs.main
+
+			// minify
+			minifyEnabled true
+			proguardFile 'proguard-rules.pro'
+
+			// debug
+			buildConfigField "boolean", "DEBUG_MODE", "false"
+			debuggable false
+		}
+
+		debug {
+			// signing
+			//noinspection GroovyAssignabilityCheck
+			signingConfig signingConfigs.main
+
+			// minify
+			minifyEnabled false
+
+			// debug
+			buildConfigField "boolean", "DEBUG_MODE", "true"
+			debuggable true
+		}
+	}
+}
+
+repositories {
+	jcenter()
+}
+
+dependencies {
+	compile fileTree(include: ['*.jar'], dir: 'libs')
+	compile 'com.android.support:support-v4:23.1.1'
+	compile 'com.android.support:appcompat-v7:23.1.1'
+	compile project(':fab')
+
+	androidTestCompile 'junit:junit:4.12'
+	androidTestCompile('com.android.support.test:testing-support-lib:0.1') {
+		exclude group: 'junit'
+	}
+}
+
+/*==============*
+ * Custom Tasks *
+ *==============*/
+
+task start(type: Exec) {
+	commandLine 'adb', 'shell', 'am', 'start', '-n', 'uk.co.markormesher.androidfab.app/.RootActivity'
+}
