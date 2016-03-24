@@ -36,6 +36,7 @@ public class SpeedDialDemoActivity extends AppCompatActivity {
 		ImageView icon = new ImageView(this);
 		icon.setImageResource(R.mipmap.ic_add);
 		fab.setIcon(icon);
+		fab.setBackgroundColour(0xffff4081);
 
 		// set up speed-dial
 		fab.setMenuAdapter(new DemoAdapter());
@@ -85,6 +86,13 @@ public class SpeedDialDemoActivity extends AppCompatActivity {
 		}
 
 		@Override
+		protected int getBackgroundColour(int position) {
+			if (position == 0) return 0xffff9900;
+
+			return super.getBackgroundColour(position);
+		}
+
+		@Override
 		protected boolean onMenuItemClick(int position) {
 			// possibly keep the menu open
 			if (position == 0) {
@@ -103,6 +111,11 @@ public class SpeedDialDemoActivity extends AppCompatActivity {
 			Toast.makeText(SpeedDialDemoActivity.this, getString(R.string.click_with_item, position), Toast.LENGTH_SHORT).show();
 
 			// ...and close the menu
+			return true;
+		}
+
+		@Override
+		protected boolean rotateFab() {
 			return true;
 		}
 	}

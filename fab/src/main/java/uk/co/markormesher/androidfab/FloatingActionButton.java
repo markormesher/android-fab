@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -39,9 +40,9 @@ public class FloatingActionButton extends RelativeLayout {
 		initView();
 	}
 
-	/*=====================*
-	 * View initialisation *
-	 *=====================*/
+	/*=======*
+	 * Views *
+	 *=======*/
 
 	private RelativeLayout fabContainer;
 	private CardView cardView;
@@ -81,6 +82,15 @@ public class FloatingActionButton extends RelativeLayout {
 			if (icon.getParent() != null) ((ViewGroup) icon.getParent()).removeView(icon);
 			iconContainer.addView(icon);
 		}
+	}
+
+	/**
+	 * Sets the colour of the FAB background.
+	 *
+	 * @param colour the colour of the FAB background
+	 */
+	public void setBackgroundColour(int colour) {
+		cardView.setCardBackgroundColor(colour);
 	}
 
 	/*=============*
@@ -145,9 +155,12 @@ public class FloatingActionButton extends RelativeLayout {
 
 		for (int i = menuAdapter.getCount() - 1; i >= 0; --i) {
 			// inflate a new item container and add to layout
-			View view = LayoutInflater.from(getContext()).inflate(R.layout.speed_dial_button, null);
+			View view = LayoutInflater.from(getContext()).inflate(R.layout.speed_dial_icon, null);
 			fabContainer.addView(view, 1);
 			speedDialMenuItems.add(view);
+
+			// set background colour
+			((CardView) view.findViewById(R.id.card)).setCardBackgroundColor(menuAdapter.getBackgroundColour(i));
 
 			// add child views
 			View[] adapterViews = menuAdapter.getViews(getContext(), i);
@@ -160,9 +173,9 @@ public class FloatingActionButton extends RelativeLayout {
 			}
 
 			// reposition
-			RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) view.getLayoutParams();
+			LayoutParams params = (LayoutParams) view.getLayoutParams();
 			params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-			if (android.os.Build.VERSION.SDK_INT >= 17) params.addRule(RelativeLayout.ALIGN_PARENT_END);
+			if (Build.VERSION.SDK_INT >= 17) params.addRule(RelativeLayout.ALIGN_PARENT_END);
 			params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 			view.setLayoutParams(params);
 
