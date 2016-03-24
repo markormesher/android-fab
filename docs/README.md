@@ -1,5 +1,5 @@
-# Android FAB Documentation
+# Documentation
 
-## Links
-
-* [Branching Guidelines](branching.md)
+- [Installation](installation.md)
+- [Basic Usage](basic-usage.md)
+- [Customisation](customisation.md)
