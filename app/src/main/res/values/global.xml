@@ -7,6 +7,12 @@
 
     <string name="app_name">Android FAB Demo</string>
 
+    <string name="click_demo">FAB: Click Demo</string>
+    <string name="speed_dial_demo">FAB: Speed Dial Demo</string>
+
+    <string name="goto_click_demo">Go to simple click demo</string>
+    <string name="goto_speed_dial_demo">Go to speed dial demo</string>
+
     <!--
     Styles
     -->

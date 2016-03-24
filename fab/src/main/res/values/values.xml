@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<dimen name="fab_size">56dp</dimen>
+	<dimen name="fab_radius">28dp</dimen> <!-- half the width, creating a circle -->
+	<dimen name="fab_padding">8dp</dimen>
+	<dimen name="fab_offset">8dp</dimen>
+
+	<dimen name="speed_dial_disc_size">40dp</dimen>
+	<dimen name="speed_dial_disc_radius">20dp</dimen> <!-- half the width, creating a circle -->
+	<dimen name="speed_dial_disc_padding">8dp</dimen>
+	<dimen name="speed_dial_disc_offset">8dp</dimen>
+
+	<style name="fab_background" parent="CardView">
+		<item name="cardBackgroundColor">#ff0000</item>
+	</style>
+
+	<style name="speed_dial_disc_background" parent="CardView">
+		<item name="cardBackgroundColor">#c0c0c0</item>
+	</style>
+
+	<style name="fab_icon">
+		<item name="android:textColor">#ffffff</item>
+		<item name="android:textSize">24sp</item>
+	</style>
+
+</resources>

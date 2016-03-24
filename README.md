@@ -1,9 +1,6 @@
-# Android Floating Action Button
-## With Speed-Dial Menu
+# Android Floating Action Button with Speed-Dial Menu
 
-## Brief
-
-Work in progress - watch this space.
+This library provides a view that creates a clickable floating action button (FAB). The FAB can trigger either a standard click listener, or a open a speed-dial menu with further options. All aspects of the FAB and speed-dial menu are customisable.
 
 ## Links
 
