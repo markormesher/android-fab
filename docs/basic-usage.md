@@ -57,4 +57,4 @@ The speed-dial menu can be manually opened and closed with `fab.openSpeedDialMen
 
 ---
 
-[&laquo; Back to Documentation]
+[&laquo; Back to Documentation](/docs)

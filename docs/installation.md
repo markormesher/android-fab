@@ -23,4 +23,4 @@
 
 ---
 
-[&laquo; Back to Documentation]
+[&laquo; Back to Documentation](/docs)
