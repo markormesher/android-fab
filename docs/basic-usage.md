@@ -33,21 +33,21 @@ The speed-dial menu can be enabled by creating a class that extends `SpeedDialMe
 
 The adapter has several methods that can be overridden to control the menu:
 
-### `int getCount()`
+`int getCount()`
 
 **Must** be overridden to return the number of menu items.
 
-### `View[] getViews(Context context, int position)`
+`View[] getViews(Context context, int position)`
 
 **Must** be overridden to return *exactly* two views for the given position: the first view is the icon, the second view is the label. The second view can be returned as `null` to omit the label for that item. Technically the first view also be returned as null - it won't break anything - but an icon should always be set as the bare minimum.
 
 Note that the view at position 0 if the furthest away from the FAB; the view at `getCount() - 1` is the closest.
 
-### `boolean onMenuItemClick(int position)`
+`boolean onMenuItemClick(int position)`
 
 **May** be override to listen for clicks on the individual menu items. Return `true` to close the menu after the click has been handled (the default behaviour) or `false` to leave it open.
 
-### `boolean rotateFab()`
+`boolean rotateFab()`
 
 **May** be overridden to specify whether the FAB should rotate by 1/8th of a turn when the speed-dial menu opens. This is useful for smoothly transitioning between a '+' and 'x' icon.
 
