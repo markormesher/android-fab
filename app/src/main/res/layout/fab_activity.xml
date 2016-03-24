@@ -12,7 +12,7 @@
 		android:layout_centerHorizontal="true"
 		android:layout_marginTop="10dp"/>
 
-	<uk.co.markormesher.androidfab.FloatingActionButton
+	<uk.co.markormesher.android_fab.FloatingActionButton
 		android:id="@+id/fab"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"/>

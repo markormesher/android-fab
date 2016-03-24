@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 		  xmlns:tools="http://schemas.android.com/tools"
-		  package="uk.co.markormesher.androidfab.app">
+		  package="uk.co.markormesher.android_fab.app">
 
 	<application
 		android:label="@string/app_name"
@@ -12,7 +12,7 @@
 		tools:ignore="UnusedAttribute">
 
 		<activity
-			android:name=".ClickDemoActivity"
+			android:name="uk.co.markormesher.android_fab.app.ClickDemoActivity"
 			android:label="@string/app_name"
 			android:launchMode="singleInstance">
 			<intent-filter>
@@ -21,7 +21,7 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".SpeedDialDemoActivity"/>
+		<activity android:name="uk.co.markormesher.android_fab.app.SpeedDialDemoActivity"/>
 
 	</application>
 

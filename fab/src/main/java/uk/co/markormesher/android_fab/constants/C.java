@@ -1,4 +1,4 @@
-package uk.co.markormesher.androidfab.constants;
+package uk.co.markormesher.android_fab.constants;
 
 public interface C {
 

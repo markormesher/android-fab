@@ -1,4 +1,4 @@
-package uk.co.markormesher.androidfab.app;
+package uk.co.markormesher.android_fab.app;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,8 +10,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import uk.co.markormesher.androidfab.FloatingActionButton;
-import uk.co.markormesher.androidfab.SpeedDialMenuAdapter;
+import uk.co.markormesher.android_fab.FloatingActionButton;
+import uk.co.markormesher.android_fab.SpeedDialMenuAdapter;
 
 public class SpeedDialDemoActivity extends AppCompatActivity {
 
