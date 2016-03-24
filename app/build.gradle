@@ -32,7 +32,7 @@ android {
 	buildToolsVersion "23.0.2"
 
 	defaultConfig {
-		applicationId "uk.co.markormesher.androidfab.app"
+		applicationId "uk.co.markormesher.android_fab.app"
 
 		minSdkVersion 12
 		targetSdkVersion 23
@@ -103,5 +103,5 @@ dependencies {
  *==============*/
 
 task start(type: Exec) {
-	commandLine 'adb', 'shell', 'am', 'start', '-n', 'uk.co.markormesher.androidfab.app/.ClickDemoActivity'
+	commandLine 'adb', 'shell', 'am', 'start', '-n', 'uk.co.markormesher.android_fab.app/.ClickDemoActivity'
 }
