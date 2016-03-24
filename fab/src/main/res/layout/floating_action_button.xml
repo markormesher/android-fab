@@ -33,14 +33,16 @@
 		app:cardElevation="6dp"
 		app:cardCornerRadius="@dimen/fab_radius"
 		app:cardPreventCornerOverlap="false"
-		style="@style/fab_background">
+		style="@style/fab_card">
 
 		<LinearLayout
-			android:id="@+id/icon"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
+			android:id="@+id/icon_container"
+			android:layout_width="@dimen/fab_icon_size"
+			android:layout_height="@dimen/fab_icon_size"
+			android:layout_margin="@dimen/fab_icon_margin"
 			android:gravity="center"
-			android:orientation="horizontal"/>
+			android:orientation="horizontal"
+			android:background="#ff00ff00"/>
 
 	</android.support.v7.widget.CardView>
 

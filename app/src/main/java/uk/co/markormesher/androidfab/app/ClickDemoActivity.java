@@ -27,6 +27,6 @@ public class ClickDemoActivity extends AppCompatActivity {
 		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
 		// clicks
-		fab.setOnClickListener(v -> Toast.makeText(ClickDemoActivity.this, "You clicked on the FAB!", Toast.LENGTH_SHORT).show());
+		fab.setOnClickListener(v -> Toast.makeText(ClickDemoActivity.this, R.string.click_simple, Toast.LENGTH_SHORT).show());
 	}
 }

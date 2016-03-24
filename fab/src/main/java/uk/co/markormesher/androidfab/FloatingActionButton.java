@@ -45,7 +45,7 @@ public class FloatingActionButton extends RelativeLayout {
 
 	private RelativeLayout fabContainer;
 	private CardView cardView;
-	private ViewGroup iconView;
+	private ViewGroup iconContainer;
 	private View coverView;
 
 	/**
@@ -58,7 +58,7 @@ public class FloatingActionButton extends RelativeLayout {
 		// collect views
 		fabContainer = (RelativeLayout) findViewById(R.id.fab_container);
 		cardView = (CardView) findViewById(R.id.card);
-		iconView = (ViewGroup) findViewById(R.id.icon);
+		iconContainer = (ViewGroup) findViewById(R.id.icon_container);
 		coverView = findViewById(R.id.cover);
 
 		// fade out the cover
@@ -216,7 +216,7 @@ public class FloatingActionButton extends RelativeLayout {
 		busyAnimatingFabIcon = true;
 
 		// animate
-		iconView.animate()
+		iconContainer.animate()
 				.rotation(visible ? 45F : 0F)
 				.setDuration(ANIMATION_DURATION)
 				.setListener(new AnimatorListenerAdapter() {

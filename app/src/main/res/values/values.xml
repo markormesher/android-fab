@@ -8,10 +8,19 @@
     <string name="app_name">Android FAB Demo</string>
 
     <string name="click_demo">FAB: Click Demo</string>
-    <string name="speed_dial_demo">FAB: Speed Dial Demo</string>
+    <string name="speed_dial_demo">FAB: Speed-Dial Demo</string>
 
     <string name="goto_click_demo">Go to simple click demo</string>
-    <string name="goto_speed_dial_demo">Go to speed dial demo</string>
+    <string name="goto_speed_dial_demo">Go to speed-dial demo</string>
+
+	<string name="yes">Yes</string>
+	<string name="no">No</string>
+
+	<string name="menu_close_dialog_title">Hi there!</string>
+	<string name="menu_close_dialog_text">Do you want to keep the speed-dial menu open?</string>
+
+	<string name="click_simple">You clicked!</string>
+	<string name="click_with_item">You clicked on item #%d!</string>
 
     <!--
     Styles
