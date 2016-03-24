@@ -18,7 +18,7 @@
 	<dimen name="speed_dial_disc_icon_margin">8dp</dimen>
 
 	<style name="fab_card" parent="CardView">
-		<item name="cardBackgroundColor">#ff0000</item>
+		<item name="cardBackgroundColor">#3f51b5</item>
 	</style>
 
 	<style name="fab_icon">

@@ -9,7 +9,8 @@
 		android:id="@+id/switch_demo"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_centerInParent="true"/>
+		android:layout_centerHorizontal="true"
+		android:layout_marginTop="10dp"/>
 
 	<uk.co.markormesher.androidfab.FloatingActionButton
 		android:id="@+id/fab"

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 import uk.co.markormesher.androidfab.FloatingActionButton;
 
@@ -23,8 +24,11 @@ public class ClickDemoActivity extends AppCompatActivity {
 			finish();
 		});
 
-		// find FAB
+		// initialise fab
 		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+		ImageView icon = new ImageView(this);
+		icon.setImageResource(R.mipmap.ic_add);
+		fab.setIcon(icon);
 
 		// clicks
 		fab.setOnClickListener(v -> Toast.makeText(ClickDemoActivity.this, R.string.click_simple, Toast.LENGTH_SHORT).show());

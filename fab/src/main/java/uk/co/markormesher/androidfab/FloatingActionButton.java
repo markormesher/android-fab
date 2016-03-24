@@ -70,6 +70,19 @@ public class FloatingActionButton extends RelativeLayout {
 		cardView.setOnClickListener(v -> onClick());
 	}
 
+	/**
+	 * Sets the @{code View} to use as the icon on the FAB.
+	 *
+	 * @param icon the @{code View} to use as the icon on the FAB
+	 */
+	public void setIcon(View icon) {
+		iconContainer.removeAllViews();
+		if (icon != null) {
+			if (icon.getParent() != null) ((ViewGroup) icon.getParent()).removeView(icon);
+			iconContainer.addView(icon);
+		}
+	}
+
 	/*=============*
 	 * Interaction *
 	 *=============*/

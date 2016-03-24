@@ -7,6 +7,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import uk.co.markormesher.androidfab.FloatingActionButton;
 import uk.co.markormesher.androidfab.SpeedDialMenuAdapter;
@@ -29,8 +31,11 @@ public class SpeedDialDemoActivity extends AppCompatActivity {
 			finish();
 		});
 
-		// find FAB
+		// initialise fab
 		fab = (FloatingActionButton) findViewById(R.id.fab);
+		ImageView icon = new ImageView(this);
+		icon.setImageResource(R.mipmap.ic_add);
+		fab.setIcon(icon);
 
 		// set up speed-dial
 		fab.setMenuAdapter(new DemoAdapter());
@@ -40,12 +45,43 @@ public class SpeedDialDemoActivity extends AppCompatActivity {
 
 		@Override
 		protected int getCount() {
-			return 5;
+			return 4;
 		}
 
 		@Override
 		protected View[] getViews(Context context, int position) {
-			return new View[2];
+			// make views
+			ImageView icon = new ImageView(context);
+			TextView label = new TextView(context);
+
+			// set content
+			switch (position) {
+				case 0:
+					icon.setImageResource(R.mipmap.ic_cloud);
+					label.setText(R.string.label_optional_close);
+					break;
+
+				case 1:
+					icon.setImageResource(R.mipmap.ic_done);
+					label.setText(R.string.label_done);
+					break;
+
+				case 2:
+					icon.setImageResource(R.mipmap.ic_swap_horiz);
+					label.setText(R.string.label_swap_h);
+					break;
+
+				case 3:
+					icon.setImageResource(R.mipmap.ic_swap_vert);
+					label.setText(R.string.label_swap_v);
+					break;
+
+			}
+
+			View[] output = new View[2];
+			output[0] = icon;
+			output[1] = label;
+			return output;
 		}
 
 		@Override

@@ -27,8 +27,7 @@
 			android:layout_height="@dimen/speed_dial_disc_icon_size"
 			android:layout_margin="@dimen/speed_dial_disc_icon_margin"
 			android:gravity="center"
-			android:orientation="vertical"
-			android:background="#ff00ff00"/>
+			android:orientation="vertical"/>
 
 	</android.support.v7.widget.CardView>
 

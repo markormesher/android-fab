@@ -22,14 +22,19 @@
 	<string name="click_simple">You clicked!</string>
 	<string name="click_with_item">You clicked on item #%d!</string>
 
+	<string name="label_optional_close">Optional Close</string>
+	<string name="label_done">Done</string>
+	<string name="label_swap_h">Swappy Swap H</string>
+	<string name="label_swap_v">Swappy Swap V</string>
+
     <!--
     Styles
     -->
 
     <style name="global_theme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">#3F51B5</item>
-        <item name="colorPrimaryDark">#303F9F</item>
-        <item name="colorAccent">#FF4081</item>
+        <item name="colorPrimary">#3f51b5</item>
+        <item name="colorPrimaryDark">#303f9f</item>
+        <item name="colorAccent">#ff4081</item>
     </style>
 
 </resources>
