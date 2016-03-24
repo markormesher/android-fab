@@ -19,9 +19,19 @@ public abstract class SpeedDialMenuAdapter {
 	 *
 	 * @param context  @{code Context} for the FAB, which can be used to create views
 	 * @param position the position to generate a view for, from 0 (furthest from the FAB) to @{code getCount()} - 1, inclusive
-	 * @return An array of exactly two views
+	 * @return an array of exactly two views
 	 */
 	protected abstract View[] getViews(Context context, int position);
+
+	/**
+	 * Returns the background colour to set for the menu item's "disc".
+	 *
+	 * @param position the position to generate a view for, from 0 (furthest from the FAB) to @{code getCount()} - 1, inclusive
+	 * @return the colour to set
+	 */
+	protected int getBackgroundColour(int position) {
+		return 0xffc0c0c0;
+	}
 
 	/**
 	 * Called when a menu item is clicked.
@@ -30,7 +40,6 @@ public abstract class SpeedDialMenuAdapter {
 	 * @return @{code true} to close the menu, @{code false} to leave it open.
 	 */
 	protected boolean onMenuItemClick(int position) {
-		// default: unused
 		return true;
 	}
 
@@ -41,7 +50,7 @@ public abstract class SpeedDialMenuAdapter {
 	 * @return a boolean indicating whether or not to rotate the FAB when the speed-dial menu is open
 	 */
 	protected boolean rotateFab() {
-		return true;
+		return false;
 	}
 
 }

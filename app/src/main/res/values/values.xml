@@ -5,7 +5,7 @@
     Strings
     -->
 
-    <string name="app_name">Android FAB Demo</string>
+    <string name="app_name">Floating Action Button Demo</string>
 
     <string name="click_demo">FAB: Click Demo</string>
     <string name="speed_dial_demo">FAB: Speed-Dial Demo</string>
