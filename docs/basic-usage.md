@@ -35,9 +35,7 @@ The adapter has several methods that can be overridden to control the menu:
 
 `int getCount()` **must** be overridden to return the number of menu items.
 
-`View[] getViews(Context context, int position)` **must** be overridden to return *exactly* two views for the given position: the first view is the icon, the second view is the label. The second view can be returned as `null` to omit the label for that item. Technically the first view may also be returned as `null` - it won't break anything - but an icon should always be set as the bare minimum.
-
-Note that the view at position 0 if the furthest away from the FAB; the view at `getCount() - 1` is the closest.
+`View[] getViews(Context context, int position)` **must** be overridden to return *exactly* two views for the given position: the first view is the icon, the second view is the label. The second view can be returned as `null` to omit the label for that item. Technically the first view may also be returned as `null` - it won't break anything - but an icon should always be set as the bare minimum. Note that the view at position 0 if the furthest away from the FAB; the view at `getCount() - 1` is the closest.
 
 `boolean onMenuItemClick(int position)` **may** be override to listen for clicks on the individual menu items. Return `true` to close the menu after the click has been handled (the default behaviour) or `false` to leave it open.
 
