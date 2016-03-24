@@ -1,4 +1,4 @@
-package uk.co.markormesher.androidfab;
+package uk.co.markormesher.android_fab;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -12,8 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import uk.co.markormesher.androidfab.constants.C;
-import uk.co.markormesher.androidfab.fab.R;
+import uk.co.markormesher.android_fab.constants.C;
+import uk.co.markormesher.android_fab.fab.R;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package uk.co.markormesher.androidfab.app;
+package uk.co.markormesher.android_fab.app;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
-import uk.co.markormesher.androidfab.FloatingActionButton;
+import uk.co.markormesher.android_fab.FloatingActionButton;
 
 public class ClickDemoActivity extends AppCompatActivity {
 

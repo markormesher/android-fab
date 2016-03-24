@@ -1,4 +1,4 @@
-package uk.co.markormesher.androidfab;
+package uk.co.markormesher.android_fab;
 
 import android.content.Context;
 import android.view.View;
