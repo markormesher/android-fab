@@ -14,7 +14,7 @@ buildscript {
 
 def version = new Properties()
 version['code'] = 1
-version['name'] = '0.0.1'
+version['name'] = '0.1.0'
 
 apply plugin: 'me.tatarka.retrolambda'
 
