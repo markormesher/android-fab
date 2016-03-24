@@ -12,7 +12,7 @@ You can try the demo yourself in one of two ways:
 
 2. Download the sample app from the Google Play Store: [Android FAB Sample](https://play.google.com/store/apps/details?id=uk.co.markormesher.androidfab.app)
 
-## Usage
+## Documentation
 
 [Click here for documentation.](docs)
 
