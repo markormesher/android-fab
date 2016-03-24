@@ -13,7 +13,7 @@ This library provides a view that creates a clickable floating action button (FA
 
 ## Demo
 
-![Demonstration of the speed-dial menu](images/demo.gif)
+![Demonstration of the speed-dial menu](misc/demo.gif)
 
 You can try the demo yourself in one of two ways:
 
