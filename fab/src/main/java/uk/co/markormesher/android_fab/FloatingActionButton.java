@@ -72,9 +72,9 @@ public class FloatingActionButton extends RelativeLayout {
 	}
 
 	/**
-	 * Sets the @{code View} to use as the icon on the FAB.
+	 * Sets the {@code View} to use as the icon on the FAB.
 	 *
-	 * @param icon the @{code View} to use as the icon on the FAB
+	 * @param icon the {@code View} to use as the icon on the FAB
 	 */
 	public void setIcon(View icon) {
 		iconContainer.removeAllViews();
@@ -234,7 +234,7 @@ public class FloatingActionButton extends RelativeLayout {
 	/**
 	 * Toggles the FAB icon state, based on whether or not the speed-dial menu is open.
 	 *
-	 * @param visible @{code true} to indicate that the menu is open
+	 * @param visible {@code true} to indicate that the menu is open
 	 */
 	private void toggleFabIconForSpeedDialMenu(boolean visible) {
 		// busy?
@@ -256,7 +256,7 @@ public class FloatingActionButton extends RelativeLayout {
 	/**
 	 * Toggles the "cover", based on whether or not the speed-dial menu is open.
 	 *
-	 * @param visible @{code true} to indicate that the menu is open
+	 * @param visible {@code true} to indicate that the menu is open
 	 */
 	private void setSpeedDialCoverVisible(boolean visible) {
 		// busy?
@@ -280,7 +280,7 @@ public class FloatingActionButton extends RelativeLayout {
 	/**
 	 * Toggles the speed-dial menu items, based on whether or not the speed-dial menu is open.
 	 *
-	 * @param visible @{code true} to indicate that the menu is open
+	 * @param visible {@code true} to indicate that the menu is open
 	 */
 	private void setSpeedDialMenuVisible(boolean visible) {
 		// busy?

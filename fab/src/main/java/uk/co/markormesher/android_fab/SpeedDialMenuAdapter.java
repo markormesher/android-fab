@@ -15,10 +15,10 @@ public abstract class SpeedDialMenuAdapter {
 	/**
 	 * Returns the views that should be used for each item in the speed-dial menu.
 	 * An array of exactly two views must be returned: the first will be used as the icon inside the small circle,
-	 * the second (which may be @{code null}) as the label.
+	 * the second (which may be {@code null}) as the label.
 	 *
-	 * @param context  @{code Context} for the FAB, which can be used to create views
-	 * @param position the position to generate a view for, from 0 (furthest from the FAB) to @{code getCount()} - 1, inclusive
+	 * @param context  {@code Context} for the FAB, which can be used to create views
+	 * @param position the position to generate a view for, from 0 (furthest from the FAB) to {@code getCount()} - 1, inclusive
 	 * @return an array of exactly two views
 	 */
 	protected abstract View[] getViews(Context context, int position);
@@ -26,7 +26,7 @@ public abstract class SpeedDialMenuAdapter {
 	/**
 	 * Returns the background colour to set for the menu item's "disc".
 	 *
-	 * @param position the position to generate a view for, from 0 (furthest from the FAB) to @{code getCount()} - 1, inclusive
+	 * @param position the position to generate a view for, from 0 (furthest from the FAB) to {@code getCount()} - 1, inclusive
 	 * @return the colour to set
 	 */
 	protected int getBackgroundColour(int position) {
@@ -37,7 +37,7 @@ public abstract class SpeedDialMenuAdapter {
 	 * Called when a menu item is clicked.
 	 *
 	 * @param position the position of the menu item that was clicked
-	 * @return @{code true} to close the menu, @{code false} to leave it open.
+	 * @return {@code true} to close the menu, {@code false} to leave it open.
 	 */
 	protected boolean onMenuItemClick(int position) {
 		return true;
