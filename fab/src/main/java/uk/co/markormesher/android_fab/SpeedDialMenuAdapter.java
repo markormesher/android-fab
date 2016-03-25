@@ -17,8 +17,8 @@ public abstract class SpeedDialMenuAdapter {
 	 * An array of exactly two views must be returned: the first will be used as the icon inside the small circle,
 	 * the second (which may be {@code null}) as the label.
 	 *
-	 * @param context  {@code Context} for the FAB, which can be used to create views
-	 * @param position the position to generate a view for, from 0 (furthest from the FAB) to {@code getCount()} - 1, inclusive
+	 * @param context  {@code android.content.Context} for the FAB, which can be used to create views
+	 * @param position the position to generate a view for, from 0 (furthest from the FAB) to {@code getCount() - 1} (closest), inclusive
 	 * @return an array of exactly two views
 	 */
 	protected abstract View[] getViews(Context context, int position);
@@ -26,7 +26,7 @@ public abstract class SpeedDialMenuAdapter {
 	/**
 	 * Returns the background colour to set for the menu item's "disc".
 	 *
-	 * @param position the position to generate a view for, from 0 (furthest from the FAB) to {@code getCount()} - 1, inclusive
+	 * @param position the position to set the colour for, from 0 (furthest from the FAB) to {@code getCount() - 1} (closest), inclusive
 	 * @return the colour to set
 	 */
 	protected int getBackgroundColour(int position) {

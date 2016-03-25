@@ -72,7 +72,7 @@ public class FloatingActionButton extends RelativeLayout {
 	}
 
 	/**
-	 * Sets the {@code View} to use as the icon on the FAB.
+	 * Sets the {@link android.view.View} to use as the icon on the FAB.
 	 *
 	 * @param icon the {@code View} to use as the icon on the FAB
 	 */
@@ -87,7 +87,7 @@ public class FloatingActionButton extends RelativeLayout {
 	/**
 	 * Sets the colour of the FAB background.
 	 *
-	 * @param colour the colour of the FAB background
+	 * @param colour the colour of the FAB background, in aRGB format
 	 */
 	public void setBackgroundColour(int colour) {
 		cardView.setCardBackgroundColor(colour);
@@ -131,6 +131,7 @@ public class FloatingActionButton extends RelativeLayout {
 	 * By setting an adapter, the speed-dial menu will be activated and the click listener will be removed.
 	 *
 	 * @param menuAdapter the menu adapter to use with this floating action button
+	 * @see uk.co.markormesher.android_fab.SpeedDialMenuAdapter
 	 */
 	public void setMenuAdapter(SpeedDialMenuAdapter menuAdapter) {
 		this.listener = null;
