@@ -103,5 +103,5 @@ dependencies {
  *==============*/
 
 task start(type: Exec) {
-	commandLine 'adb', 'shell', 'am', 'start', '-n', 'uk.co.markormesher.android_fab.app/.ClickDemoActivity'
+	commandLine 'adb', 'shell', 'am', 'start', '-n', 'uk.co.markormesher.android_fab.app/.DemoActivity'
 }
