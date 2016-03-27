@@ -20,7 +20,7 @@ public abstract class SpeedDialMenuAdapter {
 	 * @param position the position to generate a view for, from 0 (furthest from the FAB) to {@code getCount()} - 1, inclusive
 	 * @return a {@code MenuItemViews} wrapper containing the icon and (optionally) the label for the menu item
 	 */
-	protected abstract MenuItemViews getViews(Context context, int position);
+	protected abstract MenuItem getViews(Context context, int position);
 
 	/**
 	 * Returns the background colour to set for the menu item's "disc".
@@ -55,9 +55,9 @@ public abstract class SpeedDialMenuAdapter {
 	/**
 	 * Wrapper class for returning the views to use for a speed-dial menu item.
 	 */
-	protected static class MenuItemViews {
+	protected static class MenuItem {
 
-		public MenuItemViews() {
+		public MenuItem() {
 		}
 
 		protected View iconView;

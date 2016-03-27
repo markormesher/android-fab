@@ -110,7 +110,7 @@ public class DemoActivity extends AppCompatActivity {
 		}
 
 		@Override
-		protected MenuItemViews getViews(Context context, int position) {
+		protected MenuItem getViews(Context context, int position) {
 			switch (position) {
 				case 0:
 					// example: View and View
@@ -118,35 +118,35 @@ public class DemoActivity extends AppCompatActivity {
 					icon0.setImageResource(R.mipmap.ic_done);
 					TextView label0 = new TextView(context);
 					label0.setText(getString(R.string.speed_dial_label, position));
-					return new MenuItemViews() {{
+					return new MenuItem() {{
 						iconView = icon0;
 						labelView = label0;
 					}};
 
 				case 1:
 					// example: Drawable and String
-					return new MenuItemViews() {{
+					return new MenuItem() {{
 						iconDrawable = ContextCompat.getDrawable(context, R.mipmap.ic_swap_horiz);
 						labelString = getString(R.string.speed_dial_label, position);
 					}};
 
 				case 2:
 					// example: Drawable ID and String
-					return new MenuItemViews() {{
+					return new MenuItem() {{
 						iconDrawableId = R.mipmap.ic_swap_vert;
 						labelString = getString(R.string.speed_dial_label, position);
 					}};
 
 				case 3:
 					// example: Drawable ID and String ID
-					return new MenuItemViews() {{
+					return new MenuItem() {{
 						iconDrawableId = R.mipmap.ic_cloud;
 						labelStringId =  R.string.label_optional_close;
 					}};
 
 				default:
 					Log.wtf(C.LOG_TAG, "Okay, something went *really* wrong.");
-					return new MenuItemViews();
+					return new MenuItem();
 			}
 		}
 

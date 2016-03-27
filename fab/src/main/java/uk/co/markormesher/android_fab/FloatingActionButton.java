@@ -213,7 +213,7 @@ public class FloatingActionButton extends RelativeLayout {
 			((CardView) view.findViewById(R.id.card)).setCardBackgroundColor(menuAdapter.getBackgroundColour(i));
 
 			// get child views
-			SpeedDialMenuAdapter.MenuItemViews itemViews = menuAdapter.getViews(getContext(), i);
+			SpeedDialMenuAdapter.MenuItem itemViews = menuAdapter.getViews(getContext(), i);
 
 			// add icon
 			ViewGroup iconContainer = (ViewGroup) view.findViewById(R.id.icon_container);
