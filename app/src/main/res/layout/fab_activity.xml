@@ -5,12 +5,53 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
-	<Button
-		android:id="@+id/switch_demo"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_centerHorizontal="true"
-		android:layout_marginTop="10dp"/>
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:gravity="center_horizontal">
+
+			<Button
+				android:id="@+id/switch_mode"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="10dp"/>
+
+			<Button
+				android:id="@+id/change_icon"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/change_icon"
+				android:layout_marginTop="10dp"/>
+
+			<Button
+				android:id="@+id/change_button_colour"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/change_button_colour"
+				android:layout_marginTop="10dp"/>
+
+			<Button
+				android:id="@+id/toggle_colours"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/toggle_colours"
+				android:layout_marginTop="10dp"/>
+
+			<Button
+				android:id="@+id/toggle_optional_close"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/toggle_optional_close"
+				android:layout_marginTop="10dp"/>
+
+		</LinearLayout>
+
+	</ScrollView>
 
 	<uk.co.markormesher.android_fab.FloatingActionButton
 		android:id="@+id/fab"
