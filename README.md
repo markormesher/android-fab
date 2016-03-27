@@ -82,17 +82,27 @@ The adapter class has several methods that can be overridden to control the menu
 
 ##### `int getCount()`
 
-...*must* be overridden to return the number of menu items.
+...**must** be overridden to return the number of menu items.
 
-`MenuItem getViews(Context context, int position)` **must** be overridden to return a `MenuItem` wrapper for the given position. This method will be called to create a wrapper once per menu item. The wrapper allows the icon for a menu item to be specified as a `View`, a `Drawable` or a `Drawable` ID, and allows the label to be specified as a `View`, a `String` or a `String` ID.
+##### `MenuItem getViews(Context context, int position)`
+
+...**must** be overridden to return a `MenuItem` wrapper for the given position. This method will be called to create a wrapper once per menu item. The wrapper allows the icon for a menu item to be specified as a `View`, a `Drawable` or a `Drawable` ID, and allows the label to be specified as a `View`, a `String` or a `String` ID.
 
 If multiple properties are specified for the icon or label, the first non-null in the order [`View`, `Drawable` or `String`, resource ID] will be applied. No parameters are required: all label fields could be left as `null` to produce an icon-only menu item for example; everything could be left as `null` to produce a blank menu item, but that would be quite useless.
 
-`int getBackgroundColour(int position)` **may** be overridden to return the background colour that should be used for the disc at the given position.
+##### `int getBackgroundColour(int position)`
 
-`boolean onMenuItemClick(int position)` **may** be overridden to listen for clicks on the individual menu items. Return `true` to close the menu after the click has been handled (the default behaviour) or `false` to leave it open
+...**may** be overridden to return the background colour that should be used for the disc at the given position.
 
-`boolean rotateFab()` **may** be overridden to specify whether the FAB should rotate by 1/8th of a turn when the speed-dial menu opens. This is useful for smoothly transitioning between a '+' and 'x' icon.
+##### `boolean onMenuItemClick(int position)`
+
+...**may** be overridden to listen for clicks on the individual menu items. Return `true` to close the menu after the click has been handled (the default behaviour) or `false` to leave it open
+
+##### `boolean rotateFab()`
+
+...**may** be overridden to specify whether the FAB should rotate by 1/8th of a turn when the speed-dial menu opens. This is useful for smoothly transitioning between a '+' and 'x' icon.
+
+---
 
 **Note:** for all methods, the view at position `0` is the furthest away from the FAB; the view at `getCount() - 1` is the closest.
 
