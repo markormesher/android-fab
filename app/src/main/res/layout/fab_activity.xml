@@ -39,14 +39,14 @@
 				android:id="@+id/toggle_colours"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="@string/toggle_colours"
+				android:text="@string/toggle_colours_1"
 				android:layout_marginTop="10dp"/>
 
 			<Button
 				android:id="@+id/toggle_optional_close"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="@string/toggle_optional_close"
+				android:text="@string/toggle_optional_close_1"
 				android:layout_marginTop="10dp"/>
 
 		</LinearLayout>

@@ -27,11 +27,14 @@ public class DemoActivity extends AppCompatActivity {
 		setContentView(R.layout.fab_activity);
 		setTitle(R.string.app_name);
 
-		// initialise fab
+		// get reference to FAB
 		fab = (FloatingActionButton) findViewById(R.id.fab);
 
-		// clicks
+		// get references to buttons
 		final Button switchModeButton = (Button) findViewById(R.id.switch_mode);
+		final Button toggleSpeedDialColoursSwitch = (Button) findViewById(R.id.toggle_colours);
+		final Button toggleSpeedDialOptionalCloseButton = (Button) findViewById(R.id.toggle_optional_close);
+
 		switchModeButton.setOnClickListener(v -> {
 			inClickMode = !inClickMode;
 			if (inClickMode) {
@@ -41,7 +44,10 @@ public class DemoActivity extends AppCompatActivity {
 				fab.setMenuAdapter(new SpeedDialAdapter());
 				switchModeButton.setText(R.string.switch_mode_2);
 			}
+			toggleSpeedDialColoursSwitch.setEnabled(!inClickMode);
+			toggleSpeedDialOptionalCloseButton.setEnabled(!inClickMode);
 		});
+
 		findViewById(R.id.change_icon).setOnClickListener(v -> {
 			int[] icons = new int[]{
 					R.mipmap.ic_add,
@@ -55,6 +61,7 @@ public class DemoActivity extends AppCompatActivity {
 			icon.setImageResource(icons[iconSelected]);
 			fab.setIcon(icon);
 		});
+
 		findViewById(R.id.change_button_colour).setOnClickListener(v -> {
 			int[] colours = new int[]{
 					0xff0099ff,
@@ -65,12 +72,24 @@ public class DemoActivity extends AppCompatActivity {
 			fabColourSelected = ++fabColourSelected % colours.length;
 			fab.setBackgroundColour(colours[fabColourSelected]);
 		});
-		findViewById(R.id.toggle_colours).setOnClickListener(v -> {
+
+		toggleSpeedDialColoursSwitch.setOnClickListener(v -> {
 			speedDialColoursEnabled = !speedDialColoursEnabled;
+			if (speedDialColoursEnabled) {
+				toggleSpeedDialColoursSwitch.setText(R.string.toggle_colours_2);
+			} else {
+				toggleSpeedDialColoursSwitch.setText(R.string.toggle_colours_1);
+			}
 			fab.rebuildSpeedDialMenu();
 		});
-		findViewById(R.id.toggle_optional_close).setOnClickListener(v -> {
+
+		toggleSpeedDialOptionalCloseButton.setOnClickListener(v -> {
 			speedDialOptionalCloseEnabled = !speedDialOptionalCloseEnabled;
+			if (speedDialOptionalCloseEnabled) {
+				toggleSpeedDialOptionalCloseButton.setText(R.string.toggle_optional_close_2);
+			} else {
+				toggleSpeedDialOptionalCloseButton.setText(R.string.toggle_optional_close_1);
+			}
 			fab.rebuildSpeedDialMenu();
 		});
 
@@ -141,8 +160,8 @@ public class DemoActivity extends AppCompatActivity {
 				builder
 						.setTitle(R.string.menu_close_dialog_title)
 						.setMessage(R.string.menu_close_dialog_text)
-						.setPositiveButton(R.string.yes, null)
-						.setNegativeButton(R.string.no, (dialog, which) -> fab.closeSpeedDialMenu())
+						.setPositiveButton(R.string.yes, (dialog, which) -> fab.closeSpeedDialMenu())
+						.setNegativeButton(R.string.no, null)
 						.setCancelable(false);
 				builder.create().show();
 				return false;
