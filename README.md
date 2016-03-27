@@ -82,7 +82,7 @@ The adapter class has several methods that can be overridden to control the menu
 
 `int getCount()` **must** be overridden to return the number of menu items.
 
-`MenuItemViews getViews(Context context, int position)` **must** be overridden to return a `MenuItemViews` wrapper for the given position. The wrapper allows the icon for a menu item to be specified as a `View`, a `Drawable` or a `Drawable` ID, and allows the label to be specified as a `View`, a `String` or a `String` ID. If multiple properties are specified for the icon or label, the first non-null in the order [`View`, `Drawable`/`String`, resource ID] will be applied. Specifying `null` for any or all properties for the icon or the label will not break anything.
+`MenuItemViews getViews(Context context, int position)` **must** be overridden to return a `MenuItemViews` wrapper for the given position. The wrapper allows the icon for a menu item to be specified as a `View`, a `Drawable` or a `Drawable` ID, and allows the label to be specified as a `View`, a `String` or a `String` ID. If multiple properties are specified for the icon or label, the first non-null in the order [`View`, `Drawable` or `String`, resource ID] will be applied. Specifying `null` for any or all properties for the icon or the label will not break anything.
 
 `int getBackgroundColour(int position)` **may** be overridden to return the background colour that should be used for the disc at the given position.
 
