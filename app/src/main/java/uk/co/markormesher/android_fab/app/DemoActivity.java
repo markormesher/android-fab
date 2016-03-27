@@ -67,11 +67,11 @@ public class DemoActivity extends AppCompatActivity {
 		});
 		findViewById(R.id.toggle_colours).setOnClickListener(v -> {
 			speedDialColoursEnabled = !speedDialColoursEnabled;
-			fab.setMenuAdapter(new SpeedDialAdapter());
+			fab.rebuildSpeedDialMenu();
 		});
 		findViewById(R.id.toggle_optional_close).setOnClickListener(v -> {
 			speedDialOptionalCloseEnabled = !speedDialOptionalCloseEnabled;
-			fab.setMenuAdapter(new SpeedDialAdapter());
+			fab.rebuildSpeedDialMenu();
 		});
 
 		// set stuff going

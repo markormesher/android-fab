@@ -135,14 +135,16 @@ public class FloatingActionButton extends RelativeLayout {
 	public void setMenuAdapter(SpeedDialMenuAdapter menuAdapter) {
 		this.listener = null;
 		this.menuAdapter = menuAdapter;
-		if (menuAdapter != null) createSpeedDialMenuItems();
+		if (menuAdapter != null) rebuildSpeedDialMenu();
 	}
 
 	/**
-	 * Generates the items for the speed dial menu, according to the specified adapter.
+	 * (Re-)generates the items for the speed dial menu, according to the currently specified adapter.
+	 * This should be called each time the functionality of the adapter is changed; it is called
+	 * automatically when the adapter itself is changed (with {@code setMenuAdapter()}.
 	 */
 	@SuppressLint("InlinedApi")
-	private void createSpeedDialMenuItems() {
+	public void rebuildSpeedDialMenu() {
 		// sanity check
 		if (menuAdapter.getCount() == 0) {
 			Log.w(C.LOG_TAG, "SpeedDialMenuAdapter contained zero items; speed-dial functionality was disabled.");
