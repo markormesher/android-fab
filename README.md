@@ -80,7 +80,9 @@ The speed-dial menu can be enabled by creating a class that extends `SpeedDialMe
 
 The adapter class has several methods that can be overridden to control the menu:
 
-`int getCount()` **must** be overridden to return the number of menu items.
+**`int getCount()`**
+
+...*must* be overridden to return the number of menu items.
 
 `MenuItem getViews(Context context, int position)` **must** be overridden to return a `MenuItem` wrapper for the given position. This method will be called to create a wrapper once per menu item. The wrapper allows the icon for a menu item to be specified as a `View`, a `Drawable` or a `Drawable` ID, and allows the label to be specified as a `View`, a `String` or a `String` ID.
 
