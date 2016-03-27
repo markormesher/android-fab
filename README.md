@@ -57,7 +57,7 @@ The `FloatingActionButton` view must be placed at the **root** of your layout, *
 
 ### FAB Icon
 
-The icon displayed in the centre of the FAB should be set with `fab.setIcon(...)`, passing in the `View` to use. This `View` will be centred in a 24dp x 24dp view group, as per the Android Material Design specs.
+The icon displayed in the centre of the FAB should be set with `fab.setIcon(...)`, passing in the `View`, `Drawable` or `Drawable` resource ID to use. This `View` will be centred in a 24dp x 24dp view group, as per the Android Material Design specs.
 
 ### FAB Background Colour
 
@@ -76,21 +76,37 @@ A click listener can be added to the FAB in the same way as any other button:
 
 ### Speed-Dial Menus
 
-The speed-dial menu can be enabled by creating a class that extends `SpeedDialMenuAdapter` and then calling `setAdapter(...)` on the FAB. This will remove any click listener on the FAB and enable the speed-dial menu. An example of this can be seen in [SpeedDialDemoActivity.java](/app/src/main/java/uk/co/markormesher/android_fab/app/SpeedDialDemoActivity.java).
+The speed-dial menu can be enabled by creating a class that extends `SpeedDialMenuAdapter` and then calling `setAdapter(...)` on the FAB. This will remove any click listener on the FAB and enable the speed-dial menu.
 
 The adapter class has several methods that can be overridden to control the menu:
 
-`int getCount()` **must** be overridden to return the number of menu items.
+##### `int getCount()`
 
-`View[] getViews(Context context, int position)` **must** be overridden to return *exactly* two views for the given position: the first view is the icon, the second view is the label. The second view can be returned as `null` to omit the label for that item. Technically the first view may also be returned as `null` (that is, it won't break anything) but an icon should always be set as the bare minimum.
+...**must** be overridden to return the number of menu items.
 
-`int getBackgroundColour(int position)` **may** be overriden to return the background colour that should be used for the disc at the given position.
+##### `MenuItem getViews(Context context, int position)`
 
-`boolean onMenuItemClick(int position)` **may** be overriden to listen for clicks on the individual menu items. Return `true` to close the menu after the click has been handled (the default behaviour) or `false` to leave it open
+...**must** be overridden to return a `MenuItem` wrapper for the given position. This method will be called to create a wrapper once per menu item. The wrapper allows the icon for a menu item to be specified as a `View`, a `Drawable` or a `Drawable` ID, and allows the label to be specified as a `View`, a `String` or a `String` ID.
 
-`boolean rotateFab()` **may** be overridden to specify whether the FAB should rotate by 1/8th of a turn when the speed-dial menu opens. This is useful for smoothly transitioning between a '+' and 'x' icon.
+If multiple properties are specified for the icon or label, the first non-null in the order [`View`, `Drawable` or `String`, resource ID] will be applied. No parameters are required: all label fields could be left as `null` to produce an icon-only menu item for example; everything could be left as `null` to produce a blank menu item, but that would be quite useless.
+
+##### `int getBackgroundColour(int position)`
+
+...**may** be overridden to return the background colour that should be used for the disc at the given position.
+
+##### `boolean onMenuItemClick(int position)`
+
+...**may** be overridden to listen for clicks on the individual menu items. Return `true` to close the menu after the click has been handled (the default behaviour) or `false` to leave it open
+
+##### `boolean rotateFab()`
+
+...**may** be overridden to specify whether the FAB should rotate by 1/8th of a turn when the speed-dial menu opens. This is useful for smoothly transitioning between a '+' and 'x' icon.
+
+---
 
 **Note:** for all methods, the view at position `0` is the furthest away from the FAB; the view at `getCount() - 1` is the closest.
+
+If the functionality has changed such that `getCount()` or `getViews(...)` will have a different output, `fab.rebuildSpeedDialMenu()` must be called to regenerate the speed-dial menu item views.
 
 ### Controls
 
