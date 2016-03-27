@@ -18,6 +18,7 @@
 	<string name="toggle_colours_2">Disable Speed-Dial Colours</string>
 	<string name="toggle_optional_close_1">Enable Optional Speed-Dial Close</string>
 	<string name="toggle_optional_close_2">Disable Optional Speed-Dial Close</string>
+	<string name="open_speed_dial">Open Speed Dial</string>
 
 	<string name="speed_dial_label">Option #%d</string>
 

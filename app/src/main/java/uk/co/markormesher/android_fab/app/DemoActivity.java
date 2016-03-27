@@ -34,6 +34,7 @@ public class DemoActivity extends AppCompatActivity {
 		final Button switchModeButton = (Button) findViewById(R.id.switch_mode);
 		final Button toggleSpeedDialColoursSwitch = (Button) findViewById(R.id.toggle_colours);
 		final Button toggleSpeedDialOptionalCloseButton = (Button) findViewById(R.id.toggle_optional_close);
+		final Button openSpeedDialButton = (Button) findViewById(R.id.open_speed_dial);
 
 		switchModeButton.setOnClickListener(v -> {
 			inClickMode = !inClickMode;
@@ -46,6 +47,7 @@ public class DemoActivity extends AppCompatActivity {
 			}
 			toggleSpeedDialColoursSwitch.setEnabled(!inClickMode);
 			toggleSpeedDialOptionalCloseButton.setEnabled(!inClickMode);
+			openSpeedDialButton.setEnabled(!inClickMode);
 		});
 
 		findViewById(R.id.change_icon).setOnClickListener(v -> {
@@ -57,9 +59,7 @@ public class DemoActivity extends AppCompatActivity {
 					R.mipmap.ic_swap_vert
 			};
 			iconSelected = ++iconSelected % icons.length;
-			ImageView icon = new ImageView(this);
-			icon.setImageResource(icons[iconSelected]);
-			fab.setIcon(icon);
+			fab.setIcon(icons[iconSelected]);
 		});
 
 		findViewById(R.id.change_button_colour).setOnClickListener(v -> {
@@ -92,6 +92,8 @@ public class DemoActivity extends AppCompatActivity {
 			}
 			fab.rebuildSpeedDialMenu();
 		});
+
+		openSpeedDialButton.setOnClickListener(v -> fab.openSpeedDialMenu());
 
 		// set stuff going
 		findViewById(R.id.switch_mode).performClick();

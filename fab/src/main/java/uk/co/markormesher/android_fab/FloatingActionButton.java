@@ -4,7 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.DrawableRes;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -72,15 +74,58 @@ public class FloatingActionButton extends RelativeLayout {
 	}
 
 	/**
-	 * Sets the {@code View} to use as the icon on the FAB.
+	 * Sets the {@code android.view.View} to use as the icon on the FAB.
 	 *
 	 * @param icon the {@code View} to use as the icon on the FAB
 	 */
 	public void setIcon(View icon) {
-		iconContainer.removeAllViews();
+		resetIcon();
 		if (icon != null) {
 			if (icon.getParent() != null) ((ViewGroup) icon.getParent()).removeView(icon);
 			iconContainer.addView(icon);
+		}
+	}
+
+	/**
+	 * Sets the {@code android.graphics.drawable.Drawable} to use as the icon on the FAB.
+	 *
+	 * @param icon the {@code Drawable} to use as the icon on the FAB
+	 */
+	@SuppressWarnings("deprecation")
+	public void setIcon(Drawable icon) {
+		resetIcon();
+		if (icon != null) {
+			if (Build.VERSION.SDK_INT >= 16) {
+				iconContainer.setBackground(icon);
+			} else {
+				//noinspection deprecation
+				iconContainer.setBackgroundDrawable(icon);
+			}
+		}
+	}
+
+	/**
+	 * Sets the resource ID of the {@code android.graphics.drawable.Drawable} to use as the icon on the FAB.
+	 *
+	 * @param icon the resource ID of the {@code Drawable} to use as the icon on the FAB
+	 */
+	public void setIcon(@DrawableRes int icon) {
+		resetIcon();
+		iconContainer.setBackgroundResource(icon);
+	}
+
+	/**
+	 * Reset the FAB icon, whether it's created from an inserted view or a drawable.
+	 */
+	@SuppressWarnings("deprecation")
+	private void resetIcon() {
+		iconContainer.removeAllViews();
+		iconContainer.setBackgroundResource(0);
+		if (Build.VERSION.SDK_INT >= 16) {
+			iconContainer.setBackground(null);
+		} else {
+			//noinspection deprecation
+			iconContainer.setBackgroundDrawable(null);
 		}
 	}
 
@@ -157,6 +202,7 @@ public class FloatingActionButton extends RelativeLayout {
 
 		for (int i = menuAdapter.getCount() - 1; i >= 0; --i) {
 			// inflate a new item container and add to layout
+			@SuppressLint("InflateParams")
 			View view = LayoutInflater.from(getContext()).inflate(R.layout.speed_dial_icon, null);
 			fabContainer.addView(view, 1);
 			speedDialMenuItems.add(view);

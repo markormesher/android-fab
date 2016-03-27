@@ -57,7 +57,7 @@ The `FloatingActionButton` view must be placed at the **root** of your layout, *
 
 ### FAB Icon
 
-The icon displayed in the centre of the FAB should be set with `fab.setIcon(...)`, passing in the `View` to use. This `View` will be centred in a 24dp x 24dp view group, as per the Android Material Design specs.
+The icon displayed in the centre of the FAB should be set with `fab.setIcon(...)`, passing in the `View`, `Drawable` or `Drawable` resource ID to use. This `View` will be centred in a 24dp x 24dp view group, as per the Android Material Design specs.
 
 ### FAB Background Colour
 
@@ -91,6 +91,8 @@ The adapter class has several methods that can be overridden to control the menu
 `boolean rotateFab()` **may** be overridden to specify whether the FAB should rotate by 1/8th of a turn when the speed-dial menu opens. This is useful for smoothly transitioning between a '+' and 'x' icon.
 
 **Note:** for all methods, the view at position `0` is the furthest away from the FAB; the view at `getCount() - 1` is the closest.
+
+If the functionality has changed such that `getCount()` or `getViews(...)` will have a different output, `fab.rebuildSpeedDialMenu()` must be called to regenerate the speed-dial menu item views.
 
 ### Controls
 
