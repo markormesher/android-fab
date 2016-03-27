@@ -2,15 +2,17 @@ package uk.co.markormesher.android_fab.app;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import uk.co.markormesher.android_fab.FloatingActionButton;
 import uk.co.markormesher.android_fab.SpeedDialMenuAdapter;
+import uk.co.markormesher.android_fab.constants.C;
 
 public class DemoActivity extends AppCompatActivity {
 
@@ -108,36 +110,44 @@ public class DemoActivity extends AppCompatActivity {
 		}
 
 		@Override
-		protected View[] getViews(Context context, int position) {
-			ImageView icon = new ImageView(context);
-			TextView label = new TextView(context);
-
+		protected MenuItemViews getViews(Context context, int position) {
 			switch (position) {
 				case 0:
-					icon.setImageResource(R.mipmap.ic_done);
-					label.setText(getString(R.string.speed_dial_label, position));
-					break;
+					// example: View and View
+					ImageView icon0 = new ImageView(context);
+					icon0.setImageResource(R.mipmap.ic_done);
+					TextView label0 = new TextView(context);
+					label0.setText(getString(R.string.speed_dial_label, position));
+					return new MenuItemViews() {{
+						iconView = icon0;
+						labelView = label0;
+					}};
 
 				case 1:
-					icon.setImageResource(R.mipmap.ic_swap_horiz);
-					label.setText(getString(R.string.speed_dial_label, position));
-					break;
+					// example: Drawable and String
+					return new MenuItemViews() {{
+						iconDrawable = ContextCompat.getDrawable(context, R.mipmap.ic_swap_horiz);
+						labelString = getString(R.string.speed_dial_label, position);
+					}};
 
 				case 2:
-					icon.setImageResource(R.mipmap.ic_swap_vert);
-					label.setText(getString(R.string.speed_dial_label, position));
-					break;
+					// example: Drawable ID and String
+					return new MenuItemViews() {{
+						iconDrawableId = R.mipmap.ic_swap_vert;
+						labelString = getString(R.string.speed_dial_label, position);
+					}};
 
 				case 3:
-					icon.setImageResource(R.mipmap.ic_cloud);
-					label.setText(getString(R.string.label_optional_close));
-					break;
-			}
+					// example: Drawable ID and String ID
+					return new MenuItemViews() {{
+						iconDrawableId = R.mipmap.ic_cloud;
+						labelStringId =  R.string.label_optional_close;
+					}};
 
-			View[] output = new View[2];
-			output[0] = icon;
-			output[1] = label;
-			return output;
+				default:
+					Log.wtf(C.LOG_TAG, "Okay, something went *really* wrong.");
+					return new MenuItemViews();
+			}
 		}
 
 		@Override

@@ -1,6 +1,7 @@
 package uk.co.markormesher.android_fab;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 
 public abstract class SpeedDialMenuAdapter {
@@ -14,14 +15,12 @@ public abstract class SpeedDialMenuAdapter {
 
 	/**
 	 * Returns the views that should be used for each item in the speed-dial menu.
-	 * An array of exactly two views must be returned: the first will be used as the icon inside the small circle,
-	 * the second (which may be {@code null}) as the label.
 	 *
 	 * @param context  {@code Context} for the FAB, which can be used to create views
 	 * @param position the position to generate a view for, from 0 (furthest from the FAB) to {@code getCount()} - 1, inclusive
-	 * @return an array of exactly two views
+	 * @return a {@code MenuItemViews} wrapper containing the icon and (optionally) the label for the menu item
 	 */
-	protected abstract View[] getViews(Context context, int position);
+	protected abstract MenuItemViews getViews(Context context, int position);
 
 	/**
 	 * Returns the background colour to set for the menu item's "disc".
@@ -51,6 +50,24 @@ public abstract class SpeedDialMenuAdapter {
 	 */
 	protected boolean rotateFab() {
 		return false;
+	}
+
+	/**
+	 * Wrapper class for returning the views to use for a speed-dial menu item.
+	 */
+	protected static class MenuItemViews {
+
+		public MenuItemViews() {
+		}
+
+		protected View iconView;
+		protected Drawable iconDrawable;
+		protected int iconDrawableId = -1;
+
+		protected View labelView;
+		protected String labelString;
+		protected int labelStringId = -1;
+
 	}
 
 }

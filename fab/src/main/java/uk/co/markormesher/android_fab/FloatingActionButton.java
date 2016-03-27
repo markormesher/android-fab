@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import uk.co.markormesher.android_fab.constants.C;
 import uk.co.markormesher.android_fab.fab.R;
 
@@ -189,6 +190,7 @@ public class FloatingActionButton extends RelativeLayout {
 	 * automatically when the adapter itself is changed (with {@code setMenuAdapter()}.
 	 */
 	@SuppressLint("InlinedApi")
+	@SuppressWarnings("deprecation")
 	public void rebuildSpeedDialMenu() {
 		// sanity check
 		if (menuAdapter.getCount() == 0) {
@@ -210,14 +212,36 @@ public class FloatingActionButton extends RelativeLayout {
 			// set background colour
 			((CardView) view.findViewById(R.id.card)).setCardBackgroundColor(menuAdapter.getBackgroundColour(i));
 
-			// add child views
-			View[] adapterViews = menuAdapter.getViews(getContext(), i);
-			if (adapterViews.length != 2) throw new IllegalStateException("getViews() must return exactly two views.");
-			if (adapterViews[0] != null) {
-				((ViewGroup) view.findViewById(R.id.icon_container)).addView(adapterViews[0], 0);
+			// get child views
+			SpeedDialMenuAdapter.MenuItemViews itemViews = menuAdapter.getViews(getContext(), i);
+
+			// add icon
+			ViewGroup iconContainer = (ViewGroup) view.findViewById(R.id.icon_container);
+			if (itemViews.iconView != null) {
+				iconContainer.addView(itemViews.iconView, 0);
+			} else if (itemViews.iconDrawable != null) {
+				if (Build.VERSION.SDK_INT >= 16) {
+					iconContainer.setBackground(itemViews.iconDrawable);
+				} else {
+					//noinspection deprecation
+					iconContainer.setBackgroundDrawable(itemViews.iconDrawable);
+				}
+			} else if (itemViews.iconDrawableId > 0) {
+				iconContainer.setBackgroundResource(itemViews.iconDrawableId);
 			}
-			if (adapterViews[1] != null) {
-				((ViewGroup) view.findViewById(R.id.speed_dial_item_container)).addView(adapterViews[1], 0);
+
+			// add label
+			ViewGroup itemContainer = (ViewGroup) view.findViewById(R.id.speed_dial_item_container);
+			if (itemViews.labelView != null) {
+				itemContainer.addView(itemViews.labelView, 0);
+			} else if (itemViews.labelString != null) {
+				TextView tv = new TextView(getContext());
+				tv.setText(itemViews.labelString);
+				itemContainer.addView(tv, 0);
+			} else if (itemViews.labelStringId > 0) {
+				TextView tv = new TextView(getContext());
+				tv.setText(itemViews.labelStringId);
+				itemContainer.addView(tv, 0);
 			}
 
 			// reposition
