@@ -84,9 +84,9 @@ The adapter class has several methods that can be overridden to control the menu
 
 `View[] getViews(Context context, int position)` **must** be overridden to return *exactly* two views for the given position: the first view is the icon, the second view is the label. The second view can be returned as `null` to omit the label for that item. Technically the first view may also be returned as `null` (that is, it won't break anything) but an icon should always be set as the bare minimum.
 
-`int getBackgroundColour(int position)` **may** be overriden to return the background colour that should be used for the disc at the given position.
+`int getBackgroundColour(int position)` **may** be overridden to return the background colour that should be used for the disc at the given position.
 
-`boolean onMenuItemClick(int position)` **may** be overriden to listen for clicks on the individual menu items. Return `true` to close the menu after the click has been handled (the default behaviour) or `false` to leave it open
+`boolean onMenuItemClick(int position)` **may** be overridden to listen for clicks on the individual menu items. Return `true` to close the menu after the click has been handled (the default behaviour) or `false` to leave it open
 
 `boolean rotateFab()` **may** be overridden to specify whether the FAB should rotate by 1/8th of a turn when the speed-dial menu opens. This is useful for smoothly transitioning between a '+' and 'x' icon.
 
