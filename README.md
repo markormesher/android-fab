@@ -80,7 +80,7 @@ The speed-dial menu can be enabled by creating a class that extends `SpeedDialMe
 
 The adapter class has several methods that can be overridden to control the menu:
 
-**`int getCount()`**
+##### `int getCount()`
 
 ...*must* be overridden to return the number of menu items.
 
