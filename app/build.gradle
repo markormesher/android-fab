@@ -13,8 +13,8 @@ buildscript {
 }
 
 def version = new Properties()
-version['code'] = 3
-version['name'] = '0.2.1'
+version['code'] = 4
+version['name'] = '1.0.0'
 
 def secrets = getSecrets()
 
@@ -103,5 +103,5 @@ dependencies {
  *==============*/
 
 task start(type: Exec) {
-	commandLine 'adb', 'shell', 'am', 'start', '-n', 'uk.co.markormesher.android_fab.app/.ClickDemoActivity'
+	commandLine 'adb', 'shell', 'am', 'start', '-n', 'uk.co.markormesher.android_fab.app/.DemoActivity'
 }

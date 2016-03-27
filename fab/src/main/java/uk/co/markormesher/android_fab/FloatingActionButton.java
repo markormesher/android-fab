@@ -4,7 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.DrawableRes;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import uk.co.markormesher.android_fab.constants.C;
 import uk.co.markormesher.android_fab.fab.R;
 
@@ -72,15 +75,58 @@ public class FloatingActionButton extends RelativeLayout {
 	}
 
 	/**
-	 * Sets the @{code View} to use as the icon on the FAB.
+	 * Sets the {@code android.view.View} to use as the icon on the FAB.
 	 *
-	 * @param icon the @{code View} to use as the icon on the FAB
+	 * @param icon the {@code View} to use as the icon on the FAB
 	 */
 	public void setIcon(View icon) {
-		iconContainer.removeAllViews();
+		resetIcon();
 		if (icon != null) {
 			if (icon.getParent() != null) ((ViewGroup) icon.getParent()).removeView(icon);
 			iconContainer.addView(icon);
+		}
+	}
+
+	/**
+	 * Sets the {@code android.graphics.drawable.Drawable} to use as the icon on the FAB.
+	 *
+	 * @param icon the {@code Drawable} to use as the icon on the FAB
+	 */
+	@SuppressWarnings("deprecation")
+	public void setIcon(Drawable icon) {
+		resetIcon();
+		if (icon != null) {
+			if (Build.VERSION.SDK_INT >= 16) {
+				iconContainer.setBackground(icon);
+			} else {
+				//noinspection deprecation
+				iconContainer.setBackgroundDrawable(icon);
+			}
+		}
+	}
+
+	/**
+	 * Sets the resource ID of the {@code android.graphics.drawable.Drawable} to use as the icon on the FAB.
+	 *
+	 * @param icon the resource ID of the {@code Drawable} to use as the icon on the FAB
+	 */
+	public void setIcon(@DrawableRes int icon) {
+		resetIcon();
+		iconContainer.setBackgroundResource(icon);
+	}
+
+	/**
+	 * Reset the FAB icon, whether it's created from an inserted view or a drawable.
+	 */
+	@SuppressWarnings("deprecation")
+	private void resetIcon() {
+		iconContainer.removeAllViews();
+		iconContainer.setBackgroundResource(0);
+		if (Build.VERSION.SDK_INT >= 16) {
+			iconContainer.setBackground(null);
+		} else {
+			//noinspection deprecation
+			iconContainer.setBackgroundDrawable(null);
 		}
 	}
 
@@ -135,14 +181,17 @@ public class FloatingActionButton extends RelativeLayout {
 	public void setMenuAdapter(SpeedDialMenuAdapter menuAdapter) {
 		this.listener = null;
 		this.menuAdapter = menuAdapter;
-		if (menuAdapter != null) createSpeedDialMenuItems();
+		if (menuAdapter != null) rebuildSpeedDialMenu();
 	}
 
 	/**
-	 * Generates the items for the speed dial menu, according to the specified adapter.
+	 * (Re-)generates the items for the speed dial menu, according to the currently specified adapter.
+	 * This should be called each time the functionality of the adapter is changed; it is called
+	 * automatically when the adapter itself is changed (with {@code setMenuAdapter()}.
 	 */
 	@SuppressLint("InlinedApi")
-	private void createSpeedDialMenuItems() {
+	@SuppressWarnings("deprecation")
+	public void rebuildSpeedDialMenu() {
 		// sanity check
 		if (menuAdapter.getCount() == 0) {
 			Log.w(C.LOG_TAG, "SpeedDialMenuAdapter contained zero items; speed-dial functionality was disabled.");
@@ -155,6 +204,7 @@ public class FloatingActionButton extends RelativeLayout {
 
 		for (int i = menuAdapter.getCount() - 1; i >= 0; --i) {
 			// inflate a new item container and add to layout
+			@SuppressLint("InflateParams")
 			View view = LayoutInflater.from(getContext()).inflate(R.layout.speed_dial_icon, null);
 			fabContainer.addView(view, 1);
 			speedDialMenuItems.add(view);
@@ -162,14 +212,36 @@ public class FloatingActionButton extends RelativeLayout {
 			// set background colour
 			((CardView) view.findViewById(R.id.card)).setCardBackgroundColor(menuAdapter.getBackgroundColour(i));
 
-			// add child views
-			View[] adapterViews = menuAdapter.getViews(getContext(), i);
-			if (adapterViews.length != 2) throw new IllegalStateException("getViews() must return exactly two views.");
-			if (adapterViews[0] != null) {
-				((ViewGroup) view.findViewById(R.id.icon_container)).addView(adapterViews[0], 0);
+			// get child views
+			SpeedDialMenuAdapter.MenuItem itemViews = menuAdapter.getViews(getContext(), i);
+
+			// add icon
+			ViewGroup iconContainer = (ViewGroup) view.findViewById(R.id.icon_container);
+			if (itemViews.iconView != null) {
+				iconContainer.addView(itemViews.iconView, 0);
+			} else if (itemViews.iconDrawable != null) {
+				if (Build.VERSION.SDK_INT >= 16) {
+					iconContainer.setBackground(itemViews.iconDrawable);
+				} else {
+					//noinspection deprecation
+					iconContainer.setBackgroundDrawable(itemViews.iconDrawable);
+				}
+			} else if (itemViews.iconDrawableId > 0) {
+				iconContainer.setBackgroundResource(itemViews.iconDrawableId);
 			}
-			if (adapterViews[1] != null) {
-				((ViewGroup) view.findViewById(R.id.speed_dial_item_container)).addView(adapterViews[1], 0);
+
+			// add label
+			ViewGroup itemContainer = (ViewGroup) view.findViewById(R.id.speed_dial_item_container);
+			if (itemViews.labelView != null) {
+				itemContainer.addView(itemViews.labelView, 0);
+			} else if (itemViews.labelString != null) {
+				TextView tv = new TextView(getContext());
+				tv.setText(itemViews.labelString);
+				itemContainer.addView(tv, 0);
+			} else if (itemViews.labelStringId > 0) {
+				TextView tv = new TextView(getContext());
+				tv.setText(itemViews.labelStringId);
+				itemContainer.addView(tv, 0);
 			}
 
 			// reposition
@@ -234,7 +306,7 @@ public class FloatingActionButton extends RelativeLayout {
 	/**
 	 * Toggles the FAB icon state, based on whether or not the speed-dial menu is open.
 	 *
-	 * @param visible @{code true} to indicate that the menu is open
+	 * @param visible {@code true} to indicate that the menu is open
 	 */
 	private void toggleFabIconForSpeedDialMenu(boolean visible) {
 		// busy?
@@ -256,7 +328,7 @@ public class FloatingActionButton extends RelativeLayout {
 	/**
 	 * Toggles the "cover", based on whether or not the speed-dial menu is open.
 	 *
-	 * @param visible @{code true} to indicate that the menu is open
+	 * @param visible {@code true} to indicate that the menu is open
 	 */
 	private void setSpeedDialCoverVisible(boolean visible) {
 		// busy?
@@ -280,7 +352,7 @@ public class FloatingActionButton extends RelativeLayout {
 	/**
 	 * Toggles the speed-dial menu items, based on whether or not the speed-dial menu is open.
 	 *
-	 * @param visible @{code true} to indicate that the menu is open
+	 * @param visible {@code true} to indicate that the menu is open
 	 */
 	private void setSpeedDialMenuVisible(boolean visible) {
 		// busy?

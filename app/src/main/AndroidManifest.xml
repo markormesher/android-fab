@@ -12,7 +12,7 @@
 		tools:ignore="UnusedAttribute">
 
 		<activity
-			android:name="uk.co.markormesher.android_fab.app.ClickDemoActivity"
+			android:name=".DemoActivity"
 			android:label="@string/app_name"
 			android:launchMode="singleInstance">
 			<intent-filter>
@@ -20,8 +20,6 @@
 				<category android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
 		</activity>
-
-		<activity android:name="uk.co.markormesher.android_fab.app.SpeedDialDemoActivity"/>
 
 	</application>
 

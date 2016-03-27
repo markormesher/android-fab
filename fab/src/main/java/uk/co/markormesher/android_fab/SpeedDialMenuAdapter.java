@@ -1,6 +1,7 @@
 package uk.co.markormesher.android_fab;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 
 public abstract class SpeedDialMenuAdapter {
@@ -14,19 +15,17 @@ public abstract class SpeedDialMenuAdapter {
 
 	/**
 	 * Returns the views that should be used for each item in the speed-dial menu.
-	 * An array of exactly two views must be returned: the first will be used as the icon inside the small circle,
-	 * the second (which may be @{code null}) as the label.
 	 *
-	 * @param context  @{code Context} for the FAB, which can be used to create views
-	 * @param position the position to generate a view for, from 0 (furthest from the FAB) to @{code getCount()} - 1, inclusive
-	 * @return an array of exactly two views
+	 * @param context  {@code Context} for the FAB, which can be used to create views
+	 * @param position the position to generate a view for, from 0 (furthest from the FAB) to {@code getCount()} - 1, inclusive
+	 * @return a {@code MenuItemViews} wrapper containing the icon and (optionally) the label for the menu item
 	 */
-	protected abstract View[] getViews(Context context, int position);
+	protected abstract MenuItem getViews(Context context, int position);
 
 	/**
 	 * Returns the background colour to set for the menu item's "disc".
 	 *
-	 * @param position the position to generate a view for, from 0 (furthest from the FAB) to @{code getCount()} - 1, inclusive
+	 * @param position the position to generate a view for, from 0 (furthest from the FAB) to {@code getCount()} - 1, inclusive
 	 * @return the colour to set
 	 */
 	protected int getBackgroundColour(int position) {
@@ -37,7 +36,7 @@ public abstract class SpeedDialMenuAdapter {
 	 * Called when a menu item is clicked.
 	 *
 	 * @param position the position of the menu item that was clicked
-	 * @return @{code true} to close the menu, @{code false} to leave it open.
+	 * @return {@code true} to close the menu, {@code false} to leave it open.
 	 */
 	protected boolean onMenuItemClick(int position) {
 		return true;
@@ -51,6 +50,24 @@ public abstract class SpeedDialMenuAdapter {
 	 */
 	protected boolean rotateFab() {
 		return false;
+	}
+
+	/**
+	 * Wrapper class for returning the views to use for a speed-dial menu item.
+	 */
+	protected static class MenuItem {
+
+		public MenuItem() {
+		}
+
+		protected View iconView;
+		protected Drawable iconDrawable;
+		protected int iconDrawableId = -1;
+
+		protected View labelView;
+		protected String labelString;
+		protected int labelStringId = -1;
+
 	}
 
 }
