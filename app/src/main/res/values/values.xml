@@ -10,6 +10,8 @@
 	<string name="yes">Yes</string>
 	<string name="no">No</string>
 
+	<string name="hide_fab">Hide FAB</string>
+	<string name="show_fab">Show FAB</string>
 	<string name="switch_mode_1">Switch to Speed-Dial Mode</string>
 	<string name="switch_mode_2">Switch to Click Mode</string>
 	<string name="change_icon">Change FAB Icon</string>
@@ -28,6 +30,8 @@
 
 	<string name="click_simple">You clicked on the FAB!</string>
 	<string name="click_with_item">You clicked on item #%d!</string>
+
+	<string name="disabled_when_hidden">Disabled when the FAB is hidden</string>
 
     <!--
     Styles
