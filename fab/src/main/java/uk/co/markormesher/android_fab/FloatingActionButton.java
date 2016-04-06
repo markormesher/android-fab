@@ -22,7 +22,8 @@ import java.util.ArrayList;
 
 public class FloatingActionButton extends RelativeLayout {
 
-	private static final long ANIMATION_DURATION = 200L;
+	private static final long SPEED_DIAL_ANIMATION_DURATION = 200L;
+	private static final long HIDE_SHOW_ANIMATION_DURATION = 100L;
 
 	/*==============*
 	 * Constructors *
@@ -51,6 +52,8 @@ public class FloatingActionButton extends RelativeLayout {
 	private CardView cardView;
 	private ViewGroup iconContainer;
 	private View coverView;
+
+	private boolean shown = true;
 
 	/**
 	 * Sets up the view by finding components and setting styles.
@@ -137,6 +140,57 @@ public class FloatingActionButton extends RelativeLayout {
 	 */
 	public void setBackgroundColour(int colour) {
 		cardView.setCardBackgroundColor(colour);
+	}
+
+	/**
+	 * Hide the FAB.
+	 */
+	public void hide() {
+		if (!shown) return;
+
+		closeSpeedDialMenu();
+		cardView.clearAnimation();
+		cardView.animate()
+				.scaleX(0F)
+				.scaleY(0F)
+				.setDuration(HIDE_SHOW_ANIMATION_DURATION)
+				.setListener(new AnimatorListenerAdapter() {
+					@Override
+					public void onAnimationEnd(Animator animation) {
+						cardView.setVisibility(GONE);
+						shown = false;
+					}
+				});
+	}
+
+	/**
+	 * Show the FAB.
+	 */
+	public void show() {
+		if (shown) return;
+		shown = true;
+
+		cardView.setVisibility(VISIBLE);
+		cardView.clearAnimation();
+		cardView.animate()
+				.scaleX(1F)
+				.scaleY(1F)
+				.setDuration(HIDE_SHOW_ANIMATION_DURATION)
+				.setListener(new AnimatorListenerAdapter() {
+					@Override
+					public void onAnimationEnd(Animator animation) {
+						shown = true;
+					}
+				});
+	}
+
+	/**
+	 * Checks whether the FAB is shown.
+	 *
+	 * @return {@code true} if the FAB is shown
+	 */
+	public boolean isShown() {
+		return shown;
 	}
 
 	/*=============*
@@ -271,10 +325,10 @@ public class FloatingActionButton extends RelativeLayout {
 	}
 
 	/**
-	 * Opens the speed-dial menu, if it's closed.
+	 * Opens the speed-dial menu, if it's closed and the FAB is shown.
 	 */
 	public void openSpeedDialMenu() {
-		if (!speedDialMenuOpen) toggleSpeedDialMenu();
+		if (!speedDialMenuOpen && shown) toggleSpeedDialMenu();
 	}
 
 	/**
@@ -317,7 +371,7 @@ public class FloatingActionButton extends RelativeLayout {
 		// animate
 		iconContainer.animate()
 				.rotation(visible ? 45F : 0F)
-				.setDuration(ANIMATION_DURATION)
+				.setDuration(SPEED_DIAL_ANIMATION_DURATION)
 				.setListener(new AnimatorListenerAdapter() {
 					@Override
 					public void onAnimationEnd(Animator animation) {
@@ -341,7 +395,7 @@ public class FloatingActionButton extends RelativeLayout {
 				.scaleX(visible ? 50F : 0F)
 				.scaleY(visible ? 50F : 0F)
 				.alpha(visible ? 1F : 0F)
-				.setDuration(ANIMATION_DURATION)
+				.setDuration(SPEED_DIAL_ANIMATION_DURATION)
 				.setListener(new AnimatorListenerAdapter() {
 					@Override
 					public void onAnimationEnd(Animator animation) {
@@ -366,7 +420,7 @@ public class FloatingActionButton extends RelativeLayout {
 			speedDialMenuItems.get(i).animate()
 					.translationY(visible ? ((i + 1) * distance * -1) - (distance / 8) : 0F)
 					.alpha(visible ? 1F : 0F)
-					.setDuration(ANIMATION_DURATION)
+					.setDuration(SPEED_DIAL_ANIMATION_DURATION)
 					.setListener(new AnimatorListenerAdapter() {
 						@Override
 						public void onAnimationEnd(Animator animation) {

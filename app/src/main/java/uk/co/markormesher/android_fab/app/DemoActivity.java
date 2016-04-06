@@ -33,10 +33,22 @@ public class DemoActivity extends AppCompatActivity {
 		fab = (FloatingActionButton) findViewById(R.id.fab);
 
 		// get references to buttons
+		final Button hideShowButton = (Button) findViewById(R.id.hide_show);
 		final Button switchModeButton = (Button) findViewById(R.id.switch_mode);
 		final Button toggleSpeedDialColoursSwitch = (Button) findViewById(R.id.toggle_colours);
 		final Button toggleSpeedDialOptionalCloseButton = (Button) findViewById(R.id.toggle_optional_close);
 		final Button openSpeedDialButton = (Button) findViewById(R.id.open_speed_dial);
+
+		hideShowButton.setText(R.string.hide_fab);
+		hideShowButton.setOnClickListener(v -> {
+			if (fab.isShown()) {
+				fab.hide();
+				hideShowButton.setText(R.string.show_fab);
+			} else {
+				fab.show();
+				hideShowButton.setText(R.string.hide_fab);
+			}
+		});
 
 		switchModeButton.setOnClickListener(v -> {
 			inClickMode = !inClickMode;
@@ -95,7 +107,10 @@ public class DemoActivity extends AppCompatActivity {
 			fab.rebuildSpeedDialMenu();
 		});
 
-		openSpeedDialButton.setOnClickListener(v -> fab.openSpeedDialMenu());
+		openSpeedDialButton.setOnClickListener(v -> {
+			fab.openSpeedDialMenu();
+			if (!fab.isShown()) Toast.makeText(this, R.string.disabled_when_hidden, Toast.LENGTH_SHORT).show();
+		});
 
 		// set stuff going
 		findViewById(R.id.switch_mode).performClick();
@@ -141,7 +156,7 @@ public class DemoActivity extends AppCompatActivity {
 					// example: Drawable ID and String ID
 					return new MenuItem() {{
 						iconDrawableId = R.mipmap.ic_cloud;
-						labelStringId =  R.string.label_optional_close;
+						labelStringId = R.string.label_optional_close;
 					}};
 
 				default:
