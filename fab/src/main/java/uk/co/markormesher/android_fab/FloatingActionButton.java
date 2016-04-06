@@ -6,6 +6,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
@@ -75,6 +77,9 @@ public class FloatingActionButton extends RelativeLayout {
 		cardView.setClickable(true);
 		cardView.setFocusable(true);
 		cardView.setOnClickListener(v -> onClick());
+
+		// make sure Android knows we want to save this state
+		setSaveEnabled(true);
 	}
 
 	/**
@@ -146,6 +151,15 @@ public class FloatingActionButton extends RelativeLayout {
 	 * Hide the FAB.
 	 */
 	public void hide() {
+		hide(false);
+	}
+
+	/**
+	 * Hide the FAB.
+	 *
+	 * @param fast {@code true} to run this animation in zero-time.
+	 */
+	private void hide(boolean fast) {
 		if (!shown) return;
 
 		closeSpeedDialMenu();
@@ -153,7 +167,7 @@ public class FloatingActionButton extends RelativeLayout {
 		cardView.animate()
 				.scaleX(0F)
 				.scaleY(0F)
-				.setDuration(HIDE_SHOW_ANIMATION_DURATION)
+				.setDuration(fast ? 0 : HIDE_SHOW_ANIMATION_DURATION)
 				.setListener(new AnimatorListenerAdapter() {
 					@Override
 					public void onAnimationEnd(Animator animation) {
@@ -430,4 +444,34 @@ public class FloatingActionButton extends RelativeLayout {
 		}
 	}
 
+	/*====================*
+	 * State preservation *
+	 *====================*/
+
+	@Override
+	protected Parcelable onSaveInstanceState() {
+		Log.d(C.LOG_TAG, "onSaveInstanceState");
+		Bundle bundle = new Bundle();
+		bundle.putBoolean("shown", shown);
+		bundle.putParcelable("super_state", super.onSaveInstanceState());
+		return bundle;
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Parcelable state) {
+		Log.d(C.LOG_TAG, "onRestoreInstanceState");
+		if (state != null && state instanceof Bundle) {
+			Bundle bundle = (Bundle) state;
+
+			// shown?
+			if (!bundle.getBoolean("shown", true)) {
+				// hide immediately
+				hide(true);
+			}
+
+			// super-state
+			state = bundle.getParcelable("super_state");
+		}
+		super.onRestoreInstanceState(state);
+	}
 }
