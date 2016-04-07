@@ -123,7 +123,7 @@ The speed-dial menu can be manually opened and closed with `fab.openSpeedDialMen
 When a configuration change happens within your app and the activity/fragment is forced to rebuild its layout, the FAB does some primitive state preservation and restoration. The following settings are preserved between configuration changes:
 
 - whether the icon is shown or hidden (see [Controls](#controls));
-- the FAB icon, **if** it was set as a `Drawable` resource ID;
+- the FAB icon, **if and only if** it was set as a `Drawable` resource ID;
 - the FAB background colour.
 
 All other properties (`View`/`Drawable` icons, speed-dial menu adapters, etc.) will need to be restored "manually". The demo application shows how this can be accomplished.
