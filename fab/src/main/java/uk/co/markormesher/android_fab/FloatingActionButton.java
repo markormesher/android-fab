@@ -160,7 +160,7 @@ public class FloatingActionButton extends RelativeLayout {
 	 * @param fast {@code true} to run this animation in zero-time.
 	 */
 	private void hide(boolean fast) {
-		if (!shown) return;
+		if (!shown && !fast) return;
 
 		closeSpeedDialMenu();
 		cardView.clearAnimation();
@@ -182,7 +182,6 @@ public class FloatingActionButton extends RelativeLayout {
 	 */
 	public void show() {
 		if (shown) return;
-		shown = true;
 
 		cardView.setVisibility(VISIBLE);
 		cardView.clearAnimation();
