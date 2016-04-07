@@ -6,6 +6,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
@@ -22,7 +24,8 @@ import java.util.ArrayList;
 
 public class FloatingActionButton extends RelativeLayout {
 
-	private static final long ANIMATION_DURATION = 200L;
+	private static final long SPEED_DIAL_ANIMATION_DURATION = 200L;
+	private static final long HIDE_SHOW_ANIMATION_DURATION = 100L;
 
 	/*==============*
 	 * Constructors *
@@ -52,6 +55,8 @@ public class FloatingActionButton extends RelativeLayout {
 	private ViewGroup iconContainer;
 	private View coverView;
 
+	private boolean shown = true;
+
 	/**
 	 * Sets up the view by finding components and setting styles.
 	 */
@@ -72,6 +77,9 @@ public class FloatingActionButton extends RelativeLayout {
 		cardView.setClickable(true);
 		cardView.setFocusable(true);
 		cardView.setOnClickListener(v -> onClick());
+
+		// make sure Android knows we want to save this state
+		setSaveEnabled(true);
 	}
 
 	/**
@@ -112,6 +120,7 @@ public class FloatingActionButton extends RelativeLayout {
 	 */
 	public void setIcon(@DrawableRes int icon) {
 		resetIcon();
+		savedIconResId = icon;
 		iconContainer.setBackgroundResource(icon);
 	}
 
@@ -120,6 +129,7 @@ public class FloatingActionButton extends RelativeLayout {
 	 */
 	@SuppressWarnings("deprecation")
 	private void resetIcon() {
+		savedIconResId = -1;
 		iconContainer.removeAllViews();
 		iconContainer.setBackgroundResource(0);
 		if (Build.VERSION.SDK_INT >= 16) {
@@ -136,7 +146,67 @@ public class FloatingActionButton extends RelativeLayout {
 	 * @param colour the colour of the FAB background, in aRGB format
 	 */
 	public void setBackgroundColour(int colour) {
+		savedBgColour = colour;
 		cardView.setCardBackgroundColor(colour);
+	}
+
+	/**
+	 * Hide the FAB.
+	 */
+	public void hide() {
+		hide(false);
+	}
+
+	/**
+	 * Hide the FAB.
+	 *
+	 * @param fast {@code true} to run this animation in zero-time.
+	 */
+	private void hide(boolean fast) {
+		if (!shown && !fast) return;
+
+		closeSpeedDialMenu();
+		cardView.clearAnimation();
+		cardView.animate()
+				.scaleX(0F)
+				.scaleY(0F)
+				.setDuration(fast ? 0 : HIDE_SHOW_ANIMATION_DURATION)
+				.setListener(new AnimatorListenerAdapter() {
+					@Override
+					public void onAnimationEnd(Animator animation) {
+						cardView.setVisibility(GONE);
+						shown = false;
+					}
+				});
+	}
+
+	/**
+	 * Show the FAB.
+	 */
+	public void show() {
+		if (shown) return;
+
+		cardView.setVisibility(VISIBLE);
+		cardView.clearAnimation();
+		cardView.animate()
+				.scaleX(1F)
+				.scaleY(1F)
+				.setDuration(HIDE_SHOW_ANIMATION_DURATION)
+				.setListener(new AnimatorListenerAdapter() {
+					@Override
+					public void onAnimationEnd(Animator animation) {
+						shown = true;
+					}
+				});
+	}
+
+	/**
+	 * Checks whether the FAB is shown.
+	 *
+	 * @return {@code true} if the FAB is shown
+	 */
+	public boolean isShown() {
+		return shown;
 	}
 
 	/*=============*
@@ -271,10 +341,10 @@ public class FloatingActionButton extends RelativeLayout {
 	}
 
 	/**
-	 * Opens the speed-dial menu, if it's closed.
+	 * Opens the speed-dial menu, if it's closed and the FAB is shown.
 	 */
 	public void openSpeedDialMenu() {
-		if (!speedDialMenuOpen) toggleSpeedDialMenu();
+		if (!speedDialMenuOpen && shown) toggleSpeedDialMenu();
 	}
 
 	/**
@@ -317,7 +387,7 @@ public class FloatingActionButton extends RelativeLayout {
 		// animate
 		iconContainer.animate()
 				.rotation(visible ? 45F : 0F)
-				.setDuration(ANIMATION_DURATION)
+				.setDuration(SPEED_DIAL_ANIMATION_DURATION)
 				.setListener(new AnimatorListenerAdapter() {
 					@Override
 					public void onAnimationEnd(Animator animation) {
@@ -341,7 +411,7 @@ public class FloatingActionButton extends RelativeLayout {
 				.scaleX(visible ? 50F : 0F)
 				.scaleY(visible ? 50F : 0F)
 				.alpha(visible ? 1F : 0F)
-				.setDuration(ANIMATION_DURATION)
+				.setDuration(SPEED_DIAL_ANIMATION_DURATION)
 				.setListener(new AnimatorListenerAdapter() {
 					@Override
 					public void onAnimationEnd(Animator animation) {
@@ -366,7 +436,7 @@ public class FloatingActionButton extends RelativeLayout {
 			speedDialMenuItems.get(i).animate()
 					.translationY(visible ? ((i + 1) * distance * -1) - (distance / 8) : 0F)
 					.alpha(visible ? 1F : 0F)
-					.setDuration(ANIMATION_DURATION)
+					.setDuration(SPEED_DIAL_ANIMATION_DURATION)
 					.setListener(new AnimatorListenerAdapter() {
 						@Override
 						public void onAnimationEnd(Animator animation) {
@@ -376,4 +446,50 @@ public class FloatingActionButton extends RelativeLayout {
 		}
 	}
 
+	/*====================*
+	 * State preservation *
+	 *====================*/
+
+	private int savedIconResId = -1;
+	private int savedBgColour = 0x3f51b5;
+
+	@Override
+	protected Parcelable onSaveInstanceState() {
+		Bundle bundle = new Bundle();
+		bundle.putBoolean("shown", shown);
+		bundle.putInt("savedIconResId", savedIconResId);
+		bundle.putInt("savedBgColour", savedBgColour);
+		bundle.putParcelable("SUPER", super.onSaveInstanceState());
+		return bundle;
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Parcelable state) {
+		if (state != null && state instanceof Bundle) {
+			Bundle bundle = (Bundle) state;
+
+			// shown?
+			if (bundle.containsKey("shown") && !bundle.getBoolean("shown")) {
+				// hide immediately
+				hide(true);
+			}
+
+			// icon resource ID
+			if (bundle.containsKey("savedIconResId")) {
+				savedIconResId = bundle.getInt("savedIconResId");
+				if (savedIconResId > -1) setIcon(savedIconResId);
+			}
+
+			// background colour
+			if (bundle.containsKey("savedBgColour")) {
+				savedBgColour = bundle.getInt("savedBgColour");
+				Log.d(C.LOG_TAG, "" + savedBgColour);
+				setBackgroundColour(savedBgColour);
+			}
+
+			// super-state
+			state = bundle.getParcelable("SUPER");
+		}
+		super.onRestoreInstanceState(state);
+	}
 }
