@@ -59,9 +59,13 @@ The `FloatingActionButton` view must be placed at the **root** of your layout, *
 
 The icon displayed in the centre of the FAB should be set with `fab.setIcon(...)`, passing in the `View`, `Drawable` or `Drawable` resource ID to use. This `View` will be centred in a 24dp x 24dp view group, as per the Android Material Design specs.
 
+See the note below on [state preservation](#note-state-preservation).
+
 ### FAB Background Colour
 
 The background colour to be used for the FAB should be set with `fab.setBackgroundColor(...)`, passing in an RGBa colour value (e.g. `0xffff9900` for a dark orange). Note that this method does **not** take a colour resource ID, so passing in `R.color.some_colour_name` will not work.
+
+See the note below on [state preservation](#note-state-preservation).
 
 ### FAB Click Listener
 
@@ -113,3 +117,13 @@ If the functionality has changed such that `getCount()` or `getViews(...)` will 
 The FAB can be hidden and shown with the `fab.hide()` and `fab.show()` methods, and the method `fab.isShown()` will return a boolean indicating the current state. These methods animate the FAB in and out of visibility. If the speed-dial menu is open when `.hide()` is called it will be closed.  
 
 The speed-dial menu can be manually opened and closed with `fab.openSpeedDialMenu()` and `fab.closeSpeedDialMenu()`. These methods will do nothing if no speed-dial menu adapter is set, if the FAB is hidden, or if they are called when the menu is already in the indicated state (i.e. `fab.openSpeedDialMenu()` will do nothing if the menu is already open).
+
+### Note: State Preservation
+
+When a configuration change happens within your app and the activity/fragment is forced to rebuild its layout, the FAB does some primitive state preservation and restoration. The following settings are preserved between configuration changes:
+
+- whether the icon is shown or hidden (see [Controls](#controls));
+- the FAB icon, **if** it was set as a `Drawable` resource ID;
+- the FAB background colour.
+
+All other properties (`View`/`Drawable` icons, speed-dial menu adapters, etc.) will need to be restored "manually". The demo application shows how this can be accomplished.
