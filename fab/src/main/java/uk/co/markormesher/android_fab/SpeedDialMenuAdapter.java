@@ -55,18 +55,15 @@ public abstract class SpeedDialMenuAdapter {
 	/**
 	 * Wrapper class for returning the views to use for a speed-dial menu item.
 	 */
-	protected static class MenuItem {
+	public static class MenuItem {
 
-		public MenuItem() {
-		}
+		public View iconView;
+		public Drawable iconDrawable;
+		public int iconDrawableId = -1;
 
-		protected View iconView;
-		protected Drawable iconDrawable;
-		protected int iconDrawableId = -1;
-
-		protected View labelView;
-		protected String labelString;
-		protected int labelStringId = -1;
+		public View labelView;
+		public String labelString;
+		public int labelStringId = -1;
 
 	}
 
