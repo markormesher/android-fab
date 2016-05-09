@@ -324,6 +324,7 @@ public class FloatingActionButton extends RelativeLayout {
 
 			// hide
 			view.setAlpha(0F);
+			view.setVisibility(GONE);
 
 			// clicks
 			view.setTag(i);
@@ -425,15 +426,17 @@ public class FloatingActionButton extends RelativeLayout {
 	 *
 	 * @param visible {@code true} to indicate that the menu is open
 	 */
-	private void setSpeedDialMenuVisible(boolean visible) {
+	private void setSpeedDialMenuVisible(final boolean visible) {
 		// busy?
 		if (busyAnimatingSpeedDialMenu) return;
 		busyAnimatingSpeedDialMenu = true;
 
-		// animate
+		// animate, setting visibility as well to prevent phantom clicks
 		int distance = cardView.getHeight();
 		for (int i = 0, n = speedDialMenuItems.size(); i < n; ++i) {
-			speedDialMenuItems.get(i).animate()
+			final View v = speedDialMenuItems.get(i);
+			if (visible) v.setVisibility(VISIBLE);
+			v.animate()
 					.translationY(visible ? ((i + 1) * distance * -1) - (distance / 8) : 0F)
 					.alpha(visible ? 1F : 0F)
 					.setDuration(SPEED_DIAL_ANIMATION_DURATION)
@@ -441,6 +444,7 @@ public class FloatingActionButton extends RelativeLayout {
 						@Override
 						public void onAnimationEnd(Animator animation) {
 							busyAnimatingSpeedDialMenu = false;
+							if (!visible) v.setVisibility(GONE);
 						}
 					});
 		}

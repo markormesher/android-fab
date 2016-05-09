@@ -186,26 +186,32 @@ public class DemoActivity extends AppCompatActivity {
 					label0.setText(getString(R.string.speed_dial_label, position));
 					mi.iconView = icon0;
 					mi.labelView = label0;
+					break;
 
 				case 1:
 					// example: Drawable and String
 					mi.iconDrawable = ContextCompat.getDrawable(context, R.mipmap.ic_swap_horiz);
 					mi.labelString = getString(R.string.speed_dial_label, position);
+					break;
 
 				case 2:
 					// example: Drawable ID and String
 					mi.iconDrawableId = R.mipmap.ic_swap_vert;
 					mi.labelString = getString(R.string.speed_dial_label, position);
+					break;
 
 				case 3:
 					// example: Drawable ID and String ID
 					mi.iconDrawableId = R.mipmap.ic_cloud;
 					mi.labelStringId = R.string.label_optional_close;
+					break;
 
 				default:
 					Log.wtf(C.LOG_TAG, "Okay, something went *really* wrong.");
 					return mi;
 			}
+
+			return mi;
 		}
 
 		@Override
