@@ -127,3 +127,8 @@ When a configuration change happens within your app and the activity/fragment is
 - the FAB background colour.
 
 All other properties (`View`/`Drawable` icons, speed-dial menu adapters, etc.) will need to be restored "manually". The demo application shows how this can be accomplished.
+
+## Links
+
+[Mark Ormesher](http://markormesher.co.uk) - My personal site                        
+[Android tooltips](https://github.com/markormesher/android-tooltips) - Another useful Android library, providing a easy-to-use UI tooltips
