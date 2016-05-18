@@ -130,6 +130,5 @@ All other properties (`View`/`Drawable` icons, speed-dial menu adapters, etc.) w
 
 ## Links
 
-[Mark Ormesher](http://markormesher.co.uk) - My personal site
-
-[Android tooltips](https://github.com/markormesher/android-tooltips) - Another useful Android library, providing a easy-to-use UI tooltips
+- [Mark Ormesher](http://markormesher.co.uk) - My personal site
+- [Android tooltips](https://github.com/markormesher/android-tooltips) - Another useful Android library, providing a easy-to-use UI tooltips
