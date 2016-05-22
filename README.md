@@ -7,7 +7,7 @@ This library provides a clickable floating action button (FAB). The FAB can trig
 - [Demo](#demo)
 - [Installation](#installation)
 - [Usage & Customisation](#usage--customisation)
-- [Links](#links)
+- [Links & Other Projects](#links--other-projects)
 
 ## Demo
 
@@ -118,7 +118,8 @@ When a configuration change happens within your app and the activity/fragment is
 
 All other properties (`View`/`Drawable` icons, speed-dial menu adapters, etc.) will need to be restored "manually". The demo application shows how this can be accomplished.
 
-## Links
+## Links & Other Projects
 
 - [Mark Ormesher](http://markormesher.co.uk) - My personal site
-- [Android tooltips](https://github.com/markormesher/android-tooltips) - Another useful Android library, providing a easy-to-use UI tooltips
+- [Android UI Tooltips](https://github.com/markormesher/android-tooltips) - An Android library providing a easy-to-use UI tooltips
+- [Android Utils](https://github.com/markormesher/android-utils) - An Android library providing a collection of utility and helper methods
