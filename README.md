@@ -88,6 +88,15 @@ The view `v` passed in the callback can be safely cast to `FloatingActionButton`
 
 :warning: See the note below on [click action priority](#note-click-action-priority).
 
+### Accessing FAB Views
+
+Some of the component views that make up the FAB can be accessed (useful for positioning [tooltips](https://github.com/markormesher/android-tooltips)) using the following methods:
+
+|Method | Description|
+|:--- | :---|
+|`RelativeLayout getFabContainer()` | Gets the container layout used for the whole FAB arrangement.|
+|`CardView getCardView()` | Gets the `CardView` used for the actual "button" of the FAB.|
+
 ### Speed-Dial Menus
 
 The speed-dial menu can be enabled by creating a class that extends `SpeedDialMenuAdapter` and then calling `setAdapter(...)` on the FAB.
@@ -109,7 +118,7 @@ If the state or functionality has changed such that `getCount()` or `getViews(..
 
 :warning: See the note below on [click action priority](#note-click-action-priority).
 
-#### State Change Listeners
+### Speed-Dial State Change Listeners
 
 Two state change listeners are provided to monitor when the speed-dial menu opens or closes. These can be used as follows:
 
