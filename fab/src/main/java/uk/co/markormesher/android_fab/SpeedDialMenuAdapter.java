@@ -53,6 +53,16 @@ public abstract class SpeedDialMenuAdapter {
 	}
 
 	/**
+	 * Returns a boolean indicating whether or not the speed-dial menu is enabled.
+	 * This is useful for disabling the speed-dial menu without clearing the adapter.
+	 *
+	 * @return a boolean indicating whether or not the speed-dial menu is enabled
+	 */
+	protected boolean isEnabled() {
+		return true;
+	}
+
+	/**
 	 * Wrapper class for returning the views to use for a speed-dial menu item.
 	 */
 	public static class MenuItem {
