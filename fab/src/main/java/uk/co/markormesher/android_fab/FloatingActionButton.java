@@ -46,9 +46,9 @@ public class FloatingActionButton extends RelativeLayout {
 		initView();
 	}
 
-	/*=======*
-	 * Views *
-	 *=======*/
+	/*==============*
+	 * View Control *
+	 *==============*/
 
 	private RelativeLayout fabContainer;
 	private CardView cardView;
@@ -207,6 +207,26 @@ public class FloatingActionButton extends RelativeLayout {
 	 */
 	public boolean isShown() {
 		return shown;
+	}
+
+	/*================*
+	 * View Accessors *
+	 *================*/
+
+	/**
+	 * Gets the container layout used for the whole FAB arrangement.
+	 * @return the container layout used for the whole FAB arrangement
+	 */
+	public RelativeLayout getFabContainer() {
+		return fabContainer;
+	}
+
+	/**
+	 * Gets the {@code CardView} used for the actual "button" of the FAB.
+	 * @return the {@code CardView} used for the actual "button" of the FAB
+	 */
+	public CardView getCardView() {
+		return cardView;
 	}
 
 	/*=============*
