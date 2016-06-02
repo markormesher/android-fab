@@ -248,9 +248,9 @@ public class FloatingActionButton extends RelativeLayout {
 		/**
 		 * Called when the speed-dial menu is opened.
 		 *
-		 * @param fab the {@code FloatingActionButton} view
+		 * @param v the {@code FloatingActionButton} view
 		 */
-		void onOpen(FloatingActionButton fab);
+		void onOpen(FloatingActionButton v);
 	}
 
 	/**
@@ -261,9 +261,9 @@ public class FloatingActionButton extends RelativeLayout {
 		/**
 		 * Called when the speed-dial menu is opened.
 		 *
-		 * @param fab the {@code FloatingActionButton} view
+		 * @param v the {@code FloatingActionButton} view
 		 */
-		void onClose(FloatingActionButton fab);
+		void onClose(FloatingActionButton v);
 	}
 
 	/*=================*
