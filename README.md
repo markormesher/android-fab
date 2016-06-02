@@ -78,7 +78,7 @@ A click listener can be added to the FAB in the same way as any other button:
         }
     });
     
-    // or
+or
     
     fab.setOnClickListener(v -> {
         // ...
@@ -105,7 +105,7 @@ The adapter class has several methods that can be overridden to control the menu
 
 **Note:** for all methods, the view at position `0` is the furthest away from the FAB; the view at `getCount() - 1` is the closest.
 
-If the state or functionality has changed such that `getCount()` or `getViews(...)` will have a different output, `fab.rebuildSpeedDialMenu()` must be called to regenerate the speed-dial menu item views.
+If the state or functionality has changed such that `getCount()` or `getViews(...)` will have a different output, `fab.rebuildSpeedDialMenu()` must be called to regenerate the speed-dial menu item views. If `getCount()` returns zero when `rebuildSpeedDialMenu()` is called the speed-dial menu will be disabled until it is called again and `getCount()` returns a number greater than zero.
 
 :warning: See the note below on [click action priority](#note-click-action-priority).
 
@@ -126,7 +126,7 @@ Two state change listeners are provided to monitor when the speed-dial menu open
         }
     });
     
-    // or
+or
     
     fab.setOnSpeedDialOpenListener(v -> {
         // ...
