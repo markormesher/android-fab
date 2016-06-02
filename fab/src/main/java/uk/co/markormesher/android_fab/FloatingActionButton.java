@@ -213,20 +213,57 @@ public class FloatingActionButton extends RelativeLayout {
 	 * Interaction *
 	 *=============*/
 
-	private OnClickListener listener;
+	private OnClickListener clickListener;
+	private OnSpeedDialOpenListener speedDialOpenListener;
+	private OnSpeedDialCloseListener speedDialCloseListener;
 
 	@Override
 	public void setOnClickListener(OnClickListener listener) {
-		this.menuAdapter = null;
-		this.listener = listener;
+		this.clickListener = listener;
+	}
+
+	public void setOnSpeedDialOpenListener(OnSpeedDialOpenListener listener) {
+		this.speedDialOpenListener = listener;
+	}
+
+	public void setOnSpeedDialCloseListener(OnSpeedDialCloseListener listener) {
+		this.speedDialCloseListener = listener;
 	}
 
 	private void onClick() {
-		if (listener != null) {
-			listener.onClick(this);
-		} else if (menuAdapter != null) {
+		// try to invoke the speed-dial menu first, otherwise run the click listener
+
+		if (!speedDialInternallyDisabled && menuAdapter != null && menuAdapter.isEnabled()) {
 			toggleSpeedDialMenu();
+		} else if (clickListener != null) {
+			clickListener.onClick(this);
 		}
+	}
+
+	/**
+	 * Listener interface for speed-dial menu open action.
+	 */
+	public interface OnSpeedDialOpenListener {
+
+		/**
+		 * Called when the speed-dial menu is opened.
+		 *
+		 * @param v the {@code FloatingActionButton} view
+		 */
+		void onOpen(FloatingActionButton v);
+	}
+
+	/**
+	 * Listener interface for speed-dial menu close action.
+	 */
+	public interface OnSpeedDialCloseListener {
+
+		/**
+		 * Called when the speed-dial menu is opened.
+		 *
+		 * @param v the {@code FloatingActionButton} view
+		 */
+		void onClose(FloatingActionButton v);
 	}
 
 	/*=================*
@@ -234,6 +271,7 @@ public class FloatingActionButton extends RelativeLayout {
 	 *=================*/
 
 	private boolean speedDialMenuOpen = false;
+	private boolean speedDialInternallyDisabled = false;
 	private boolean busyAnimatingFabIcon = false;
 	private boolean busyAnimatingSpeedDialCover = false;
 	private boolean busyAnimatingSpeedDialMenu = false;
@@ -250,7 +288,6 @@ public class FloatingActionButton extends RelativeLayout {
 	 * @see uk.co.markormesher.android_fab.SpeedDialMenuAdapter
 	 */
 	public void setMenuAdapter(SpeedDialMenuAdapter menuAdapter) {
-		this.listener = null;
 		this.menuAdapter = menuAdapter;
 		if (menuAdapter != null) rebuildSpeedDialMenu();
 	}
@@ -266,8 +303,10 @@ public class FloatingActionButton extends RelativeLayout {
 		// sanity check
 		if (menuAdapter.getCount() == 0) {
 			Log.w(C.LOG_TAG, "SpeedDialMenuAdapter contained zero items; speed-dial functionality was disabled.");
-			setMenuAdapter(null);
+			speedDialInternallyDisabled = true;
 			return;
+		} else {
+			speedDialInternallyDisabled = false;
 		}
 
 		// init empty array
@@ -359,6 +398,10 @@ public class FloatingActionButton extends RelativeLayout {
 
 		// flip
 		speedDialMenuOpen = !speedDialMenuOpen;
+
+		// listener
+		if (speedDialMenuOpen && speedDialOpenListener != null) speedDialOpenListener.onOpen(this);
+		if (!speedDialMenuOpen && speedDialCloseListener != null) speedDialCloseListener.onClose(this);
 
 		// change UI
 		if (menuAdapter.rotateFab()) toggleFabIconForSpeedDialMenu(speedDialMenuOpen);

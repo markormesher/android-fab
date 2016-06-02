@@ -80,7 +80,10 @@ public class DemoActivity extends AppCompatActivity {
 			fab.setIcon(icons[iconSelected]);
 			fab.setBackgroundColour(colours[colourSelected]);
 		}
-		updateFabMode();
+		fab.setMenuAdapter(new SpeedDialAdapter());
+		fab.setOnClickListener(iv -> Toast.makeText(DemoActivity.this, R.string.click_simple, Toast.LENGTH_SHORT).show());
+		fab.setOnSpeedDialOpenListener(f -> Toast.makeText(DemoActivity.this, R.string.speed_dial_opened, Toast.LENGTH_SHORT).show());
+		fab.setOnSpeedDialCloseListener(f -> Toast.makeText(DemoActivity.this, R.string.speed_dial_closed, Toast.LENGTH_SHORT).show());
 
 		// get references to buttons
 		hideShowButton = (Button) findViewById(R.id.hide_show);
@@ -106,7 +109,6 @@ public class DemoActivity extends AppCompatActivity {
 		switchModeButton.setOnClickListener(v -> {
 			inClickMode = !inClickMode;
 			updateButtonStates();
-			updateFabMode();
 		});
 
 		findViewById(R.id.change_icon).setOnClickListener(v -> {
@@ -156,14 +158,6 @@ public class DemoActivity extends AppCompatActivity {
 		toggleSpeedDialOptionalCloseButton.setEnabled(!inClickMode);
 		toggleSpeedDialOptionalCloseButton.setText(speedDialOptionalCloseEnabled ? R.string.toggle_optional_close_off : R.string.toggle_optional_close_on);
 		openSpeedDialButton.setEnabled(!inClickMode);
-	}
-
-	private void updateFabMode() {
-		if (inClickMode) {
-			fab.setOnClickListener(iv -> Toast.makeText(DemoActivity.this, R.string.click_simple, Toast.LENGTH_SHORT).show());
-		} else {
-			fab.setMenuAdapter(new SpeedDialAdapter());
-		}
 	}
 
 	private class SpeedDialAdapter extends SpeedDialMenuAdapter {
@@ -250,6 +244,11 @@ public class DemoActivity extends AppCompatActivity {
 		@Override
 		protected boolean rotateFab() {
 			return iconSelected == 0;
+		}
+
+		@Override
+		protected boolean isEnabled() {
+			return !inClickMode;
 		}
 	}
 }

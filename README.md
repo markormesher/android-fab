@@ -59,13 +59,13 @@ The `FloatingActionButton` view must be placed at the **root** of your layout, *
 
 The icon displayed in the centre of the FAB should be set with `fab.setIcon(...)`, passing in the `View`, `Drawable` or `Drawable` resource ID to use. This `View` will be centred in a 24dp x 24dp view group, as per the Android Material Design specs.
 
-See the note below on [state preservation](#note-state-preservation).
+:warning: See the note below on [state preservation](#note-state-preservation).
 
 ### FAB Background Colour
 
 The background colour to be used for the FAB should be set with `fab.setBackgroundColor(...)`, passing in an RGBa colour value (e.g. `0xffff9900` for a dark orange). Note that this method does **not** take a colour resource ID, so passing in `R.color.some_colour_name` will not work.
 
-See the note below on [state preservation](#note-state-preservation).
+:warning: See the note below on [state preservation](#note-state-preservation).
 
 ### FAB Click Listener
 
@@ -78,15 +78,19 @@ A click listener can be added to the FAB in the same way as any other button:
         }
     });
     
-    // or
+or
     
     fab.setOnClickListener(v -> {
         // ...
     });
 
+The view `v` passed in the callback can be safely cast to `FloatingActionButton`.
+
+:warning: See the note below on [click action priority](#note-click-action-priority).
+
 ### Speed-Dial Menus
 
-The speed-dial menu can be enabled by creating a class that extends `SpeedDialMenuAdapter` and then calling `setAdapter(...)` on the FAB. This will remove any click listener on the FAB and enable the speed-dial menu.
+The speed-dial menu can be enabled by creating a class that extends `SpeedDialMenuAdapter` and then calling `setAdapter(...)` on the FAB.
 
 The adapter class has several methods that can be overridden to control the menu:
 
@@ -97,16 +101,55 @@ The adapter class has several methods that can be overridden to control the menu
 |`int getBackgroundColour(int position)` | **may** be overridden to return the background colour that should be used for the disc at the given position.|
 |`boolean onMenuItemClick(int position)` | **may** be overridden to listen for clicks on the individual menu items. Return `true` to close the menu after the click has been handled (the default behaviour) or `false` to leave it open.|
 |`boolean rotateFab()` | **may** be overridden to specify whether the FAB should rotate by 1/8th of a turn when the speed-dial menu opens. This is useful for smoothly transitioning between a '+' and 'x' icon.|
+|`boolean isEnabled()` | **may** be overridden to enable or disable the speed-dial menu. This is useful for temporarily disabling the speed-dial menu without having to set the adapter to `null`.|
 
 **Note:** for all methods, the view at position `0` is the furthest away from the FAB; the view at `getCount() - 1` is the closest.
 
-If the state or functionality has changed such that `getCount()` or `getViews(...)` will have a different output, `fab.rebuildSpeedDialMenu()` must be called to regenerate the speed-dial menu item views.
+If the state or functionality has changed such that `getCount()` or `getViews(...)` will have a different output, `fab.rebuildSpeedDialMenu()` must be called to regenerate the speed-dial menu item views. If `getCount()` returns zero when `rebuildSpeedDialMenu()` is called the speed-dial menu will be disabled until it is called again and `getCount()` returns a number greater than zero.
+
+:warning: See the note below on [click action priority](#note-click-action-priority).
+
+#### State Change Listeners
+
+Two state change listeners are provided to monitor when the speed-dial menu opens or closes. These can be used as follows:
+
+    fab.setOnSpeedDialOpenListener(new FloatingActionButton.OnSpeedDialOpenListener() {
+        @Override
+        public void onOpen(FloatingActionButton v) {
+            // ...
+        }
+    });
+    fab.setOnSpeedDialCloseListener(new FloatingActionButton.OnSpeedDialCloseListener() {
+        @Override
+        public void onClose(FloatingActionButton v) {
+            // ...
+        }
+    });
+    
+or
+    
+    fab.setOnSpeedDialOpenListener(v -> {
+        // ...
+    });
+    fab.setOnSpeedDialCloseListener(v -> {
+        // ...
+    });
 
 ### Controls
 
 The FAB can be hidden and shown with the `fab.hide()` and `fab.show()` methods, and the method `fab.isShown()` will return a boolean indicating the current state. These methods animate the FAB in and out of visibility. If the speed-dial menu is open when `.hide()` is called it will be closed.  
 
 The speed-dial menu can be manually opened and closed with `fab.openSpeedDialMenu()` and `fab.closeSpeedDialMenu()`. These methods will do nothing if no speed-dial menu adapter is set, if the FAB is hidden, or if they are called when the menu is already in the indicated state (i.e. `fab.openSpeedDialMenu()` will do nothing if the menu is already open).
+
+### Note: Click Action Priority
+
+As per Material Design specs, the FAB functions as a regular button **or** a trigger for the speed-dial menu, but not both. For this reason, the click listener and the speed-dial menu are never invoked at the same time.
+
+The speed-dial menu is given priority: when the FAB is clicked the speed-dial menu will be shown if the speed-dial menu adapter is non-null **and** the adapter's `isEnabled()` function returns true. Otherwise, the FAB's click listener will be called (if it has been set).
+
+Setting a speed-dial menu adapter does not remove the click listener, and setting a click listener does not remove the speed-dial menu adapter. For an example of how the two operation modes interact, check the demo app's source code.
+ 
+To receive state change updates when the speed-dial menu is opened or closed, use the open/close listeners described above.
 
 ### Note: State Preservation
 
