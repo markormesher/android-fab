@@ -13,8 +13,8 @@ buildscript {
 }
 
 def version = new Properties()
-version['code'] = 8
-version['name'] = '1.2.0'
+version['code'] = 9
+version['name'] = '1.2.1'
 
 def secrets = getSecrets()
 
