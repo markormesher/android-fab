@@ -40,6 +40,14 @@ You can try the demo yourself in one of two ways:
       <artifact name='$AID' ext='pom'></artifact>
     </dependency>
 
+---
+
+Note: depending on your app's configuration, you may need to add the following to your ProGuard rules:
+
+    -dontwarn java.lang.invoke.*
+
+See [app/proguard-rules.pro](https://github.com/markormesher/android-fab/blob/development/app/proguard-rules.pro) for an example.
+
 ## Usage & Customisation
 
 **Note:** all of the instructions below assume that the Floating Action Button is referenced by the variable `fab`, i.e.
