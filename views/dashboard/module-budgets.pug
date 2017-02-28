@@ -1,0 +1,19 @@
+div.panel.panel-default
+	div.panel-heading
+		i.fa.fa-fw.fa-sliders.text-muted
+		|  Active Budgets
+	div.panel-body
+		div.row
+			for b in budgets
+				if b.type == 'budget'
+					div.col-md-6
+						- ratio = b.spend/b.amount
+						- barClass = ratio <= 1 ? '' : 'progress-bar-danger'
+						- content = ratio <= 1 ? '' : 'Overspent by ' + formatters.formatCurrency(b.spend - b.amount)
+						- title = ratio <= 1 ? 'Spent ' + formatters.formatCurrency(b.spend) + ' of ' + formatters.formatCurrency(b.amount) : 'Overspent by ' + formatters.formatCurrency(b.spend - b.amount)
+						p
+							strong= b.name
+							span &nbsp;&nbsp;
+							span.text-muted.small= formatters.formatBudgetSpan(b.start_date, b.end_date)
+						div.progress(title = title)
+							div.progress-bar(class = barClass, style = 'width: ' + (Math.min(ratio, 1) * 100) + '%')= content

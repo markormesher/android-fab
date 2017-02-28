@@ -1,0 +1,24 @@
+extends ../../_shared/page-layout
+
+block page-title-extra
+	a.btn.btn-success.pull-right(href = '/settings/categories/create')
+		i.fa.fa-fw.fa-plus
+		|  Create Category
+
+block page-body
+
+	- categories = categories || []
+
+	div.row: div.col-lg-6
+		if categories.length == 0
+			div.alert.alert-danger No categories set up!
+		else
+			div.list-group
+				for c in categories
+					div.list-group-item
+						span(class = c.system ? 'text-muted' : '')= c.name
+						if !c.system
+							div.pull-right
+								a.label.label-warning(href = '/settings/categories/edit/' + c.id)
+									i.fa.fa-fw.fa-pencil
+									|  Edit

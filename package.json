@@ -1,0 +1,30 @@
+{
+  "name": "money-dashboard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.1.5",
+    "body-parser": "^1.16.1",
+    "coffee-middleware": "^0.3.0",
+    "coffee-script": "^1.12.4",
+    "cookie-parser": "^1.4.3",
+    "crypto": "0.0.3",
+    "express": "^4.14.1",
+    "express-flash": "0.0.2",
+    "express-session": "^1.15.1",
+    "mysql": "^2.13.0",
+    "node-sass-middleware": "^0.11.0",
+    "node-uuid": "^1.4.7",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
+    "path": "^0.12.7",
+    "pug": "^2.0.0-beta11",
+    "rfr": "^1.2.3"
+  }
+}

@@ -1,0 +1,37 @@
+extends ../../_shared/page-layout
+
+block page-title-extra
+	a.btn.btn-success.pull-right(href = '/settings/budgets/create')
+		i.fa.fa-fw.fa-plus
+		|  Create Budget
+
+block page-body
+
+	- budgets = budgets || []
+
+	div.row: div.col-lg-12
+
+		if activeOnly
+			p Showing active budgets only | #[a(href = '?activeOnly=no') Show all]
+		else
+			p Showing all budgets | #[a(href = '?activeOnly=yes') Show active budgets only]
+
+		if budgets.length == 0
+			div.alert.alert-danger No budgets set up!
+		else
+			table.table.table-bordered
+				thead
+					tr
+						th Name
+						th Term
+						th Amount
+						th Actions
+				tbody
+					for b in budgets
+						tr
+							td= b.name + (b.type == 'bill' ? ' (Bill)' : '')
+							td= formatters.formatBudgetSpan(b.start_date, b.end_date)
+							td.currency= formatters.formatCurrency(b.amount)
+							td: a.label.label-warning(href = '/settings/budgets/edit/' + b.id)
+								i.fa.fa-fw.fa-pencil
+								|  Edit

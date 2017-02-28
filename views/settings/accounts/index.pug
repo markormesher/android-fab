@@ -1,0 +1,30 @@
+extends ../../_shared/page-layout
+
+block page-title-extra
+	a.btn.btn-success.pull-right(href = '/settings/accounts/create')
+		i.fa.fa-fw.fa-plus
+		|  Create Account
+
+block page-body
+
+	- accounts = accounts || []
+
+	div.row: div.col-lg-6
+		if accounts.length == 0
+			div.alert.alert-danger No accounts set up!
+		else
+			div.list-group#accounts
+				for a in accounts
+					div.list-group-item(data-id = a.id)
+						= a.name
+						div.pull-right
+							a.label.label-warning(href = '/settings/accounts/edit/' + a.id)
+								i.fa.fa-fw.fa-pencil
+								|  Edit
+							| &nbsp
+							a.label.label-info.move-up: i.fa.fa-fw.fa-caret-up
+							| &nbsp
+							a.label.label-info.move-down: i.fa.fa-fw.fa-caret-down
+
+block page-scripts
+	script(src = '/settings/accounts/js/ordering.js')

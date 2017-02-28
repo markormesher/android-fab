@@ -1,0 +1,59 @@
+div#editor-modal.modal.fade(tabindex = -1)
+	div.modal-dialog
+		div.modal-content
+			form#editor-form.validate
+				div.modal-header
+					button.close(type = "button", data-dismiss = "modal" aria-label = "Close"): span(aria-hidden = "true") &times;
+					h4.modal-title.create-only Create Transaction
+					h4.modal-title.edit-only Edit Transaction
+
+				div.modal-body
+					fieldset
+						div.row
+							div.form-group.col-md-6
+								label(for = 'transaction-date') Transaction Date:
+								input#transaction-date.form-control(name = 'transaction-date', type = 'date', required = true)
+
+							div.form-group.col-md-6
+								label(for = 'effective-date') Effective Date:
+								input#effective-date.form-control(name = 'effective-date', type = 'date', required = true, tabindex = -1)
+								span.small: a#copy-date(href = '#') Copy transaction date
+
+						div.row
+							div.form-group.col-md-6
+								label(for = 'account') Account:
+								select#account.form-control(name = 'account')
+									for account in accounts
+										option(value = account.id)= account.name
+
+							div.form-group.col-md-6
+								label(for = 'payee') Payee:
+								input#payee.form-control(name = 'payee', type = 'text', required = true)
+
+						div.row
+							div.form-group.col-md-6
+								label(for = 'category') Category:
+								select#category.form-control(name = 'category')
+									for category in categories
+										option(value = category.id)= category.name
+
+							div.form-group.col-md-6
+								label(for = 'amount') Amount:
+								div.input-group
+									span.input-group-addon &pound;
+									input#amount.form-control(name = 'amount', type = 'number', required = true)
+
+						div.row
+							div.form-group.col-md-12
+								label(for = 'memo') Memo:
+								textarea#memo.form-control(name = 'memo', required = false)
+
+				div.modal-footer
+					div.checkbox.pull-left.create-only
+						label.text-muted
+							input#add-another(type = 'checkbox', checked = 'checked')
+							| Add another
+
+					button#save-btn.btn.btn-primary
+						i.fa.fa-fw.fa-save
+						|  Save

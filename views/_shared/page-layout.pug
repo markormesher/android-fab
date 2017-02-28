@@ -1,0 +1,51 @@
+extends root-layout
+
+block head
+	link(rel = 'stylesheet', href = '/_vendor/metisMenu/css/metisMenu.min.css')
+	block page-head
+
+block body
+
+	div#wrapper
+
+		nav.navbar.navbar-default.navbar-static-top(role = 'navigation', style = 'margin-bottom: 0;')
+			div.navbar-header
+				button.navbar-toggle(type = 'button', data-toggle = 'collapse', data-target='.navbar-collapse')
+					span.sr-only Toggle navigation
+					span.icon-bar
+					span.icon-bar
+					span.icon-bar
+				a.navbar-brand(href = '/') Money Dashboard
+
+			ul.nav.navbar-top-links.navbar-right
+				li.dropdown
+					a.dropdown-toggle(data-toggle = 'dropdown', href = '#')
+						i.fa.fa-user.fa-fw
+						i.fa.fa-caret-down
+
+					ul.dropdown-menu.dropdown-user
+						li: a(href = '/auth/logout')
+							i.fa.fa-fw.fa-sign-out
+							|  Logout
+
+			include navigation
+
+		div#page-wrapper(style = 'min-height: 425px;')
+			div.container-fluid
+				div.row
+					div.col-lg-12
+						h1.page-header
+							= _.title
+							block page-title-extra
+
+				block page-body
+
+block scripts
+
+	script(src = '/_vendor/metisMenu/js/metisMenu.min.js')
+	script(src = '/_vendor/sb/js/sb-admin-2.min.js')
+	script.
+		$(function () {
+			$('[data-toggle="tooltip"]').tooltip()
+		})
+	block page-scripts

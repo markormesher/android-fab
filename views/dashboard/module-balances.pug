@@ -1,0 +1,15 @@
+div.panel.panel-default
+	div.panel-heading
+		i.fa.fa-fw.fa-bank.text-muted
+		|  Account Balances
+	div.panel-body
+		- var sum = 0
+		for ab in accountBalances
+			- sum += ab.balance
+			p
+				=ab.account_name
+				span.pull-right= formatters.formatCurrency(ab.balance)
+		div.hr: hr
+		p
+			strong Total
+			strong.pull-right= formatters.formatCurrency(sum)

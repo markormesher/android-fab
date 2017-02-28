@@ -1,0 +1,9 @@
+{
+	"apps": [
+		{
+			"name": "money-dashboard",
+			"cwd": ".",
+			"script": "./app.js"
+		}
+	]
+}

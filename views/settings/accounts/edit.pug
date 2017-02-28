@@ -1,0 +1,34 @@
+extends ../../_shared/page-layout
+
+block page-body
+
+	- account = account || {}
+
+	div.row: div.col-lg-6
+		form.validate(action = '/settings/accounts/edit/' + (account.id || 0), method = 'post')
+			fieldset
+
+				div.form-group
+					label(for = 'name') Name:
+					input#name.form-control(placeholder = 'e.g. TSB Current Account', name = 'name', type = 'text', maxlength = 80, required = true, value = account.name || '')
+
+				div.form-group
+					label(for = 'description') Description:
+					input#description.form-control(placeholder = 'e.g. Emergency Fund', name = 'description', type = 'text', maxlength = 140, value = account.description || '')
+
+				div.form-group
+					label(for = 'type') Type:
+					select#type.form-control(name = 'type')
+						option(value = 'current', selected = (account.type || '') == 'current') Current Account
+						option(value = 'savings', selected = (account.type || '') == 'savings') Savings Account
+						option(value = 'asset', selected = (account.type || '') == 'asset') Asset
+
+				div.form-group
+					button.btn.btn-success
+						i.fa.fa-save
+						| &nbsp;&nbsp;
+						| Save
+
+block page-scripts
+	script(src = '/_vendor/jquery-validation/js/jquery.validate.min.js')
+	script(src = '/_shared/js/form-validation.js')

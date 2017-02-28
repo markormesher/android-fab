@@ -1,0 +1,35 @@
+extends ../_shared/page-layout
+
+block page-head
+	link(rel = 'stylesheet', href = '/_vendor/datatables/css/dataTables.bootstrap.min.css')
+	link(rel = 'stylesheet', href = '/_vendor/datatables-fixed-header/css/fixedHeader.bootstrap.min.css')
+
+block page-title-extra
+	button#add-btn.btn.btn-success.pull-right
+		i.fa.fa-fw.fa-plus
+		|  Add Transaction
+
+block page-body
+
+	div.row: div.col-lg-12
+		table#transactions.table.table-bordered.table-condensed
+			thead
+				tr
+					th Date
+					th Account
+					th Payee
+					th Amount
+					th Category
+					th(width = '80px') Actions
+
+	include editor
+
+block page-scripts
+	script
+		| var payees = !{JSON.stringify(payees, null, 0)}
+	script(src = '/_vendor/datatables/js/jquery.dataTables.min.js')
+	script(src = '/_vendor/datatables/js/dataTables.bootstrap.min.js')
+	script(src = '/_vendor/datatables-fixed-header/js/dataTables.fixedHeader.min.js')
+	script(src = '/_vendor/jquery-validation/js/jquery.validate.min.js')
+	script(src = '/_shared/js/form-validation.js')
+	script(src = '/transactions/js/transactions.js')

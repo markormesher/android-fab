@@ -1,0 +1,29 @@
+- active = _.activePage || 'none'
+
+div.navbar-default.sidebar
+	div.sidebar-nav.navbar-collapse
+		ul#side-menu.nav.in
+
+			li(class = (active == 'dashboard' ? 'active' : '')): a(href = '/')
+				i.fa.fa-fw.fa-dashboard
+				|  Dashboard
+
+			li(class = (active == 'transactions' ? 'active' : '')): a(href = '/transactions')
+				i.fa.fa-fw.fa-table
+				|  Transactions
+
+			li
+				a(href = '#')
+					i.fa.fa-fw.fa-gear
+					|  Settings
+					span.fa.arrow
+				ul.nav.nav-second-level.collapse
+					li(class = (active == 'settings-accounts' ? 'active' : '')): a(href = '/settings/accounts')
+						i.fa.fa-fw.fa-institution
+						|  Accounts
+					li(class = (active == 'settings-budgets' ? 'active' : '')): a(href = '/settings/budgets')
+						i.fa.fa-fw.fa-sliders
+						|  Budgets
+					li(class = (active == 'settings-categories' ? 'active' : '')): a(href = '/settings/categories')
+						i.fa.fa-fw.fa-tags
+						|  Categories

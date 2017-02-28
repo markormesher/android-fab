@@ -1,0 +1,33 @@
+include ../_mixins/plugins
+
+- locals.messages.data = locals.messages.data || {}
+
+doctype html
+html
+	head
+		if title == null
+			title Money Dashboard
+		else
+			title #{_.title} :: Money Dashboard
+		link(rel = 'stylesheet', href = '/_vendor/bootstrap/css/bootstrap.min.css')
+		link(rel = 'stylesheet', href = '/_vendor/jquery-ui/css/jquery-ui.min.css')
+		link(rel = 'stylesheet', href = '/_vendor/jquery-ui/css/jquery-ui.theme.min.css')
+		link(rel = 'stylesheet', href = '/_vendor/sb/css/sb-admin-2.min.css')
+		link(rel = 'stylesheet', href = '/_vendor/font-awesome/css/font-awesome.min.css')
+		link(rel = 'stylesheet', href = '/_vendor/toastr/css/toastr.min.css')
+		link(rel = 'stylesheet', href = '/_shared/css/bootstrap-additions.css')
+		block head
+
+	body
+
+		block body
+
+		script(src = '/_vendor/jquery/js/jquery.min.js')
+		script(src = '/_vendor/jquery-ui/js/jquery-ui.min.js')
+		script(src = '/_vendor/bootstrap/js/bootstrap.min.js')
+		script(src = '/_vendor/toastr/js/toastr.min.js')
+		script(src = '/_vendor/toastr/js/toastr.config.js')
+		+plugin_toastrListener(_)
+
+		script(src = '/_shared/js/formatters.js')
+		block scripts
