@@ -3,6 +3,7 @@
 # Ignore CSS (commit the SCSS instead)
 *.css
 !public/_vendor/css/*
+!public/_vendor/*/css/*
 secrets.json
 
 ### Below: created by https://www.gitignore.io/api/intellij,node,linux,windows ###
