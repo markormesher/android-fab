@@ -1,2 +1,2 @@
 require('coffee-script').register();
-require('./app.coffee');
+require('./money-dashboard.coffee');

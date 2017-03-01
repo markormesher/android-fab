@@ -1,9 +1,0 @@
-{
-	"apps": [
-		{
-			"name": "money-dashboard",
-			"cwd": "/var/node/money.markormesher.co.uk/",
-			"script": "./app.js"
-		}
-	]
-}
