@@ -20,11 +20,11 @@
     "express-session": "^1.15.1",
     "mysql": "^2.13.0",
     "node-sass-middleware": "^0.11.0",
-    "node-uuid": "^1.4.7",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
     "pug": "^2.0.0-beta11",
-    "rfr": "^1.2.3"
+    "rfr": "^1.2.3",
+    "uuid": "^3.0.1"
   }
 }

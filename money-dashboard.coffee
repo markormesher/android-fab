@@ -83,7 +83,6 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 # error handlers
 app.use((req, res, next) ->
-	console.log(req)
 	err = new Error('Not Found')
 	err.status = 404
 	next(err)

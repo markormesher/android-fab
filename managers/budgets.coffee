@@ -1,4 +1,4 @@
-uuid = require('node-uuid')
+uuid = require('uuid')
 rfr = require('rfr')
 mysql = rfr('./helpers/mysql')
 

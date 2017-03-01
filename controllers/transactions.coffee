@@ -59,7 +59,6 @@ router.post('/edit/:transactionId', auth.checkAndRefuse, (req, res) ->
 	transaction = req.body
 
 	TransactionManager.saveTransaction(transactionId, transaction, (err) ->
-		if (err) then console.log(err)
 		res.status(if (err) then 400 else 200)
 		res.end()
 	)
