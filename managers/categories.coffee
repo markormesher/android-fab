@@ -38,6 +38,13 @@ manager = {
 				[category.name, id],
 				(err) -> callback(err)
 			))
+
+	setSummaryVisibility: (id, value, callback) ->
+		if (['in', 'out', 'both'].indexOf(value) < 0) then value = null
+		mysql.getConnection((conn) -> conn.query(
+			'UPDATE category SET summary_visibility = ? WHERE id = ?',
+			[value, id], (err) -> callback(err)
+		))
 }
 
 module.exports = manager

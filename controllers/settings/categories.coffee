@@ -61,4 +61,14 @@ router.post('/edit/:categoryId', auth.checkAndRefuse, (req, res) ->
 	)
 )
 
+router.post('/set-summary-visibility/:categoryId', auth.checkAndRefuse, (req, res, next) ->
+	categoryId = req.params['categoryId']
+	value = req.body['value']
+
+	CategoryManager.setSummaryVisibility(categoryId, value, (err) ->
+		if (err) then return next(err)
+		res.end()
+	)
+)
+
 module.exports = router

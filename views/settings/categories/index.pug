@@ -9,16 +9,30 @@ block page-body
 
 	- categories = categories || []
 
-	div.row: div.col-lg-6
+	div.row: div.col-lg-12
 		if categories.length == 0
 			div.alert.alert-danger No categories set up!
 		else
-			div.list-group
-				for c in categories
-					div.list-group-item
-						span(class = c.system ? 'text-muted' : '')= c.name
-						if !c.system
-							div.pull-right
-								a.label.label-warning(href = '/settings/categories/edit/' + c.id)
-									i.fa.fa-fw.fa-pencil
-									|  Edit
+			table.table.table-condensed.table-bordered.table-hover
+				thead
+					tr
+						th Category
+						th Income
+						th Expense
+						th Actions
+				tbody
+					for c in categories
+						tr(id = c.id)
+							td(class = c.system ? 'text-muted' : '')= c.name
+							td.text-center: input(type = 'checkbox', name = c.id, value = 'in')
+							td.text-center: input(type = 'checkbox', name = c.id, value = 'out')
+							td.text-center
+								if c.system
+									span.text-muted n/a
+								else
+									a.label.label-warning(href = '/settings/categories/edit/' + c.id)
+										i.fa.fa-fw.fa-pencil
+										|  Edit
+
+block page-scripts
+	script(src = '/settings/categories/summary-control.js')
