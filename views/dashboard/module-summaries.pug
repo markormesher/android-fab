@@ -1,52 +1,46 @@
-mixin summary(data)
-	h4 Income
+mixin row(label, value)
 	p(style = 'margin-left: 20px')
-		| Salary
-		span.pull-right= formatters.formatCurrency(100)
-	p(style = 'margin-left: 20px')
-		| Self-Employment
-		span.pull-right= formatters.formatCurrency(100)
-	p(style = 'margin-left: 20px')
-		| Interest Earned
-		span.pull-right= formatters.formatCurrency(100)
-	p(style = 'margin-left: 20px')
-		| Balance Update
-		span.pull-right= formatters.formatCurrency(100)
-	p(style = 'margin-left: 20px')
-		| Other Income
-		span.pull-right= formatters.formatCurrency(100)
-
-	h4 Expenditure
-	p(style = 'margin-left: 20px')
-		| Budgeted expenses
-		span.pull-right= formatters.formatCurrency(-100)
-	p(style = 'margin-left: 20px')
-		| Other expenses
-		span.pull-right= formatters.formatCurrency(-100)
-
-	h4 Other
-	p(style = 'margin-left: 20px')
-		| Moved to savings
-		span.pull-right= formatters.formatCurrency(-100)
-
-	div.hr: hr
-
-	p
-		strong Net
-		strong.pull-right= formatters.formatCurrency(100)
+		=label
+		span.pull-right= formatters.formatCurrency(value)
 
 div.panel.panel-default
 	div.panel-heading
 		i.fa.fa-fw.fa-exchange.text-muted.title-icon
-		| Summaries
+		| Month Summary
 
 	div.panel-body
-		ul.nav.nav-tabs
-			li.active: a(href = '#summary-month', data-toggle = 'tab') Month
-			li: a(href = '#summary-year', data-toggle = 'tab') Year
-			li: a(href = '#summary-tax-year', data-toggle = 'tab') Tax Year
+		div.row: div.col-md-12
 
-		div.tab-content
-			div#summary-month.tab-pane.fade.active.in: +summary({})
-			div#summary-year.tab-pane.fade: +summary({})
-			div#summary-tax-year.tab-pane.fade: +summary({})
+
+			h4 Income
+			- blank = true
+
+			for row in summaryData['income']
+				- blank = false
+				+row(row['categoryName'], row['balance'])
+
+			if (summaryData['allIn'] != 0)
+				+row('Other income', summaryData['allIn'])
+
+			if (blank)
+				p.text-muted: i No income
+
+
+			h4 Expense
+			- blank = true
+
+			for row in summaryData['expense']
+				- blank = false
+				+row(row['categoryName'], row['balance'])
+
+			if (summaryData['allOut'] != 0)
+				+row('Other expenses', summaryData['allOut'])
+
+			if (blank)
+				p.text-muted: i No expenses
+
+
+			div.hr: hr
+
+
+			+row('Total', summaryData['total'])

@@ -71,6 +71,75 @@ manager = {
 						alerts.push(alert)
 				callback(err, alerts)
 		)
+
+
+	getSummaryData: (startDate, endDate, callback) ->
+		async.parallel(
+			{
+				'categorySums': (c) -> mysql.getConnection((conn) -> conn.query(
+					"""
+					SELECT SUM(transaction.amount) AS balance, category.name AS categoryName, category.summary_visibility AS summaryVisibility
+					FROM transaction JOIN category ON transaction.category_id = category.id
+					WHERE category.summary_visibility IS NOT NULL AND transaction.effective_date >= ? AND transaction.effective_date <= ?
+					GROUP BY category.id;
+					"""
+					[startDate, endDate],
+					(err, results) ->
+						if (err) then return c(err)
+						c(null, results)
+				))
+				'total': (c) -> mysql.getConnection((conn) -> conn.query(
+					'SELECT SUM(amount) AS balance FROM transaction WHERE effective_date >= ? AND effective_date <= ?;',
+					[startDate, endDate],
+					(err, results) ->
+						if (err || results.length != 1) then return c(err)
+						c(null, results[0]['balance'])
+				))
+				'allIn': (c) -> mysql.getConnection((conn) -> conn.query(
+					'SELECT SUM(amount) AS balance FROM transaction WHERE amount > 0 AND effective_date >= ? AND effective_date <= ?;',
+					[startDate, endDate],
+					(err, results) ->
+						if (err || results.length != 1) then return c(err)
+						c(null, results[0]['balance'])
+
+				))
+				'allOut': (c) -> mysql.getConnection((conn) -> conn.query(
+					'SELECT SUM(amount) AS balance FROM transaction WHERE amount < 0 AND effective_date >= ? AND effective_date <= ?;',
+					[startDate, endDate],
+					(err, results) ->
+						if (err || results.length != 1) then return c(err)
+						c(null, results[0]['balance'])
+
+				))
+			},
+			(err, results) ->
+				if (err) then return callback(err)
+
+				output = {}
+
+				# totals
+				output.total = results['total']
+				output.allIn = results['allIn']
+				output.allOut = results['allOut']
+
+				# category balances
+				output.income = []
+				output.expense = []
+
+				for result in results['categorySums']
+					if (result['summaryVisibility'] == 'in' || (result['summaryVisibility'] == 'both' && result['balance'] > 0))
+						output.income.push(result)
+						output.allIn -= result['balance']
+
+					if (result['summaryVisibility'] == 'out' || (result['summaryVisibility'] == 'both' && result['balance'] < 0))
+						output.expense.push(result)
+						output.allOut -= result['balance']
+
+				output.income.sort((a, b) -> return b['balance'] - a['balance'])
+				output.expense.sort((a, b) -> return a['balance'] - b['balance'])
+
+				callback(null, output)
+		)
 }
 
 module.exports = manager
