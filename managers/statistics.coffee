@@ -3,6 +3,7 @@ rfr = require('rfr')
 mysql = rfr('./helpers/mysql')
 formatters = rfr('./helpers/formatters')
 constants = rfr('./constants.json')
+BudgetManager = rfr('./managers/budgets')
 
 manager = {
 
@@ -36,8 +37,16 @@ manager = {
 			"""
 			(err, results) ->
 				if (err) then return callback(err)
-				if (results) then return callback(null, results)
-				callback(null, [])
+				output = {
+					budgets: {}
+					bills: {}
+				}
+				for r in results
+					periodType = BudgetManager.getBudgetPeriodType(r.start_date, r.end_date)
+					if (!output[r.type + 's'][periodType])
+						output[r.type + 's'][periodType] = []
+					output[r.type + 's'][periodType].push(r)
+				callback(null, output)
 		))
 
 

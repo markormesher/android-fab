@@ -2,6 +2,8 @@ uuid = require('uuid')
 rfr = require('rfr')
 mysql = rfr('./helpers/mysql')
 
+oneDay = 24 * 60 * 60 * 1000
+
 manager = {
 
 	getBudget: (id, callback) ->
@@ -83,6 +85,22 @@ manager = {
 					)
 				)
 			)
+
+
+	getBudgetPeriodType: (start, end) ->
+		if (!(typeof start == typeof new Date()))
+			start = new Date(start)
+		if (!(typeof end == typeof new Date()))
+			end = new Date(end)
+
+		if (start.getDate() == 1 && start.getMonth() == end.getMonth() && new Date(end.getTime() + oneDay).getMonth() != end.getMonth())
+			return 'month'
+		else if (start.getDate() == 1 && start.getMonth() == 0 && end.getDate() == 31 && end.getMonth() == 11 && start.getYear() == end.getYear())
+			return 'year'
+		else if (start.getDate() == 6 && start.getMonth() == 3 && end.getDate() == 5 && end.getMonth() == 3 && start.getYear() == end.getYear() - 1)
+			return 'tax-year'
+		else
+			return 'other'
 
 }
 

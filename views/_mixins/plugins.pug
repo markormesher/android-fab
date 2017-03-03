@@ -11,7 +11,7 @@ mixin plugin_validation
 			$(this).validate();
 		})
 
-mixin plugin_toastrListener(_)
+mixin plugin_toastrListener
 	script(type = 'text/javascript').
 		var toastrMessages = !{JSON.stringify(locals.messages || [])};
 	script(src = '/_shared/js/toastr-listener.js')

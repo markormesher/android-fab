@@ -1,0 +1,115 @@
+- allBudgets = budgets.budgets || {}
+- monthBudgets = allBudgets['month'] || []
+- yearBudgets = allBudgets['year'] || []
+- taxYearBudgets = allBudgets['tax-year'] || []
+- otherBudgets = allBudgets['other'] || []
+
+- allBills = budgets.bills || {}
+- monthBills = allBills['month'] || []
+- yearBills = allBills['year'] || []
+- taxYearBills = allBills['tax-year'] || []
+- otherBills = allBills['other'] || []
+
+
+mixin budget(b, showDate)
+	- ratio = b.spend/b.amount
+	- barClass = ratio <= 1 ? '' : 'progress-bar-danger'
+	- content = ratio <= 1 ? '' : 'Overspent by ' + formatters.formatCurrency(b.spend - b.amount)
+	- title = 'Spent ' + formatters.formatCurrency(b.spend) + ' of ' + formatters.formatCurrency(b.amount)
+	div.col-md-4
+		p(style = 'margin-bottom: 4px;')
+			strong= b.name
+			if (showDate)
+				span &nbsp;&nbsp;
+				span.text-muted.small= formatters.formatBudgetSpan(b.start_date, b.end_date)
+		div.progress(title = title, style = 'margin-bottom: 14px;')
+			div.progress-bar(class = barClass, style = 'width: ' + (Math.min(ratio, 1) * 100) + '%')= content
+
+
+mixin bill(b, showDate)
+	- ratio = b.spend/b.amount
+	- barClass = ratio <= 1 ? 'progress-bar-success' : 'progress-bar-danger'
+	- title = ratio == 0 ? 'Unpaid' : ratio <= 1 ? 'Paid ' + formatters.formatCurrency(b.spend) : 'Overpaid by ' + formatters.formatCurrency(b.spend - b.amount)
+	div.col-md-4
+		p(style = 'margin-bottom: 4px;')
+			strong= b.name
+			if (showDate)
+				span &nbsp;&nbsp;
+				span.text-muted.small= formatters.formatBudgetSpan(b.start_date, b.end_date)
+		div.progress(title = title, style = 'margin-bottom: 14px;')
+			div.progress-bar(class = barClass, style = 'width: ' + (Math.min(ratio, 1) * 100) + '%')= title
+
+
+if (monthBudgets.length || monthBills.length)
+	- first = monthBudgets[0] || monthBills[0]
+	div.panel.panel-default
+		div.panel-heading
+			i.fa.fa-fw.fa-pie-chart.text-muted.title-icon
+			=formatters.formatBudgetSpan(first.start_date, first.end_date)
+		div.panel-body
+			if (monthBudgets.length)
+				div.row: for b in monthBudgets
+					+budget(b)
+
+			if (monthBudgets.length && monthBills.length)
+				div.hr: hr
+
+			if (monthBills.length)
+				div.row: for b in monthBills
+					+bill(b)
+
+
+if (yearBudgets.length || yearBills.length)
+	- first = yearBudgets[0] || yearBills[0]
+	div.panel.panel-default
+		div.panel-heading
+			i.fa.fa-fw.fa-pie-chart.text-muted.title-icon
+			=formatters.formatBudgetSpan(first.start_date, first.end_date)
+		div.panel-body
+			if (yearBudgets.length)
+				div.row: for b in yearBudgets
+					+budget(b)
+
+			if (yearBudgets.length && yearBills.length)
+				div.hr: hr
+
+			if (yearBills.length)
+				div.row: for b in yearBills
+					+bill(b)
+
+
+if (taxYearBudgets.length || taxYearBills.length)
+	- first = taxYearBudgets[0] || taxYearBills[0]
+	div.panel.panel-default
+		div.panel-heading
+			i.fa.fa-fw.fa-pie-chart.text-muted.title-icon
+			=formatters.formatBudgetSpan(first.start_date, first.end_date)
+		div.panel-body
+			if (taxYearBudgets.length)
+				div.row: for b in taxYearBudgets
+					+budget(b)
+
+			if (taxYearBudgets.length && taxYearBills.length)
+				div.hr: hr
+
+			if (taxYearBills.length)
+				div.row: for b in taxYearBills
+					+bill(b)
+
+
+if (otherBudgets.length || otherBills.length)
+	div.panel.panel-default
+		div.panel-heading
+			i.fa.fa-fw.fa-pie-chart.text-muted.title-icon
+			| Other Periods
+		div.panel-body
+			if (otherBudgets.length)
+				div.row: for b in otherBudgets
+					+budget(b, true)
+
+			if (otherBudgets.length && otherBills.length)
+				div.hr: hr
+
+			if (otherBills.length)
+				div.row: for b in otherBills
+					+bill(b, true)
