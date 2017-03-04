@@ -78,7 +78,7 @@ manager = {
 			{
 				'categorySums': (c) -> mysql.getConnection((conn) -> conn.query(
 					"""
-					SELECT SUM(transaction.amount) AS balance, category.name AS categoryName, category.summary_visibility AS summaryVisibility
+					SELECT SUM(transaction.amount) AS balance, category.id AS categoryId, category.name AS categoryName, category.summary_visibility AS summaryVisibility
 					FROM transaction JOIN category ON transaction.category_id = category.id
 					WHERE category.summary_visibility IS NOT NULL AND transaction.effective_date >= ? AND transaction.effective_date <= ?
 					GROUP BY category.id;
@@ -88,28 +88,45 @@ manager = {
 						if (err) then return c(err)
 						c(null, results)
 				))
-				'total': (c) -> mysql.getConnection((conn) -> conn.query(
+				'totalFlow': (c) -> mysql.getConnection((conn) -> conn.query(
 					'SELECT SUM(amount) AS balance FROM transaction WHERE effective_date >= ? AND effective_date <= ?;',
 					[startDate, endDate],
 					(err, results) ->
 						if (err || results.length != 1) then return c(err)
 						c(null, results[0]['balance'])
 				))
-				'allIn': (c) -> mysql.getConnection((conn) -> conn.query(
-					'SELECT SUM(amount) AS balance FROM transaction WHERE amount > 0 AND effective_date >= ? AND effective_date <= ?;',
+				'otherIn': (c) -> mysql.getConnection((conn) -> conn.query(
+					"""
+					SELECT SUM(transaction.amount) AS balance
+					FROM transaction JOIN category ON transaction.category_id = category.id
+					WHERE amount > 0 AND category.summary_visibility IS NULL AND transaction.effective_date >= ? AND transaction.effective_date <= ?;
+					"""
 					[startDate, endDate],
 					(err, results) ->
 						if (err || results.length != 1) then return c(err)
 						c(null, results[0]['balance'])
-
 				))
-				'allOut': (c) -> mysql.getConnection((conn) -> conn.query(
-					'SELECT SUM(amount) AS balance FROM transaction WHERE amount < 0 AND effective_date >= ? AND effective_date <= ?;',
+				'otherOut': (c) -> mysql.getConnection((conn) -> conn.query(
+					"""
+					SELECT SUM(transaction.amount) AS balance
+					FROM transaction JOIN category ON transaction.category_id = category.id
+					WHERE amount < 0 AND category.summary_visibility IS NULL AND transaction.effective_date >= ? AND transaction.effective_date <= ?;
+					"""
 					[startDate, endDate],
 					(err, results) ->
 						if (err || results.length != 1) then return c(err)
 						c(null, results[0]['balance'])
-
+				))
+				'movedToSavings': (c) -> mysql.getConnection((conn) -> conn.query(
+					"""
+					SELECT COALESCE(SUM(transaction.amount), 0) AS balance
+					FROM transaction JOIN account ON transaction.account_id = account.id
+					WHERE account.type = 'savings' AND transaction.category_id = ? AND transaction.effective_date >= ? AND transaction.effective_date <= ?;
+					"""
+					[constants['balance_transfer_category_id'], startDate, endDate],
+					(err, results) ->
+						if (err || results.length != 1) then return c(err)
+						c(null, results[0]['balance'])
 				))
 			},
 			(err, results) ->
@@ -118,9 +135,10 @@ manager = {
 				output = {}
 
 				# totals
-				output.total = results['total']
-				output.allIn = results['allIn']
-				output.allOut = results['allOut']
+				output.totalFlow = results['totalFlow']
+				output.otherIn = results['otherIn']
+				output.otherOut = results['otherOut']
+				output.movedToSavings = results['movedToSavings']
 
 				# category balances
 				output.income = []
@@ -129,11 +147,8 @@ manager = {
 				for result in results['categorySums']
 					if (result['summaryVisibility'] == 'in' || (result['summaryVisibility'] == 'both' && result['balance'] > 0))
 						output.income.push(result)
-						output.allIn -= result['balance']
-
 					if (result['summaryVisibility'] == 'out' || (result['summaryVisibility'] == 'both' && result['balance'] < 0))
 						output.expense.push(result)
-						output.allOut -= result['balance']
 
 				output.income.sort((a, b) -> return b['balance'] - a['balance'])
 				output.expense.sort((a, b) -> return a['balance'] - b['balance'])

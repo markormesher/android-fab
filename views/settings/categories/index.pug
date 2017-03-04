@@ -22,14 +22,16 @@ block page-body
 						th Actions
 				tbody
 					for c in categories
-						tr(id = c.id)
-							td(class = c.system ? 'text-muted' : '')= c.name
-							td: input(type = 'checkbox', name = c.id, value = 'in', checked = (c.summary_visibility == 'in' || c.summary_visibility == 'both'))
-							td: input(type = 'checkbox', name = c.id, value = 'out', checked = (c.summary_visibility == 'out' || c.summary_visibility == 'both'))
-							td: if !c.system
-								a.label.label-warning(href = '/settings/categories/edit/' + c.id)
-									i.fa.fa-fw.fa-pencil
-									|  Edit
+						if (!c.system)
+							tr(id = c.id)
+								- inChecked = c.summary_visibility == 'in' || c.summary_visibility == 'both'
+								- outChecked = c.summary_visibility == 'out' || c.summary_visibility == 'both'
+								td(class = c.system ? 'text-muted' : '')= c.name
+								td: input(type = 'checkbox', name = c.id, value = 'in', checked = inChecked)
+								td: input(type = 'checkbox', name = c.id, value = 'out', checked = outChecked)
+								td: a.label.label-warning(href = '/settings/categories/edit/' + c.id)
+										i.fa.fa-fw.fa-pencil
+										|  Edit
 
 block page-scripts
 	script(src = '/settings/categories/summary-control.js')

@@ -1,6 +1,7 @@
 uuid = require('uuid')
 rfr = require('rfr')
 mysql = rfr('./helpers/mysql')
+constants = rfr('./constants.json')
 
 manager = {
 
@@ -40,6 +41,9 @@ manager = {
 			))
 
 	setSummaryVisibility: (id, value, callback) ->
+		if (id == constants['balance_transfer_category_id'] || id == constants['balance_update_category_id'])
+			return callback(null)
+
 		if (['in', 'out', 'both'].indexOf(value) < 0) then value = null
 		mysql.getConnection((conn) -> conn.query(
 			'UPDATE category SET summary_visibility = ? WHERE id = ?',

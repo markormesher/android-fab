@@ -9,11 +9,11 @@ flash = require('express-flash')
 passport = require('passport')
 
 rfr = require('rfr')
-c = rfr('./helpers/constants')
 auth = rfr('./helpers/auth')
 mysql = rfr('./helpers/mysql')
 secrets = rfr('./secrets.json')
 pJson = rfr('./package.json')
+constants = rfr('./constants.json')
 
 mysql.getConnection((conn) -> console.log("MySQL connected with ID #{conn.threadId}"))
 
@@ -60,6 +60,7 @@ app.use(auth.checkOnly)
 
 # helpers
 app.locals.formatters = rfr('./helpers/formatters')
+app.locals.constants = constants
 
 # routes
 routes = {
@@ -101,5 +102,5 @@ app.use((error, req, res) ->
 )
 
 # go!
-app.listen(c.PORT)
-console.log("#{pJson.name} is listening on port #{c.PORT}")
+app.listen(constants.port)
+console.log("#{pJson.name} is listening on port #{constants.port}")

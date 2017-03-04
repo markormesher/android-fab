@@ -13,6 +13,7 @@
 
 mixin bar(b, showDate)
 	- ratio = b.spend/b.amount
+	- width = ratio <= 0 ? '1px' : (Math.min(ratio, 1) * 100) + '%'
 	- barClass = ratio <= 1 ? 'progress-bar progress-bar-success' : 'progress-bar progress-bar-danger'
 	- content = ratio <= 1 ? '' : 'Overspent by ' + formatters.formatCurrency(b.spend - b.amount)
 	- title = 'Spent ' + formatters.formatCurrency(b.spend) + ' of ' + formatters.formatCurrency(b.amount)
@@ -23,7 +24,7 @@ mixin bar(b, showDate)
 				span &nbsp;&nbsp;
 				span.text-muted.small= formatters.formatBudgetSpan(b.start_date, b.end_date)
 		div.progress(title = title, style = 'margin-bottom: 14px;')
-			div(class = barClass, style = 'width: ' + (Math.min(ratio, 1) * 100) + '%')= content
+			div(class = barClass, style = 'width: ' + width)= content
 
 
 if (monthBudgets.length || monthBills.length)
