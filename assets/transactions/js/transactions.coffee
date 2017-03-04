@@ -22,8 +22,8 @@ initDataTable = () ->
 	dataTable = $('#transactions').DataTable({
 		paging: true
 		lengthMenu: [
-			[25, 50, 100, -1]
-			[25, 50, 100, 'All']
+			[25, 50, 100]
+			[25, 50, 100]
 		]
 		order: [[0, 'desc']]
 		columnDefs: [

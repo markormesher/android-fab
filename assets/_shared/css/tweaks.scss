@@ -6,6 +6,20 @@
 
 ul.ui-autocomplete {
 	z-index: 1100;
+	border: 1px solid #cccccc;
+	background: #ffffff;
+
+	li.ui-menu-item, li.ui-menu-item:hover {
+		cursor: pointer;
+		list-style: none none;
+		margin: 0;
+		padding: 0;
+
+		div, div:hover {
+			margin: 3px 1em 3px 0.4em;
+			padding: 0;
+		}
+	}
 }
 
 td.currency {
@@ -31,4 +45,8 @@ i.title-icon {
 	text-align: center;
 	color: #ffffff;
 	overflow: visible;
+}
+
+.form-control:focus {
+	border-color: #66afe9;
 }

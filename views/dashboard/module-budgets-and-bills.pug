@@ -14,9 +14,16 @@
 mixin bar(b, showDate)
 	- ratio = b.spend/b.amount
 	- width = ratio <= 0 ? '1px' : (Math.min(ratio, 1) * 100) + '%'
-	- barClass = ratio <= 1 ? 'progress-bar progress-bar-success' : 'progress-bar progress-bar-danger'
-	- content = ratio <= 1 ? '' : 'Overspent by ' + formatters.formatCurrency(b.spend - b.amount)
 	- title = 'Spent ' + formatters.formatCurrency(b.spend) + ' of ' + formatters.formatCurrency(b.amount)
+	if (b.type == 'budget')
+		- barClass = ratio <= 1 ? 'progress-bar progress-bar-info' : 'progress-bar progress-bar-danger'
+		- content = ratio <= 1 ? '' : 'Overspent by ' + formatters.formatCurrency(b.spend - b.amount)
+	else
+		- barClass = ratio <= 1 ? 'progress-bar progress-bar-success' : 'progress-bar progress-bar-danger'
+		- content = ratio > 0 ? 'Paid ' + formatters.formatCurrency(b.spend) : ''
+		if (ratio > 1)
+			- content += ' (' + formatters.formatCurrency(b.spend - b.amount) + ' over budget)'
+
 	div.col-lg-4.col-md-4.col-sm-6.col-xs-6
 		p(style = 'margin-bottom: 4px;')
 			strong= b.name
