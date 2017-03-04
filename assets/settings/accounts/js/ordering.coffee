@@ -1,20 +1,20 @@
 saveOrdering = () ->
 	orders = {}
-	accounts = $('#accounts .list-group-item')
+	accounts = $('#accounts tr')
 	for a, i in accounts
 		orders[$(a).attr('data-id')] = i
 	$.post('/settings/accounts/reorder', orders)
 
 
 updateEnabledButtons = () ->
-	accounts = $('#accounts .list-group-item')
+	accounts = $('#accounts tr')
 	for a, i in accounts
 		$(a).find('.move-up').fadeTo(0, if (i == 0) then 0.4 else 1.0)
 		$(a).find('.move-down').fadeTo(0, if (i == accounts.length - 1) then 0.4 else 1.0)
 
 
 move = (element, dir) ->
-	accounts = $('#accounts .list-group-item')
+	accounts = $('#accounts tr')
 	index = element.index()
 
 	if (index == 0 && dir == -1)
@@ -31,10 +31,10 @@ move = (element, dir) ->
 	saveOrdering()
 
 
-$('.move-up').click(() -> move($(this).closest('.list-group-item'), -1))
+$('.move-up').click(() -> move($(this).closest('tr'), -1))
 
 
-$('.move-down').click(() -> move($(this).closest('.list-group-item'), 1))
+$('.move-down').click(() -> move($(this).closest('tr'), 1))
 
 
 $(document).ready(() ->

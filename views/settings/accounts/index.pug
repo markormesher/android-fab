@@ -9,22 +9,29 @@ block page-body
 
 	- accounts = accounts || []
 
-	div.row: div.col-lg-6
+	div.row: div.col-lg-12
+
 		if accounts.length == 0
 			div.alert.alert-danger No accounts set up!
 		else
-			div.list-group#accounts
-				for a in accounts
-					div.list-group-item(data-id = a.id)
-						= a.name
-						div.pull-right
-							a.label.label-warning(href = '/settings/accounts/edit/' + a.id)
-								i.fa.fa-fw.fa-pencil
-								|  Edit
-							| &nbsp
-							a.label.label-info.move-up: i.fa.fa-fw.fa-caret-up
-							| &nbsp
-							a.label.label-info.move-down: i.fa.fa-fw.fa-caret-down
+			table.table.table-condensed.table-hover
+				thead
+					tr
+						th Name
+						th Actions
+						th Ordering
+				tbody#accounts
+					for a in accounts
+						tr(data-id = a.id)
+							td= a.name
+							td
+								a.label.label-warning(href = '/settings/accounts/edit/' + a.id)
+									i.fa.fa-fw.fa-pencil
+									|  Edit
+							td
+								a.label.label-info.move-up: i.fa.fa-fw.fa-caret-up
+								| &nbsp
+								a.label.label-info.move-down: i.fa.fa-fw.fa-caret-down
 
 block page-scripts
 	script(src = '/settings/accounts/js/ordering.js')
