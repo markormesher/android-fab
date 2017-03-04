@@ -2,23 +2,17 @@ mysql = require('mysql')
 rfr = require('rfr')
 secrets = rfr('./secrets.json')
 
+poolConfig = secrets.MYSQL_CONFIG
+poolConfig['connectionLimit'] = 10
+pool = mysql.createPool(poolConfig)
+
 module.exports = {
 
-	getConnection: (onComplete) ->
-		connection = mysql.createConnection(secrets.MYSQL_CONFIG)
-		connection.connect((err) ->
-			if (err)
-				throw err
-			onComplete(connection)
-			connection.end()
-		)
-
-	getOpenConnection: (onComplete) ->
-		connection = mysql.createConnection(secrets.MYSQL_CONFIG)
-		connection.connect((err) ->
-			if (err)
-				throw err
-			onComplete(connection)
+	getConnection: (onReady) ->
+		pool.getConnection((err, conn) ->
+			if (err) then throw err
+			console.log("Using connection #{conn.threadId}")
+			onReady(conn)
 		)
 
 }

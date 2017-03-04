@@ -15,8 +15,6 @@ secrets = rfr('./secrets.json')
 pJson = rfr('./package.json')
 constants = rfr('./constants.json')
 
-mysql.getConnection((conn) -> console.log("MySQL connected with ID #{conn.threadId}"))
-
 app = express()
 
 # form body content

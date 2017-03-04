@@ -7,6 +7,7 @@ manager = {
 
 	getTransactionsCount: (callback) ->
 		mysql.getConnection((conn) -> conn.query('SELECT COUNT(*) AS result FROM transaction;', (err, result) ->
+			conn.release()
 			if (err) then return callback(err)
 			if (result) then return callback(null, result[0]['result'])
 			callback(null, null)
@@ -23,6 +24,7 @@ manager = {
 			""",
 			"%#{query.toLowerCase()}%",
 			(err, result) ->
+				conn.release()
 				if (err) then return callback(err)
 				if (result) then return callback(null, result[0]['result'])
 				callback(null, null)
@@ -39,6 +41,7 @@ manager = {
 			""" + 'ORDER BY effective_date ' + order + ', record_date DESC LIMIT ? OFFSET ?;',
 			["%#{query.toLowerCase()}%", count, start],
 			(err, result) ->
+				conn.release()
 				if (err) then return callback(err)
 				if (result) then return callback(null, result)
 				callback(null, null)
@@ -47,6 +50,7 @@ manager = {
 
 	getUniquePayees: (callback) ->
 		mysql.getConnection((conn) -> conn.query('SELECT DISTINCT(payee) FROM transaction ORDER BY payee ASC;', (err, result) ->
+			conn.release()
 			if (err) then return callback(err)
 			if (result) then return callback(null, (r['payee'] for r in result))
 			callback(null, [])
@@ -59,18 +63,26 @@ manager = {
 			mysql.getConnection((conn) -> conn.query(
 				'INSERT INTO transaction (id, transaction_date, effective_date, record_date, account_id, category_id, amount, payee, memo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);',
 				[id, transaction.transaction_date, transaction.effective_date, (new Date()).toISOString().slice(0, 19).replace('T', ' '), transaction.account, transaction.category, transaction.amount, transaction.payee, transaction.memo || null],
-				(err) -> callback(err)
+				(err) ->
+					conn.release()
+					callback(err)
 			))
 		else
 			mysql.getConnection((conn) -> conn.query(
 				'UPDATE transaction SET transaction_date = ?, effective_date = ?, account_id = ?, category_id = ?, amount = ?, payee = ?, memo = ? WHERE id = ?;',
 				[transaction.transaction_date, transaction.effective_date, transaction.account, transaction.category, transaction.amount, transaction.payee, transaction.memo || null, id],
-				(err) -> callback(err)
+				(err) ->
+					conn.release()
+					callback(err)
 			))
 
 
 	deleteTransaction: (id, callback) ->
-		mysql.getConnection((conn) -> conn.query('DELETE FROM transaction WHERE id = ?;', id, (err) -> callback(err)))
+		mysql.getConnection((conn) ->
+			conn.query('DELETE FROM transaction WHERE id = ?;', id, (err) ->
+				conn.release()
+				callback(err))
+		)
 
 }
 

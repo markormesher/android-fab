@@ -16,6 +16,7 @@ manager = {
 			GROUP BY transaction.account_id ORDER BY account.display_order ASC;
 			"""
 			(err, results) ->
+				conn.release()
 				if (err) then return callback(err)
 				if (results) then return callback(null, results)
 				callback(null, [])
@@ -36,6 +37,7 @@ manager = {
 			ORDER BY budget.start_date DESC, budget.name ASC;
 			"""
 			(err, results) ->
+				conn.release()
 				if (err) then return callback(err)
 				output = {
 					budgets: {}
@@ -54,7 +56,8 @@ manager = {
 		async.parallel(
 			[
 				(c) -> mysql.getConnection((conn) ->
-					conn.query('SELECT SUM(amount) AS balance FROM transaction WHERE category_id = ?;', constants.balance_transfer_category_id, (err, results) ->
+					conn.query('SELECT SUM(amount) AS balance FROM transaction WHERE category_id = ?;', constants['balance_transfer_category_id'], (err, results) ->
+						conn.release()
 						if (err) then return c(err)
 						balance = results[0]['balance']
 						if (balance != 0)
@@ -85,6 +88,7 @@ manager = {
 					"""
 					[startDate, endDate],
 					(err, results) ->
+						conn.release()
 						if (err) then return c(err)
 						c(null, results)
 				))
@@ -92,6 +96,7 @@ manager = {
 					'SELECT SUM(amount) AS balance FROM transaction WHERE effective_date >= ? AND effective_date <= ?;',
 					[startDate, endDate],
 					(err, results) ->
+						conn.release()
 						if (err || results.length != 1) then return c(err)
 						c(null, results[0]['balance'])
 				))
@@ -103,6 +108,7 @@ manager = {
 					"""
 					[startDate, endDate],
 					(err, results) ->
+						conn.release()
 						if (err || results.length != 1) then return c(err)
 						c(null, results[0]['balance'])
 				))
@@ -114,6 +120,7 @@ manager = {
 					"""
 					[startDate, endDate],
 					(err, results) ->
+						conn.release()
 						if (err || results.length != 1) then return c(err)
 						c(null, results[0]['balance'])
 				))
@@ -125,6 +132,7 @@ manager = {
 					"""
 					[constants['balance_transfer_category_id'], startDate, endDate],
 					(err, results) ->
+						conn.release()
 						if (err || results.length != 1) then return c(err)
 						c(null, results[0]['balance'])
 				))

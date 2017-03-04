@@ -7,6 +7,7 @@ manager = {
 
 	getCategory: (id, callback) ->
 		mysql.getConnection((conn) -> conn.query('SELECT * FROM category WHERE id = ? LIMIT 1;', id, (err, results) ->
+			conn.release()
 			if (err) then return callback(err)
 			if (results && results.length == 1) then return callback(null, results[0])
 			callback(null, null)
@@ -19,6 +20,7 @@ manager = {
 		else
 			'SELECT * FROM category ORDER BY name ASC;'
 		mysql.getConnection((conn) -> conn.query(query, (err, results) ->
+			conn.release()
 			if (err) then return callback(err)
 			if (results) then return callback(null, results)
 			return callback(null, [])
@@ -31,13 +33,17 @@ manager = {
 			mysql.getConnection((conn) -> conn.query(
 				'INSERT INTO category (id, name, active, system) VALUES (?, ?, 1, 0);',
 				[id, category.name],
-				(err) -> callback(err)
+				(err) ->
+					conn.release()
+					callback(err)
 			))
 		else
 			mysql.getConnection((conn) -> conn.query(
 				'UPDATE category SET name = ? WHERE id = ?;',
 				[category.name, id],
-				(err) -> callback(err)
+				(err) ->
+					conn.release()
+					callback(err)
 			))
 
 	setSummaryVisibility: (id, value, callback) ->
@@ -45,9 +51,10 @@ manager = {
 			return callback(null)
 
 		if (['in', 'out', 'both'].indexOf(value) < 0) then value = null
-		mysql.getConnection((conn) -> conn.query(
-			'UPDATE category SET summary_visibility = ? WHERE id = ?',
-			[value, id], (err) -> callback(err)
+		mysql.getConnection((conn) -> conn.query('UPDATE category SET summary_visibility = ? WHERE id = ?', [value, id],
+			(err) ->
+				conn.release()
+				callback(err)
 		))
 }
 

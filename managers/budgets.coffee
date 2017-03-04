@@ -7,17 +7,22 @@ oneDay = 24 * 60 * 60 * 1000
 manager = {
 
 	getBudget: (id, callback) ->
-		mysql.getOpenConnection((conn) ->
+		mysql.getConnection((conn) ->
 			conn.query('SELECT * FROM budget WHERE id = ? LIMIT 1;', id, (err, results) ->
-				if (err) then return callback(err)
+				if (err)
+					conn.release()
+					return callback(err)
+
 				if (results && results.length == 1)
 					budget = results[0]
 					conn.query('SELECT category_id FROM budget_category WHERE budget_id = ?;', budget.id, (err, results) ->
+						conn.release()
 						if (err) then return callback(err)
 						budget['categories'] = (c['category_id'] for c in results)
 						callback(null, budget)
 					)
 				else
+					conn.release()
 					callback(null, null)
 		))
 
@@ -29,6 +34,7 @@ manager = {
 			query = 'SELECT * FROM budget ORDER BY start_date DESC, name ASC;'
 
 		mysql.getConnection((conn) -> conn.query(query, (err, results) ->
+			conn.release()
 			if (err) then return callback(err)
 			if (results) then return callback(null, results)
 			callback(null, [])
@@ -51,15 +57,24 @@ manager = {
 		delete budget['categories']
 
 		if (insert)
-			mysql.getOpenConnection((conn) ->
+			mysql.getConnection((conn) ->
 				conn.beginTransaction((err) ->
-					if (err) then return conn.rollback(() -> callback(err))
+					if (err)
+						conn.rollback(() -> callback(err))
+						return conn.release()
 					conn.query('INSERT INTO budget SET ?;', [budget], (err) ->
-						if (err) then return conn.rollback(() -> callback(err))
+						if (err)
+							conn.rollback(() -> callback(err))
+							return conn.release()
 						conn.query('INSERT INTO budget_category VALUES ?;', [budgetCategoryInserts], (err) ->
-							if (err) then return conn.rollback(() -> callback(err))
+							if (err)
+								conn.rollback(() -> callback(err))
+								return conn.release()
 							conn.commit((err) ->
-								if (err) then return conn.rollback(() -> callback(err))
+								if (err)
+									conn.rollback(() -> callback(err))
+									return conn.release()
+								conn.release()
 								callback(null)
 							)
 						)
@@ -67,17 +82,27 @@ manager = {
 				)
 			)
 		else
-			mysql.getOpenConnection((conn) ->
+			mysql.getConnection((conn) ->
 				conn.beginTransaction((err) ->
-					if (err) then return conn.rollback(() -> callback(err))
+					if (err)
+						conn.rollback(() -> callback(err))
+						return conn.release()
 					conn.query('UPDATE budget SET ? WHERE id = ?;', [budget, id], (err) ->
-						if (err) then return conn.rollback(() -> callback(err))
+						if (err)
+							conn.rollback(() -> callback(err))
+							return conn.release()
 						conn.query('DELETE FROM budget_category WHERE budget_id = ?;', [id], (err) ->
-							if (err) then return conn.rollback(() -> callback(err))
+							if (err)
+								conn.rollback(() -> callback(err))
+								return conn.release()
 							conn.query('INSERT INTO budget_category VALUES ?;', [budgetCategoryInserts], (err) ->
-								if (err) then return conn.rollback(() -> callback(err))
+								if (err)
+									conn.rollback(() -> callback(err))
+									return conn.release()
 								conn.commit((err) ->
-									if (err) then return conn.rollback(() -> callback(err))
+									if (err)
+										conn.rollback(() -> callback(err))
+										return conn.release()
 									callback(null)
 								)
 							)
