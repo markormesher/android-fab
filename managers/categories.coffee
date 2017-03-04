@@ -47,11 +47,8 @@ manager = {
 			))
 
 	setSummaryVisibility: (id, value, callback) ->
-		if (id == constants['balance_transfer_category_id'] || id == constants['balance_update_category_id'])
-			return callback(null)
-
 		if (['in', 'out', 'both'].indexOf(value) < 0) then value = null
-		mysql.getConnection((conn) -> conn.query('UPDATE category SET summary_visibility = ? WHERE id = ?', [value, id],
+		mysql.getConnection((conn) -> conn.query('UPDATE category SET summary_visibility = ? WHERE id = ? AND system = false', [value, id],
 			(err) ->
 				conn.release()
 				callback(err)

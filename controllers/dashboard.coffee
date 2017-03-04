@@ -10,12 +10,14 @@ router.get('/', auth.checkAndRefuse, (req, res, next) ->
 	startDate = new Date(now.getFullYear(), now.getMonth(), 1)
 	endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0)
 
+	settings = res.locals.user.settings
+
 	async.parallel(
 		{
 			'accountBalances': (callback) -> StatisticsManager.getActiveAccountBalances((err, result) -> callback(err, result))
 			'budgets': (callback) -> StatisticsManager.getActiveBudgets((err, result) -> callback(err, result))
-			'alerts': (callback) -> StatisticsManager.getAlerts((err, result) -> callback(err, result))
-			'summaryData': (callback) -> StatisticsManager.getSummaryData(startDate, endDate, (err, result) -> callback(err, result))
+			'alerts': (callback) -> StatisticsManager.getAlerts(settings, (err, result) -> callback(err, result))
+			'summaryData': (callback) -> StatisticsManager.getSummaryData(settings, startDate, endDate, (err, result) -> callback(err, result))
 		},
 		(err, results) ->
 			if (err)

@@ -16,12 +16,16 @@ module.exports = (passport) ->
 	passport.use(new LocalPassportStrategy(
 		{ passReqToCallback: true },
 		(req, username, password, callback) ->
-			UserManager.getUserForAuth(username, password, (err, result) ->
+			UserManager.getUserForAuth(username, password, (err, user) ->
 				if (err) then return callback(err)
-				if (!result)
+				if (!user)
 					req.flash('error', 'Invalid email/password combination!')
 					req.flash('data-username', username)
 					return callback(null, false)
-				return callback(null, result)
+				UserManager.getUserSettings(user.id, (err, settings) ->
+					if (err) then return callback(err)
+					user['settings'] = settings
+					return callback(null, user)
+				)
 			)
 	))

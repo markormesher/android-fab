@@ -52,11 +52,11 @@ manager = {
 		))
 
 
-	getAlerts: (callback) ->
+	getAlerts: (settings, callback) ->
 		async.parallel(
 			[
 				(c) -> mysql.getConnection((conn) ->
-					conn.query('SELECT SUM(amount) AS balance FROM transaction WHERE category_id = ?;', constants['balance_transfer_category_id'], (err, results) ->
+					conn.query('SELECT SUM(amount) AS balance FROM transaction WHERE category_id = ?;', settings['balance_transfer_category_id'], (err, results) ->
 						conn.release()
 						if (err) then return c(err)
 						balance = results[0]['balance']
@@ -76,7 +76,7 @@ manager = {
 		)
 
 
-	getSummaryData: (startDate, endDate, callback) ->
+	getSummaryData: (settings, startDate, endDate, callback) ->
 		async.parallel(
 			{
 				'categorySums': (c) -> mysql.getConnection((conn) -> conn.query(
@@ -130,7 +130,7 @@ manager = {
 					FROM transaction JOIN account ON transaction.account_id = account.id
 					WHERE account.type = 'savings' AND transaction.category_id = ? AND transaction.effective_date >= ? AND transaction.effective_date <= ?;
 					"""
-					[constants['balance_transfer_category_id'], startDate, endDate],
+					[settings['balance_transfer_category_id'], startDate, endDate],
 					(err, results) ->
 						conn.release()
 						if (err || results.length != 1) then return c(err)

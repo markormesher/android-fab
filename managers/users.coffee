@@ -1,6 +1,7 @@
 rfr = require('rfr')
 mysql = rfr('./helpers/mysql')
 auth = rfr('./helpers/auth')
+constants = rfr('./constants.json')
 
 manager = {
 
@@ -58,6 +59,17 @@ manager = {
 			)
 		else
 			doUpdate(id, user, null, callback)
+
+
+	getUserSettings: (userId, callback) ->
+		settings = constants.defaultSettings
+		mysql.getConnection((conn) -> conn.query('SELECT * FROM setting WHERE user_id = ?;', userId, (err, results) ->
+			conn.release()
+			if (err) then return callback(err)
+			for r in results
+				settings[r.setting_key] = r.setting_value
+			callback(null, settings)
+		))
 }
 
 module.exports = manager
