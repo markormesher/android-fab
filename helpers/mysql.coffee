@@ -11,7 +11,6 @@ module.exports = {
 	getConnection: (onReady) ->
 		pool.getConnection((err, conn) ->
 			if (err) then throw err
-			console.log("Using connection #{conn.threadId}")
 			onReady(conn)
 		)
 
