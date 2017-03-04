@@ -4,13 +4,12 @@ bodyParser = require('body-parser')
 coffeeMiddleware = require('coffee-middleware')
 sassMiddleware = require('node-sass-middleware')
 cookieParser = require('cookie-parser')
-session = require('express-session')
+session = require('cookie-session')
 flash = require('express-flash')
 passport = require('passport')
 
 rfr = require('rfr')
 auth = rfr('./helpers/auth')
-mysql = rfr('./helpers/mysql')
 secrets = rfr('./secrets.json')
 pJson = rfr('./package.json')
 constants = rfr('./constants.json')
@@ -34,10 +33,14 @@ app.use(sassMiddleware({
 # cookies and sessions
 app.use(cookieParser(secrets.COOKIE_KEY))
 app.use(session({
+	name: 'session'
 	secret: secrets.SESSION_KEY
-	resave: false
-	saveUninitialized: true
 }))
+app.use((req, res, next) ->
+	# update the session every minute to re-set expiration timer
+	req.session.nowInMinutes = Date.now() / (60 * 1000)
+	next()
+)
 
 # flash, with customisation for data
 app.use(flash())
