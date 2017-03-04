@@ -7,12 +7,11 @@ module.exports = (passport) ->
 
 	passport.serializeUser((user, callback) ->
 		delete user['password']
+		user['emailHash'] = auth.md5(user['email'].trim().toLowerCase())
 		callback(null, JSON.stringify(user))
 	)
 
-
 	passport.deserializeUser((user, callback) -> callback(null, JSON.parse(user)))
-
 
 	passport.use(new LocalPassportStrategy(
 		{ passReqToCallback: true },

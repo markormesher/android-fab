@@ -4,6 +4,7 @@ funcs = {
 
 	sha256: (data) -> crypto.createHash('sha256').update(data).digest('hex')
 
+	md5: (data) -> crypto.createHash('md5').update(data).digest('hex')
 
 	checkOnly: (req, res, next) ->
 		res.locals.user = req.user || null

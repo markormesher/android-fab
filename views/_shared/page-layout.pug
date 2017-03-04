@@ -28,9 +28,10 @@ block body
 				div.nav.toggle: a#menu_toggle: i.fa.fa-bars
 				ul.nav.navbar-nav.navbar-right
 					li.dropdown
-						a.dropdown-toggle(data-toggle = 'dropdown', href = 'javascript:;')
-							i.fa.fa-user.fa-fw
-							i.fa.fa-angle-down
+						a.user-profile.dropdown-toggle(data-toggle = 'dropdown', href = 'javascript:;')
+							img(src = '//www.gravatar.com/avatar/' + locals.user.emailHash + '?r=pg&d=identicon')
+							= locals.user.first_name + ' ' + locals.user.last_name
+							i.fa.fa-fw.fa-angle-down
 
 						ul.dropdown-menu.pull-right
 							li: a(href = '/auth/logout')
