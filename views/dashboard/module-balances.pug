@@ -1,8 +1,11 @@
-div.panel.panel-default
-	div.panel-heading
-		i.fa.fa-fw.fa-bank.text-muted.title-icon
-		| Account Balances
-	div.panel-body
+div.x_panel
+	div.x_title
+		h2
+			i.fa.fa-fw.fa-bank.text-muted.title-icon
+			| Account Balances
+		div.clearfix
+
+	div.x_content
 		- var sum = 0
 		for ab in accountBalances
 			if ab.balance != 0

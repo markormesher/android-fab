@@ -1,0 +1,48 @@
+mixin row(label, value)
+	p(style = 'margin-left: 20px')
+		=label
+		span.pull-right= formatters.formatCurrency(value)
+
+div.x_panel
+	div.x_title
+		h2
+			i.fa.fa-fw.fa-exchange.text-muted.title-icon
+			| Month Summary
+		div.clearfix
+
+	div.x_content
+
+		h4 Income
+		- blank = true
+
+		for row in summaryData['income']
+			- blank = false
+			+row(row['categoryName'], row['balance'])
+
+		if (summaryData['allIn'] != 0)
+			- blank = false
+			+row('All other income', summaryData['allIn'])
+
+		if (blank)
+			p.text-muted: i No income
+
+
+		h4 Expenses
+		- blank = true
+
+		for row in summaryData['expense']
+			- blank = false
+			+row(row['categoryName'], row['balance'])
+
+		if (summaryData['allOut'] != 0)
+			- blank = false
+			+row('All other expenses', summaryData['allOut'])
+
+		if (blank)
+			p.text-muted: i No expenses
+
+
+		div.hr: hr
+
+
+		+row('Total', summaryData['total'])

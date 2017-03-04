@@ -10,9 +10,25 @@ ul.ui-autocomplete {
 
 td.currency {
 	font-family: monospace;
-	text-align: right;
 }
 
 i.title-icon {
 	margin-right: 12px;
+}
+
+.site_title {
+	font-size: 20px;
+	i {
+		padding: 2px 0;
+	}
+}
+
+.main_menu .fa {
+	margin-right: 8px;
+}
+
+.progress-bar {
+	text-align: center;
+	color: #ffffff;
+	overflow: visible;
 }

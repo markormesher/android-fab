@@ -23,7 +23,7 @@ router.get('/', auth.checkAndRefuse, (req, res, next) ->
 
 			res.render('dashboard/index', {
 				_: {
-					title: 'Dashboard'
+					noTitle: true
 					activePage: 'dashboard'
 				}
 				accountBalances: results['accountBalances']

@@ -11,14 +11,14 @@ block page-title-extra
 
 block page-body
 
-	div.row: div.col-lg-12
-		table#transactions.table.table-bordered.table-condensed.table-hover
+	div.row: div.col-lg-12.col-md-12.col-sm-12.col-xs-12
+		table#transactions.table.table-condensed.table-hover
 			thead
 				tr
 					th Date
 					th Account
 					th Payee
-					th Amount
+					th(style = 'text-align: left !important;') Amount
 					th Category
 					th(width = '80px') Actions
 

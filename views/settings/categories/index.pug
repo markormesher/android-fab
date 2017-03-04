@@ -13,7 +13,7 @@ block page-body
 		if categories.length == 0
 			div.alert.alert-danger No categories set up!
 		else
-			table.table.table-condensed.table-bordered.table-hover
+			table.table.table-condensed.table-hover
 				thead
 					tr
 						th Category
@@ -24,15 +24,12 @@ block page-body
 					for c in categories
 						tr(id = c.id)
 							td(class = c.system ? 'text-muted' : '')= c.name
-							td.text-center: input(type = 'checkbox', name = c.id, value = 'in')
-							td.text-center: input(type = 'checkbox', name = c.id, value = 'out')
-							td.text-center
-								if c.system
-									span.text-muted n/a
-								else
-									a.label.label-warning(href = '/settings/categories/edit/' + c.id)
-										i.fa.fa-fw.fa-pencil
-										|  Edit
+							td: input(type = 'checkbox', name = c.id, value = 'in', checked = (c.summary_visibility == 'in' || c.summary_visibility == 'both'))
+							td: input(type = 'checkbox', name = c.id, value = 'out', checked = (c.summary_visibility == 'out' || c.summary_visibility == 'both'))
+							td: if !c.system
+								a.label.label-warning(href = '/settings/categories/edit/' + c.id)
+									i.fa.fa-fw.fa-pencil
+									|  Edit
 
 block page-scripts
 	script(src = '/settings/categories/summary-control.js')

@@ -28,7 +28,7 @@ initDataTable = () ->
 		order: [[0, 'desc']]
 		columnDefs: [
 			{ targets: [0], orderable: true }
-			{ targets: [3], className: 'currency' }
+			{ targets: [3], className: 'currency text-right' }
 			{ targets: '_all', orderable: false }
 		]
 
@@ -44,7 +44,7 @@ initDataTable = () ->
 					displayData.push([
 						formatDatePair(d['transaction_date'], d['effective_date'])
 						d['account_name']
-						d['payee']
+						d['payee'] + (if (d.memo != null && d.memo != '') then " <i class=\"fa fa-fw fa-info-circle text-muted\" title=\"#{d.memo}\"></i>" else '')
 						window.formatters.formatCurrency(d['amount'])
 						d['category_name']
 						actionsHtml.replace(///__ID__///g, d['id'])

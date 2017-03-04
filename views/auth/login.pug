@@ -1,25 +1,22 @@
 extends ../_shared/root-layout
 
+block variables
+	- bodyClass = 'login'
+
 block body
 
-	div.container
-		div.row
-			div.col-md-4.col-md-offset-4
-				div.login-panel.panel.panel-default
-					div.panel-heading
-						h3.panel-title Please Log In
+	div
+		div.login_wrapper
+			div.form.login_form
+				section.login_content
+					form(action = '/auth/login', method = 'post')
+						h1 Login
 
-					div.panel-body
-						form(action = '/auth/login', method = 'post')
-							fieldset
-								div.form-group
-									input.form-control(placeholder = 'Email', name = 'username', type = 'email', value = locals.messages.data.username || '')
+						div: input.form-control(placeholder = 'Email', name = 'username', type = 'email', value = locals.messages.data.username || '')
 
-								div.form-group
-									input.form-control(placeholder = 'Password', name = 'password', type = 'password')
+						div: input.form-control(placeholder = 'Password', name = 'password', type = 'password')
 
-								div.form-group
-									button.btn.btn-success
-										i.fa.fa-key
-										| &nbsp;&nbsp;
-										| Login
+						div: button.btn.btn-default
+							i.fa.fa-key
+							| &nbsp;&nbsp;
+							| Login

@@ -1,5 +1,7 @@
 include ../_mixins/plugins
 
+block variables
+
 - locals.messages.data = locals.messages.data || {}
 
 doctype html
@@ -12,13 +14,13 @@ html
 		link(rel = 'stylesheet', href = '/_vendor/bootstrap/css/bootstrap.min.css')
 		link(rel = 'stylesheet', href = '/_vendor/jquery-ui/css/jquery-ui.min.css')
 		link(rel = 'stylesheet', href = '/_vendor/jquery-ui/css/jquery-ui.theme.min.css')
-		link(rel = 'stylesheet', href = '/_vendor/sb/css/sb-admin-2.min.css')
+		link(rel = 'stylesheet', href = '/_vendor/gentelella/css/custom.min.css')
 		link(rel = 'stylesheet', href = '/_vendor/font-awesome/css/font-awesome.min.css')
 		link(rel = 'stylesheet', href = '/_vendor/toastr/css/toastr.min.css')
-		link(rel = 'stylesheet', href = '/_shared/css/bootstrap-additions.css')
+		link(rel = 'stylesheet', href = '/_shared/css/tweaks.css')
 		block head
 
-	body
+	body(class = bodyClass || 'nav-md')
 
 		block body
 
