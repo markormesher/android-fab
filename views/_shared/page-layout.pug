@@ -34,9 +34,12 @@ block body
 							i.fa.fa-fw.fa-angle-down
 
 						ul.dropdown-menu.pull-right
+							li: a(href = '/users/profile')
+								i.fa.fa-fw.fa-user.title-icon
+								| Your Profile
 							li: a(href = '/auth/logout')
-								i.fa.fa-fw.fa-sign-out
-								|  Logout
+								i.fa.fa-fw.fa-sign-out.title-icon
+								| Logout
 
 			div.right_col(style = 'min-height: 425px;')
 				div.container-fluid

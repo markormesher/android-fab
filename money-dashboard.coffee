@@ -68,6 +68,7 @@ routes = {
 	'': rfr('./controllers/dashboard')
 	'auth': rfr('./controllers/auth')
 	'transactions': rfr('./controllers/transactions')
+	'users': rfr('./controllers/users')
 	'settings/accounts': rfr('./controllers/settings/accounts')
 	'settings/budgets': rfr('./controllers/settings/budgets')
 	'settings/categories': rfr('./controllers/settings/categories')
