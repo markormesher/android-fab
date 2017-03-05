@@ -10,9 +10,9 @@ router = express.Router()
 router.get('/', auth.checkAndRefuse, (req, res, next) ->
 	async.parallel(
 		{
-			'accounts': (callback) -> AccountManager.getAccounts(true, (err, result) -> callback(err, result))
-			'categories': (callback) -> CategoryManager.getCategories(true, (err, result) -> callback(err, result))
-			'payees': (callback) -> TransactionManager.getUniquePayees((err, result) -> callback(err, result))
+			'accounts': (callback) -> AccountManager.getAccounts(res.locals.user, true, (err, result) -> callback(err, result))
+			'categories': (callback) -> CategoryManager.getCategories(res.locals.user, true, (err, result) -> callback(err, result))
+			'payees': (callback) -> TransactionManager.getUniquePayees(res.locals.user, (err, result) -> callback(err, result))
 		},
 		(err, results) ->
 			if (err)
@@ -38,9 +38,9 @@ router.get('/data', auth.checkAndRefuse, (req, res, next) ->
 
 	async.parallel(
 		{
-			'totalCount': (callback) -> TransactionManager.getTransactionsCount((err, result) -> callback(err, result))
-			'filteredCount': (callback) -> TransactionManager.getFilteredTransactionsCount(search, (err, result) -> callback(err, result))
-			'data': (callback) -> TransactionManager.getFilteredTransactions(search, start, count, order, (err, result) -> callback(err, result))
+			'totalCount': (callback) -> TransactionManager.getTransactionsCount(res.locals.user, (err, result) -> callback(err, result))
+			'filteredCount': (callback) -> TransactionManager.getFilteredTransactionsCount(res.locals.user, search, (err, result) -> callback(err, result))
+			'data': (callback) -> TransactionManager.getFilteredTransactions(res.locals.user, search, start, count, order, (err, result) -> callback(err, result))
 		},
 		(err, results) ->
 			if (err)
@@ -58,7 +58,8 @@ router.post('/edit/:transactionId', auth.checkAndRefuse, (req, res) ->
 	transactionId = req.params['transactionId']
 	transaction = req.body
 
-	TransactionManager.saveTransaction(transactionId, transaction, (err) ->
+	TransactionManager.saveTransaction(res.locals.user, transactionId, transaction, (err) ->
+		if (err) then console.log(err)
 		res.status(if (err) then 400 else 200)
 		res.end()
 	)
@@ -67,7 +68,7 @@ router.post('/edit/:transactionId', auth.checkAndRefuse, (req, res) ->
 router.post('/delete/:transactionId', auth.checkAndRefuse, (req, res) ->
 	transactionId = req.params['transactionId']
 
-	TransactionManager.deleteTransaction(transactionId, (err) ->
+	TransactionManager.deleteTransaction(res.locals.user, transactionId, (err) ->
 		res.status(if (err) then 400 else 200)
 		res.end()
 	)

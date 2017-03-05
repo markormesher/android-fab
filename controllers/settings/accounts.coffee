@@ -5,7 +5,7 @@ AccountManager = rfr('./managers/accounts')
 router = express.Router()
 
 router.get('/', auth.checkAndRefuse, (req, res, next) ->
-	AccountManager.getAccounts(true, (err, accounts) ->
+	AccountManager.getAccounts(res.locals.user, true, (err, accounts) ->
 		if (err)
 			return next(err)
 
@@ -31,7 +31,7 @@ router.get('/create', auth.checkAndRefuse, (req, res) ->
 router.get('/edit/:accountId', auth.checkAndRefuse, (req, res) ->
 	accountId = req.params['accountId']
 
-	AccountManager.getAccount(accountId, (err, account) ->
+	AccountManager.getAccount(res.locals.user, accountId, (err, account) ->
 		if (err or !account)
 			req.flash('error', 'Sorry, that account couldn\'t be loaded!')
 			res.writeHead(302, { Location: '/settings/accounts' })
@@ -52,7 +52,7 @@ router.post('/edit/:accountId', auth.checkAndRefuse, (req, res) ->
 	accountId = req.params['accountId']
 	account = req.body
 
-	AccountManager.saveAccount(accountId, account, (err) ->
+	AccountManager.saveAccount(res.locals.user, accountId, account, (err) ->
 		if (err)
 			req.flash('error', 'Sorry, that account couldn\'t be saved!')
 
@@ -69,7 +69,7 @@ router.post('/reorder', auth.checkAndRefuse, (req, res) ->
 
 	setOrder = (i) ->
 		key = keys[i]
-		AccountManager.setAccountDisplayOrder(key, orders[key], (err) ->
+		AccountManager.setAccountDisplayOrder(res.locals.user, key, orders[key], (err) ->
 			if (err)
 				next(err)
 			else

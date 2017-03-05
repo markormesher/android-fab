@@ -7,14 +7,15 @@ BudgetManager = rfr('./managers/budgets')
 
 manager = {
 
-	getActiveAccountBalances: (callback) ->
+	getActiveAccountBalances: (user, callback) ->
 		mysql.getConnection((conn) -> conn.query(
 			"""
 			SELECT account.id AS account_id, account.name AS account_name, SUM(transaction.amount) AS balance
 			FROM transaction LEFT JOIN account ON transaction.account_id = account.id
-			WHERE account.active = 1
+			WHERE account.active = 1 AND account.owner = ?
 			GROUP BY transaction.account_id ORDER BY account.display_order ASC;
 			"""
+			user.id,
 			(err, results) ->
 				conn.release()
 				if (err) then return callback(err)
@@ -23,7 +24,7 @@ manager = {
 		))
 
 
-	getActiveBudgets: (callback) ->
+	getActiveBudgets: (user, callback) ->
 		mysql.getConnection((conn) -> conn.query(
 			"""
 			SELECT budget.*, COALESCE((
@@ -33,9 +34,10 @@ manager = {
 				AND transaction.effective_date >= budget.start_date AND transaction.effective_date <= budget.end_date
 			), 0) * -1 AS spend
 			FROM budget
-			WHERE budget.start_date <= DATE(NOW()) AND budget.end_date >= DATE(NOW())
+			WHERE budget.owner = ? AND budget.start_date <= DATE(NOW()) AND budget.end_date >= DATE(NOW())
 			ORDER BY budget.start_date DESC, budget.name ASC;
 			"""
+			user.id,
 			(err, results) ->
 				conn.release()
 				if (err) then return callback(err)
@@ -52,11 +54,11 @@ manager = {
 		))
 
 
-	getAlerts: (settings, callback) ->
+	getAlerts: (user, callback) ->
 		async.parallel(
 			[
 				(c) -> mysql.getConnection((conn) ->
-					conn.query('SELECT SUM(amount) AS balance FROM transaction WHERE category_id = ?;', settings['balance_transfer_category_id'], (err, results) ->
+					conn.query('SELECT SUM(amount) AS balance FROM transaction WHERE category_id = ?;', user.settings['balance_transfer_category_id'], (err, results) ->
 						conn.release()
 						if (err) then return c(err)
 						balance = results[0]['balance']
@@ -76,25 +78,25 @@ manager = {
 		)
 
 
-	getSummaryData: (settings, startDate, endDate, callback) ->
+	getSummaryData: (user, startDate, endDate, callback) ->
 		async.parallel(
 			{
 				'categorySums': (c) -> mysql.getConnection((conn) -> conn.query(
 					"""
 					SELECT SUM(transaction.amount) AS balance, category.id AS categoryId, category.name AS categoryName, category.summary_visibility AS summaryVisibility
 					FROM transaction JOIN category ON transaction.category_id = category.id
-					WHERE category.summary_visibility IS NOT NULL AND transaction.effective_date >= ? AND transaction.effective_date <= ?
+					WHERE transaction.owner = ? AND category.summary_visibility IS NOT NULL AND transaction.effective_date >= ? AND transaction.effective_date <= ?
 					GROUP BY category.id;
 					"""
-					[startDate, endDate],
+					[user.id, startDate, endDate],
 					(err, results) ->
 						conn.release()
 						if (err) then return c(err)
 						c(null, results)
 				))
 				'totalFlow': (c) -> mysql.getConnection((conn) -> conn.query(
-					'SELECT SUM(amount) AS balance FROM transaction WHERE effective_date >= ? AND effective_date <= ?;',
-					[startDate, endDate],
+					'SELECT SUM(amount) AS balance FROM transaction WHERE transaction.owner = ? AND effective_date >= ? AND effective_date <= ?;',
+					[user.id, startDate, endDate],
 					(err, results) ->
 						conn.release()
 						if (err || results.length != 1) then return c(err)
@@ -104,9 +106,9 @@ manager = {
 					"""
 					SELECT SUM(transaction.amount) AS balance
 					FROM transaction JOIN category ON transaction.category_id = category.id
-					WHERE amount > 0 AND category.summary_visibility IS NULL AND transaction.effective_date >= ? AND transaction.effective_date <= ?;
+					WHERE transaction.owner = ? AND amount > 0 AND category.summary_visibility IS NULL AND transaction.effective_date >= ? AND transaction.effective_date <= ?;
 					"""
-					[startDate, endDate],
+					[user.id, startDate, endDate],
 					(err, results) ->
 						conn.release()
 						if (err || results.length != 1) then return c(err)
@@ -116,9 +118,9 @@ manager = {
 					"""
 					SELECT SUM(transaction.amount) AS balance
 					FROM transaction JOIN category ON transaction.category_id = category.id
-					WHERE amount < 0 AND category.summary_visibility IS NULL AND transaction.effective_date >= ? AND transaction.effective_date <= ?;
+					WHERE transaction.owner = ? AND amount < 0 AND category.summary_visibility IS NULL AND transaction.effective_date >= ? AND transaction.effective_date <= ?;
 					"""
-					[startDate, endDate],
+					[user.id, startDate, endDate],
 					(err, results) ->
 						conn.release()
 						if (err || results.length != 1) then return c(err)
@@ -128,9 +130,9 @@ manager = {
 					"""
 					SELECT COALESCE(SUM(transaction.amount), 0) AS balance
 					FROM transaction JOIN account ON transaction.account_id = account.id
-					WHERE account.type = 'savings' AND transaction.category_id = ? AND transaction.effective_date >= ? AND transaction.effective_date <= ?;
+					WHERE transaction.owner = ? AND account.type = 'savings' AND transaction.category_id = ? AND transaction.effective_date >= ? AND transaction.effective_date <= ?;
 					"""
-					[settings['balance_transfer_category_id'], startDate, endDate],
+					[user.id, user.settings['balance_transfer_category_id'], startDate, endDate],
 					(err, results) ->
 						conn.release()
 						if (err || results.length != 1) then return c(err)

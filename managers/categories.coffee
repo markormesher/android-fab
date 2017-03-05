@@ -5,8 +5,8 @@ constants = rfr('./constants.json')
 
 manager = {
 
-	getCategory: (id, callback) ->
-		mysql.getConnection((conn) -> conn.query('SELECT * FROM category WHERE id = ? LIMIT 1;', id, (err, results) ->
+	getCategory: (user, id, callback) ->
+		mysql.getConnection((conn) -> conn.query('SELECT * FROM category WHERE id = ? AND owner = ? LIMIT 1;', [id, user.id], (err, results) ->
 			conn.release()
 			if (err) then return callback(err)
 			if (results && results.length == 1) then return callback(null, results[0])
@@ -14,12 +14,12 @@ manager = {
 		))
 
 
-	getCategories: (activeOnly, callback) ->
+	getCategories: (user, activeOnly, callback) ->
 		query = if (activeOnly)
-			'SELECT * FROM category WHERE active = 1 ORDER BY name ASC;'
+			'SELECT * FROM category WHERE owner = ? AND active = 1 ORDER BY name ASC;'
 		else
-			'SELECT * FROM category ORDER BY name ASC;'
-		mysql.getConnection((conn) -> conn.query(query, (err, results) ->
+			'SELECT * FROM category WHERE owner = ? ORDER BY name ASC;'
+		mysql.getConnection((conn) -> conn.query(query, user.id, (err, results) ->
 			conn.release()
 			if (err) then return callback(err)
 			if (results) then return callback(null, results)
@@ -27,28 +27,28 @@ manager = {
 		))
 
 
-	saveCategory: (id, category, callback) ->
+	saveCategory: (user, id, category, callback) ->
 		if (!id || id == 0 || id == '0')
 			id = uuid.v1()
 			mysql.getConnection((conn) -> conn.query(
-				'INSERT INTO category (id, name, active, system) VALUES (?, ?, 1, 0);',
-				[id, category.name],
+				'INSERT INTO category (id, owner, name, active, system) VALUES (?, ?, ?, 1, 0);',
+				[id, user.id, category.name],
 				(err) ->
 					conn.release()
 					callback(err)
 			))
 		else
 			mysql.getConnection((conn) -> conn.query(
-				'UPDATE category SET name = ? WHERE id = ?;',
-				[category.name, id],
+				'UPDATE category SET name = ? WHERE id = ? AND owner = ?;',
+				[category.name, id, user.id],
 				(err) ->
 					conn.release()
 					callback(err)
 			))
 
-	setSummaryVisibility: (id, value, callback) ->
+	setSummaryVisibility: (user, id, value, callback) ->
 		if (['in', 'out', 'both'].indexOf(value) < 0) then value = null
-		mysql.getConnection((conn) -> conn.query('UPDATE category SET summary_visibility = ? WHERE id = ? AND system = false', [value, id],
+		mysql.getConnection((conn) -> conn.query('UPDATE category SET summary_visibility = ? WHERE id = ? AND owner = ? AND system = false', [value, id, user.id],
 			(err) ->
 				conn.release()
 				callback(err)

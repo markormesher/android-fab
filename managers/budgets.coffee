@@ -6,9 +6,9 @@ oneDay = 24 * 60 * 60 * 1000
 
 manager = {
 
-	getBudget: (id, callback) ->
+	getBudget: (user, id, callback) ->
 		mysql.getConnection((conn) ->
-			conn.query('SELECT * FROM budget WHERE id = ? LIMIT 1;', id, (err, results) ->
+			conn.query('SELECT * FROM budget WHERE id = ? AND owner = ? LIMIT 1;', [id, user.id], (err, results) ->
 				if (err)
 					conn.release()
 					return callback(err)
@@ -27,13 +27,13 @@ manager = {
 		))
 
 
-	getBudgets: (activeOnly, callback) ->
+	getBudgets: (user, activeOnly, callback) ->
 		if (activeOnly)
-			query = 'SELECT * FROM budget WHERE start_date <= DATE(NOW()) AND end_date >= DATE(NOW()) ORDER BY start_date DESC, name ASC;'
+			query = 'SELECT * FROM budget WHERE owner = ? AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW()) ORDER BY start_date DESC, name ASC;'
 		else
-			query = 'SELECT * FROM budget ORDER BY start_date DESC, name ASC;'
+			query = 'SELECT * FROM budget WHERE owner = ? ORDER BY start_date DESC, name ASC;'
 
-		mysql.getConnection((conn) -> conn.query(query, (err, results) ->
+		mysql.getConnection((conn) -> conn.query(query, user.id, (err, results) ->
 			conn.release()
 			if (err) then return callback(err)
 			if (results) then return callback(null, results)
@@ -41,12 +41,14 @@ manager = {
 		))
 
 
-	saveBudget: (id, budget, callback) ->
+	saveBudget: (user, id, budget, callback) ->
 		insert = false
 		if (!id || id == 0 || id == '0')
 			insert = true
 			id = uuid.v1()
 		budget['id'] = id
+
+		budget['owner'] = user.id
 
 		budgetCategoryInserts = []
 		if (typeof budget['categories'] == 'string')
@@ -87,7 +89,7 @@ manager = {
 					if (err)
 						conn.rollback(() -> callback(err))
 						return conn.release()
-					conn.query('UPDATE budget SET ? WHERE id = ?;', [budget, id], (err) ->
+					conn.query('UPDATE budget SET ? WHERE id = ? AND owner = ?;', [budget, id, user.id], (err) ->
 						if (err)
 							conn.rollback(() -> callback(err))
 							return conn.release()

@@ -5,7 +5,7 @@ CategoryManager = rfr('./managers/categories')
 router = express.Router()
 
 router.get('/', auth.checkAndRefuse, (req, res, next) ->
-	CategoryManager.getCategories(true, (err, categories) ->
+	CategoryManager.getCategories(res.locals.user, true, (err, categories) ->
 		if (err)
 			return next(err)
 
@@ -31,7 +31,7 @@ router.get('/create', auth.checkAndRefuse, (req, res) ->
 router.get('/edit/:categoryId', auth.checkAndRefuse, (req, res) ->
 	categoryId = req.params['categoryId']
 
-	CategoryManager.getCategory(categoryId, (err, category) ->
+	CategoryManager.getCategory(res.locals.user, categoryId, (err, category) ->
 		if (err or !category)
 			req.flash('error', 'Sorry, that category couldn\'t be loaded!')
 			res.writeHead(302, { Location: '/settings/categories' })
@@ -52,7 +52,7 @@ router.post('/edit/:categoryId', auth.checkAndRefuse, (req, res) ->
 	categoryId = req.params['categoryId']
 	category = req.body
 
-	CategoryManager.saveCategory(categoryId, category, (err) ->
+	CategoryManager.saveCategory(res.locals.user, categoryId, category, (err) ->
 		if (err)
 			req.flash('error', 'Sorry, that category couldn\'t be saved!')
 
@@ -65,7 +65,7 @@ router.post('/set-summary-visibility/:categoryId', auth.checkAndRefuse, (req, re
 	categoryId = req.params['categoryId']
 	value = req.body['value']
 
-	CategoryManager.setSummaryVisibility(categoryId, value, (err) ->
+	CategoryManager.setSummaryVisibility(res.locals.user, categoryId, value, (err) ->
 		if (err) then return next(err)
 		res.end()
 	)

@@ -7,7 +7,7 @@ router = express.Router()
 
 router.get('/', auth.checkAndRefuse, (req, res, next) ->
 	activeOnly = !req.query.activeOnly || req.query.activeOnly == 'yes'
-	BudgetManager.getBudgets(activeOnly, (err, budgets) ->
+	BudgetManager.getBudgets(res.locals.user, activeOnly, (err, budgets) ->
 		if (err)
 			return next(err)
 
@@ -23,7 +23,7 @@ router.get('/', auth.checkAndRefuse, (req, res, next) ->
 )
 
 router.get('/create', auth.checkAndRefuse, (req, res, next) ->
-	CategoryManager.getCategories(true, (err, categories) ->
+	CategoryManager.getCategories(res.locals.user, true, (err, categories) ->
 		if (err)
 			return next(err)
 
@@ -40,14 +40,14 @@ router.get('/create', auth.checkAndRefuse, (req, res, next) ->
 router.get('/edit/:budgetId', auth.checkAndRefuse, (req, res) ->
 	budgetId = req.params['budgetId']
 
-	BudgetManager.getBudget(budgetId, (err, budget) ->
+	BudgetManager.getBudget(res.locals.user, budgetId, (err, budget) ->
 		if (err or !budget)
 			req.flash('error', 'Sorry, that budget couldn\'t be loaded!')
 			res.writeHead(302, { Location: '/settings/budgets' })
 			res.end()
 			return
 
-		CategoryManager.getCategories(true, (err, categories) ->
+		CategoryManager.getCategories(res.locals.user, true, (err, categories) ->
 			if (err)
 				return next(err)
 
@@ -67,7 +67,7 @@ router.post('/edit/:budgetId', auth.checkAndRefuse, (req, res) ->
 	budgetId = req.params['budgetId']
 	budget = req.body
 
-	BudgetManager.saveBudget(budgetId, budget, (err) ->
+	BudgetManager.saveBudget(res.locals.user, budgetId, budget, (err) ->
 		if (err)
 			req.flash('error', 'Sorry, that budget couldn\'t be saved!')
 

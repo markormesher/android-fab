@@ -5,8 +5,8 @@ auth = rfr('./helpers/auth')
 
 manager = {
 
-	getTransactionsCount: (callback) ->
-		mysql.getConnection((conn) -> conn.query('SELECT COUNT(*) AS result FROM transaction;', (err, result) ->
+	getTransactionsCount: (user, callback) ->
+		mysql.getConnection((conn) -> conn.query('SELECT COUNT(*) AS result FROM transaction WHERE owner = ?;', user.id, (err, result) ->
 			conn.release()
 			if (err) then return callback(err)
 			if (result) then return callback(null, result[0]['result'])
@@ -14,15 +14,15 @@ manager = {
 		))
 
 
-	getFilteredTransactionsCount: (query, callback) ->
+	getFilteredTransactionsCount: (user, query, callback) ->
 		mysql.getConnection((conn) -> conn.query(
 			"""
 			SELECT COUNT(*) AS result FROM
 			(transaction LEFT JOIN account ON transaction.account_id = account.id)
 			LEFT JOIN category ON transaction.category_id = category.id
-			WHERE LOWER(CONCAT(transaction.payee, COALESCE(transaction.memo, ''), account.name, category.name)) LIKE ?;
+			WHERE transaction.owner = ? AND LOWER(CONCAT(transaction.payee, COALESCE(transaction.memo, ''), account.name, category.name)) LIKE ?;
 			""",
-			"%#{query.toLowerCase()}%",
+			[user.id, "%#{query.toLowerCase()}%"],
 			(err, result) ->
 				conn.release()
 				if (err) then return callback(err)
@@ -31,15 +31,15 @@ manager = {
 		))
 
 
-	getFilteredTransactions: (query, start, count, order, callback) ->
+	getFilteredTransactions: (user, query, start, count, order, callback) ->
 		mysql.getConnection((conn) -> conn.query(
 			"""
 			SELECT transaction.*, account_id, account.name AS account_name, category_id, category.name AS category_name FROM
 			(transaction LEFT JOIN account ON transaction.account_id = account.id)
 			LEFT JOIN category ON transaction.category_id = category.id
-			WHERE LOWER(CONCAT(transaction.payee, COALESCE(transaction.memo, ''), account.name, category.name)) LIKE ?
+			WHERE transaction.owner = ? AND LOWER(CONCAT(transaction.payee, COALESCE(transaction.memo, ''), account.name, category.name)) LIKE ?
 			""" + 'ORDER BY effective_date ' + order + ', record_date DESC LIMIT ? OFFSET ?;',
-			["%#{query.toLowerCase()}%", count, start],
+			[user.id, "%#{query.toLowerCase()}%", count, start],
 			(err, result) ->
 				conn.release()
 				if (err) then return callback(err)
@@ -48,8 +48,8 @@ manager = {
 		))
 
 
-	getUniquePayees: (callback) ->
-		mysql.getConnection((conn) -> conn.query('SELECT DISTINCT(payee) FROM transaction ORDER BY payee ASC;', (err, result) ->
+	getUniquePayees: (user, callback) ->
+		mysql.getConnection((conn) -> conn.query('SELECT DISTINCT(payee) FROM transaction WHERE owner = ? ORDER BY payee ASC;', user.id, (err, result) ->
 			conn.release()
 			if (err) then return callback(err)
 			if (result) then return callback(null, (r['payee'] for r in result))
@@ -57,29 +57,38 @@ manager = {
 		))
 
 
-	saveTransaction: (id, transaction, callback) ->
+	saveTransaction: (user, id, transaction, callback) ->
 		if (!id || id == 0 || id == '0')
 			id = uuid.v1()
 			mysql.getConnection((conn) -> conn.query(
-				'INSERT INTO transaction (id, transaction_date, effective_date, record_date, account_id, category_id, amount, payee, memo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);',
-				[id, transaction.transaction_date, transaction.effective_date, (new Date()).toISOString().slice(0, 19).replace('T', ' '), transaction.account, transaction.category, transaction.amount, transaction.payee, transaction.memo || null],
+				'INSERT INTO transaction (id, owner, transaction_date, effective_date, record_date, account_id, category_id, amount, payee, memo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);',
+				[
+					id, user.id, transaction.transaction_date, transaction.effective_date,
+					(new Date()).toISOString().slice(0, 19).replace('T', ' '),
+					transaction.account, transaction.category, transaction.amount,
+					transaction.payee, transaction.memo || null
+				],
 				(err) ->
 					conn.release()
 					callback(err)
 			))
 		else
 			mysql.getConnection((conn) -> conn.query(
-				'UPDATE transaction SET transaction_date = ?, effective_date = ?, account_id = ?, category_id = ?, amount = ?, payee = ?, memo = ? WHERE id = ?;',
-				[transaction.transaction_date, transaction.effective_date, transaction.account, transaction.category, transaction.amount, transaction.payee, transaction.memo || null, id],
+				'UPDATE transaction SET transaction_date = ?, effective_date = ?, account_id = ?, category_id = ?, amount = ?, payee = ?, memo = ? WHERE id = ? AND owner = ?;',
+				[
+					transaction.transaction_date, transaction.effective_date, transaction.account,
+					transaction.category, transaction.amount, transaction.payee,
+					transaction.memo || null, id, user.id
+				],
 				(err) ->
 					conn.release()
 					callback(err)
 			))
 
 
-	deleteTransaction: (id, callback) ->
+	deleteTransaction: (user, id, callback) ->
 		mysql.getConnection((conn) ->
-			conn.query('DELETE FROM transaction WHERE id = ?;', id, (err) ->
+			conn.query('DELETE FROM transaction WHERE id = ? AND owner = ?;', [id, user.id], (err) ->
 				conn.release()
 				callback(err))
 		)
