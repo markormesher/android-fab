@@ -11,14 +11,13 @@ block page-body
 
 	div.row: div.col-lg-12
 
-		if activeOnly
-			p Showing active budgets only | #[a(href = '?activeOnly=no') Show all]
-		else
-			p Showing all budgets | #[a(href = '?activeOnly=yes') Show active budgets only]
-
 		if budgets.length == 0
 			div.alert.alert-danger No budgets set up!
 		else
+			if activeOnly
+				p Showing active budgets only | #[a(href = '?activeOnly=no') Show all]
+			else
+				p Showing all budgets | #[a(href = '?activeOnly=yes') Show active budgets only]
 			table.table.table-condensed.table-hover
 				thead
 					tr

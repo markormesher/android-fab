@@ -7,12 +7,17 @@ div.x_panel
 
 	div.x_content
 		- var sum = 0
+		- var empty = true
 		for ab in accountBalances
 			if ab.balance != 0
 				- sum += ab.balance
+				- empty = false
 				p
 					=ab.account_name
 					span.pull-right= formatters.formatCurrency(ab.balance)
+
+		if (empty)
+			p: i No accounts
 		div.hr: hr
 		p
 			strong Total

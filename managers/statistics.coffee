@@ -58,7 +58,7 @@ manager = {
 		async.parallel(
 			[
 				(c) -> mysql.getConnection((conn) ->
-					conn.query('SELECT SUM(amount) AS balance FROM transaction WHERE category_id = ?;', user.settings['balance_transfer_category_id'], (err, results) ->
+					conn.query('SELECT COALESCE(SUM(amount), 0) AS balance FROM transaction WHERE category_id = ?;', user.settings['balance_transfer_category_id'], (err, results) ->
 						conn.release()
 						if (err) then return c(err)
 						balance = results[0]['balance']
@@ -95,7 +95,7 @@ manager = {
 						c(null, results)
 				))
 				'totalFlow': (c) -> mysql.getConnection((conn) -> conn.query(
-					'SELECT SUM(amount) AS balance FROM transaction WHERE transaction.owner = ? AND effective_date >= ? AND effective_date <= ?;',
+					'SELECT COALESCE(SUM(amount), 0) AS balance FROM transaction WHERE transaction.owner = ? AND effective_date >= ? AND effective_date <= ?;',
 					[user.id, startDate, endDate],
 					(err, results) ->
 						conn.release()
@@ -104,7 +104,7 @@ manager = {
 				))
 				'otherIn': (c) -> mysql.getConnection((conn) -> conn.query(
 					"""
-					SELECT SUM(transaction.amount) AS balance
+					SELECT COALESCE(SUM(transaction.amount), 0) AS balance
 					FROM transaction JOIN category ON transaction.category_id = category.id
 					WHERE transaction.owner = ? AND amount > 0 AND category.summary_visibility IS NULL AND transaction.effective_date >= ? AND transaction.effective_date <= ?;
 					"""
@@ -116,7 +116,7 @@ manager = {
 				))
 				'otherOut': (c) -> mysql.getConnection((conn) -> conn.query(
 					"""
-					SELECT SUM(transaction.amount) AS balance
+					SELECT COALESCE(SUM(transaction.amount), 0) AS balance
 					FROM transaction JOIN category ON transaction.category_id = category.id
 					WHERE transaction.owner = ? AND amount < 0 AND category.summary_visibility IS NULL AND transaction.effective_date >= ? AND transaction.effective_date <= ?;
 					"""
