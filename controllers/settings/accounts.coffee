@@ -54,6 +54,7 @@ router.post('/edit/:accountId', auth.checkAndRefuse, (req, res) ->
 
 	AccountManager.saveAccount(res.locals.user, accountId, account, (err) ->
 		if (err)
+			console.log(err)
 			req.flash('error', 'Sorry, that account couldn\'t be saved!')
 
 		res.writeHead(302, { Location: '/settings/accounts' })

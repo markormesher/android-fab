@@ -30,7 +30,7 @@ manager = {
 		if (!id || id == 0 || id == '0')
 			id = uuid.v1()
 			mysql.getConnection((conn) -> conn.query(
-				'INSERT INTO account (id, owner, name, description, type, display_order, active) VALUES (?, ?, ?, ?, ?, (SELECT MAX(display_order) + 1 FROM (SELECT display_order FROM account WHERE owner = ?) AS maxDisplayOrder), 1);',
+				'INSERT INTO account (id, owner, name, description, type, display_order, active) VALUES (?, ?, ?, ?, ?, (SELECT COALESCE(MAX(display_order) + 1, 0) FROM (SELECT display_order FROM account WHERE owner = ?) AS maxDisplayOrder), 1);',
 				[id, user.id, account.name, account.description, account.type, user.id],
 				(err) ->
 					conn.release()
