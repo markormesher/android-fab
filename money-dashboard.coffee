@@ -69,6 +69,7 @@ routes = {
 	'auth': rfr('./controllers/auth')
 	'transactions': rfr('./controllers/transactions')
 	'users': rfr('./controllers/users')
+	'reports/balance-history': rfr('./controllers/reports/balance-history')
 	'settings/accounts': rfr('./controllers/settings/accounts')
 	'settings/budgets': rfr('./controllers/settings/budgets')
 	'settings/categories': rfr('./controllers/settings/categories')

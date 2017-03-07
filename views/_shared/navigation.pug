@@ -13,6 +13,14 @@ div.menu_section
 			| Transactions
 
 div.menu_section
+	h3 Reports
+	ul.nav.side-menu
+
+		li(class = (active == 'reports-balance-history' ? 'active' : '')): a(href = '/reports/balance-history')
+			i.fa.fa-fw.fa-line-chart
+			| Balance History
+
+div.menu_section
 	h3 Settings
 	ul.nav.side-menu
 

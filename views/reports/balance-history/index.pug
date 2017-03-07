@@ -1,0 +1,29 @@
+extends ../../_shared/page-layout
+
+block page-head
+	link(rel = 'stylesheet', href = '/_vendor/bootstrap-daterangepicker/css/bootstrap-daterangepicker.css')
+
+block page-title-extra
+	div#report-range.pull-right(style = 'background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc')
+		i.fa.fa-fw.fa-calendar.title-icon
+		span
+		i.fa.fa-fw.fa-caret-down
+
+block page-body
+
+	div.row
+		div.col-lg-12.col-md-12.col-sm-12.col-xs-12
+			div.dashboard_graph
+				div.col-lg-12.col-md-12.col-sm-12.col-xs-12.loading-pane
+					p.text-center(style = 'margin: 20px;'): i.fa.fa-fw.fa-hourglass.fa-spin.fa-2x
+				div.col-lg-12.col-md-12.col-sm-12.col-xs-12.error-pane
+					p.text-center(style = 'margin: 20px;'): i.fa.fa-fw.fa-exclamation-triangle.fa-2x.text-danger
+				div.col-lg-12.col-md-12.col-sm-12.col-xs-12.content-pane
+					canvas#history-chart(width = '800', height = '300')
+				div.clearfix
+
+block page-scripts
+	script(src = '/_vendor/moment/js/moment.min.js')
+	script(src = '/_vendor/bootstrap-daterangepicker/js/bootstrap-daterangepicker.js')
+	script(src = '/_vendor/chart/js/chart.min.js')
+	script(src = '/reports/balance-history/js/balance-history.js')
