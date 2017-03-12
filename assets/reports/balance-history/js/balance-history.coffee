@@ -5,6 +5,9 @@ loadingPane = $('.loading-pane')
 errorPane = $('.error-pane')
 contentPane = $('.content-pane')
 
+loadingPane.show()
+errorPane.hide()
+
 chart = new Chart($('#history-chart'), {
 	type: 'line'
 	data: { datasets: [] }

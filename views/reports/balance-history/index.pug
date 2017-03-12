@@ -14,12 +14,12 @@ block page-body
 	div.row
 		div.col-lg-12.col-md-12.col-sm-12.col-xs-12
 			div.dashboard_graph
-				div.col-lg-12.col-md-12.col-sm-12.col-xs-12.loading-pane
+				div.col-xs-12.loading-pane
 					p.text-center(style = 'margin: 20px;'): i.fa.fa-fw.fa-hourglass.fa-spin.fa-2x
-				div.col-lg-12.col-md-12.col-sm-12.col-xs-12.error-pane
+				div.col-xs-12.error-pane
 					p.text-center(style = 'margin: 20px;'): i.fa.fa-fw.fa-exclamation-triangle.fa-2x.text-danger
-				div.col-lg-12.col-md-12.col-sm-12.col-xs-12.content-pane
-					canvas#history-chart(width = '800', height = '300')
+				div.col-xs-12.content-pane
+					canvas#history-chart(width = '4', height = '3')
 				div.clearfix
 
 block page-scripts

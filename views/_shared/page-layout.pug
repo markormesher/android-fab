@@ -30,8 +30,8 @@ block body
 					li.dropdown
 						a.user-profile.dropdown-toggle(data-toggle = 'dropdown', href = 'javascript:;')
 							img(src = '//www.gravatar.com/avatar/' + locals.user.emailHash + '?r=pg&d=identicon')
-							= locals.user.first_name + ' ' + locals.user.last_name
-							i.fa.fa-fw.fa-angle-down
+							span.hidden-xs= locals.user.first_name + ' ' + locals.user.last_name
+							i.fa.fa-fw.fa-caret-down.text-muted
 
 						ul.dropdown-menu.pull-right
 							li: a(href = '/users/profile')
@@ -45,10 +45,10 @@ block body
 				div.container-fluid
 					if (!_.noTitle)
 						div.page-title
-							div.title_left
-								h3= _.title
-							div.title_right
+							h3.pull-left= _.title
+							div.pull-right
 								block page-title-extra
+							div.clearfix
 						div.clearfix
 
 					block page-body

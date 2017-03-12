@@ -4,10 +4,9 @@ block page-body
 
 	- account = account || {}
 
-	div.row: div.col-lg-6
-		form.validate(action = '/settings/accounts/edit/' + (account.id || 0), method = 'post')
-			fieldset
-
+	form.validate(action = '/settings/accounts/edit/' + (account.id || 0), method = 'post')
+		div.row
+			div.col-xs-12.col-md-6
 				div.form-group
 					label(for = 'name') Name:
 					input#name.form-control(placeholder = 'e.g. TSB Current Account', name = 'name', type = 'text', maxlength = 80, required = true, value = account.name || '')

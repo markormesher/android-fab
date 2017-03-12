@@ -4,10 +4,9 @@ block page-body
 
 	- category = category || {}
 
-	div.row: div.col-lg-6
-		form.validate(action = '/settings/categories/edit/' + (category.id || 0), method = 'post')
-			fieldset
-
+	form.validate(action = '/settings/categories/edit/' + (category.id || 0), method = 'post')
+		div.row
+			div.col-xs-12.col-sm-6
 				div.form-group
 					label(for = 'name') Name:
 					input#name.form-control(placeholder = 'e.g. Public Transport', name = 'name', type = 'text', maxlength = 80, required = true, value = category.name || '')
