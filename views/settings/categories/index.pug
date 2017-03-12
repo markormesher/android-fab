@@ -1,41 +1,31 @@
 extends ../../_shared/page-layout
 
+block page-head
+	link(rel = 'stylesheet', href = '/_vendor/datatables/css/dataTables.bootstrap.min.css')
+	link(rel = 'stylesheet', href = '/_vendor/datatables-fixed-header/css/fixedHeader.bootstrap.min.css')
+
 block page-title-extra
-	a.btn.btn-success.pull-right(href = '/settings/categories/create')
+	button#add-btn.btn.btn-success.pull-right
 		i.fa.fa-fw.fa-plus
-		|  Create Category
+		|  Add Category
 
 block page-body
 
-	- categories = categories || []
-	- var hasCategories = false
-	for c in categories
-		if (!c.system)
-			- hasCategories = true
-
 	div.row: div.col-xs-12
-		if !hasCategories
-			div.alert.alert-danger No categories set up!
-		else
-			table.table.table-condensed.table-hover
-				thead
-					tr
-						th Category
-						th Income
-						th Expense
-						th Actions
-				tbody
-					for c in categories
-						if (!c.system)
-							tr(id = c.id)
-								- inChecked = c.summary_visibility == 'in' || c.summary_visibility == 'both'
-								- outChecked = c.summary_visibility == 'out' || c.summary_visibility == 'both'
-								td(class = c.system ? 'text-muted' : '')= c.name
-								td: input(type = 'checkbox', name = c.id, value = 'in', checked = inChecked)
-								td: input(type = 'checkbox', name = c.id, value = 'out', checked = outChecked)
-								td: a.label.label-warning(href = '/settings/categories/edit/' + c.id)
-										i.fa.fa-fw.fa-pencil
-										|  Edit
+		table#categories.table.table-condensed.table-hover
+			thead
+				tr
+					th Category
+					th Income
+					th Expense
+					th Actions
+
+	include modal-editor
 
 block page-scripts
-	script(src = '/settings/categories/summary-control.js')
+	script(src = '/_vendor/datatables/js/jquery.dataTables.min.js')
+	script(src = '/_vendor/datatables/js/dataTables.bootstrap.min.js')
+	script(src = '/_vendor/datatables-fixed-header/js/dataTables.fixedHeader.min.js')
+	script(src = '/_vendor/jquery-validation/js/jquery.validate.min.js')
+	script(src = '/_shared/js/form-validation.js')
+	script(src = '/settings/categories/js/categories.js')

@@ -1,50 +1,40 @@
 express = require('express')
+async = require('async')
 rfr = require('rfr')
 auth = rfr('./helpers/auth')
 CategoryManager = rfr('./managers/categories')
 router = express.Router()
 
-router.get('/', auth.checkAndRefuse, (req, res, next) ->
-	CategoryManager.getCategories(res.locals.user, true, (err, categories) ->
-		if (err)
-			return next(err)
-
-		res.render('settings/categories/index', {
-			_: {
-				title: 'Settings: Categories'
-				activePage: 'settings-categories'
-			},
-			categories: categories
-		})
-	)
-)
-
-router.get('/create', auth.checkAndRefuse, (req, res) ->
-	res.render('settings/categories/edit', {
+router.get('/', auth.checkAndRefuse, (req, res) ->
+	res.render('settings/categories/index', {
 		_: {
-			title: 'Settings: Create Category'
+			title: 'Settings: Categories'
 			activePage: 'settings-categories'
-		}
+		},
 	})
 )
 
-router.get('/edit/:categoryId', auth.checkAndRefuse, (req, res) ->
-	categoryId = req.params['categoryId']
+router.get('/data', auth.checkAndRefuse, (req, res, next) ->
+	start = parseInt(req.query['start'])
+	count = parseInt(req.query['length'])
+	order = req.query['order'][0]['dir']
+	search = req.query['search']['value']
 
-	CategoryManager.getCategory(res.locals.user, categoryId, (err, category) ->
-		if (err or !category)
-			req.flash('error', 'Sorry, that category couldn\'t be loaded!')
-			res.writeHead(302, { Location: '/settings/categories' })
-			res.end()
-			return
+	async.parallel(
+		{
+			'totalCount': (callback) -> CategoryManager.getCategoriesCount(res.locals.user, (err, result) -> callback(err, result))
+			'filteredCount': (callback) -> CategoryManager.getFilteredCategoriesCount(res.locals.user, search, (err, result) -> callback(err, result))
+			'data': (callback) -> CategoryManager.getFilteredCategories(res.locals.user, search, start, count, order, (err, result) -> callback(err, result))
+		},
+		(err, results) ->
+			if (err)
+				return next(err)
 
-		res.render('settings/categories/edit', {
-			_: {
-				title: 'Settings: Edit Category'
-				activePage: 'settings-categories'
-			},
-			category: category
-		})
+			res.json({
+				recordsTotal: results.totalCount
+				recordsFiltered: results.filteredCount
+				data: results.data
+			})
 	)
 )
 
@@ -53,10 +43,17 @@ router.post('/edit/:categoryId', auth.checkAndRefuse, (req, res) ->
 	category = req.body
 
 	CategoryManager.saveCategory(res.locals.user, categoryId, category, (err) ->
-		if (err)
-			req.flash('error', 'Sorry, that category couldn\'t be saved!')
+		if (err) then console.log(err)
+		res.status(if (err) then 400 else 200)
+		res.end()
+	)
+)
 
-		res.writeHead(302, { Location: '/settings/categories' })
+router.post('/delete/:categoryId', auth.checkAndRefuse, (req, res) ->
+	categoryId = req.params['categoryId']
+
+	CategoryManager.deleteCategory(res.locals.user, categoryId, (err) ->
+		res.status(if (err) then 400 else 200)
 		res.end()
 	)
 )

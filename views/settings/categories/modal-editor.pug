@@ -1,0 +1,19 @@
+div#editor-modal.modal.fade(tabindex = -1)
+	div.modal-dialog
+		div.modal-content
+			form#editor-form.validate
+				div.modal-header
+					button.close(type = "button", data-dismiss = "modal" aria-label = "Close"): span(aria-hidden = "true") &times;
+					h4.modal-title.create-only Create Category
+					h4.modal-title.edit-only Edit Category
+
+				div.modal-body
+					div.row
+						div.form-group.col-xs-12.col-sm-6
+							label(for = 'name') Name:
+							input#name.form-control(name = 'name', type = 'text', required = true)
+
+				div.modal-footer
+					button#save-btn.btn.btn-primary
+						i.fa.fa-fw.fa-save
+						|  Save

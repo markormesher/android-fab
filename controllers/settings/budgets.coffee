@@ -23,7 +23,7 @@ router.get('/', auth.checkAndRefuse, (req, res, next) ->
 )
 
 router.get('/create', auth.checkAndRefuse, (req, res, next) ->
-	CategoryManager.getCategories(res.locals.user, true, (err, categories) ->
+	CategoryManager.getCategories(res.locals.user, (err, categories) ->
 		if (err)
 			return next(err)
 
@@ -47,7 +47,7 @@ router.get('/edit/:budgetId', auth.checkAndRefuse, (req, res) ->
 			res.end()
 			return
 
-		CategoryManager.getCategories(res.locals.user, true, (err, categories) ->
+		CategoryManager.getCategories(res.locals.user, (err, categories) ->
 			if (err)
 				return next(err)
 

@@ -14,16 +14,53 @@ manager = {
 		))
 
 
-	getCategories: (user, activeOnly, callback) ->
-		query = if (activeOnly)
-			'SELECT * FROM category WHERE owner = ? AND active = 1 ORDER BY name ASC;'
-		else
-			'SELECT * FROM category WHERE owner = ? ORDER BY name ASC;'
-		mysql.getConnection((conn) -> conn.query(query, user.id, (err, results) ->
+	getCategories: (user, callback) ->
+		mysql.getConnection((conn) -> conn.query('SELECT * FROM category WHERE owner = ? AND active = true ORDER BY name ASC;', user.id, (err, results) ->
 			conn.release()
 			if (err) then return callback(err)
 			if (results) then return callback(null, results)
 			return callback(null, [])
+		))
+
+
+	getCategoriesCount: (user, callback) ->
+		mysql.getConnection((conn) -> conn.query('SELECT COUNT(*) AS result FROM category WHERE owner = ? AND active = true AND system = false;', user.id, (err, result) ->
+			conn.release()
+			if (err) then return callback(err)
+			if (result) then return callback(null, result[0]['result'])
+			callback(null, null)
+		))
+
+
+	getFilteredCategoriesCount: (user, query, callback) ->
+		mysql.getConnection((conn) -> conn.query(
+			"""
+			SELECT COUNT(*) AS result
+			FROM category
+			WHERE owner = ? AND LOWER(name) LIKE ? AND active = true AND system = false;
+			""",
+			[user.id, "%#{query.toLowerCase()}%"],
+			(err, result) ->
+				conn.release()
+				if (err) then return callback(err)
+				if (result) then return callback(null, result[0]['result'])
+				callback(null, null)
+		))
+
+
+	getFilteredCategories: (user, query, start, count, order, callback) ->
+		mysql.getConnection((conn) -> conn.query(
+			"""
+			SELECT *
+			FROM category
+			WHERE owner = ? AND LOWER(name) LIKE ? AND active = true AND system = false
+			""" + ' ORDER BY name ' + order + ' LIMIT ? OFFSET ?;',
+			[user.id, "%#{query.toLowerCase()}%", count, start],
+			(err, result) ->
+				conn.release()
+				if (err) then return callback(err)
+				if (result) then return callback(null, result)
+				callback(null, null)
 		))
 
 
@@ -46,6 +83,7 @@ manager = {
 					callback(err)
 			))
 
+
 	setSummaryVisibility: (user, id, value, callback) ->
 		if (['in', 'out', 'both'].indexOf(value) < 0) then value = null
 		mysql.getConnection((conn) -> conn.query('UPDATE category SET summary_visibility = ? WHERE id = ? AND owner = ? AND system = false', [value, id, user.id],
@@ -53,6 +91,14 @@ manager = {
 				conn.release()
 				callback(err)
 		))
+
+
+	deleteCategory: (user, id, callback) ->
+		mysql.getConnection((conn) ->
+			conn.query('UPDATE category SET active = false WHERE id = ? AND owner = ? AND system = false;', [id, user.id], (err) ->
+				conn.release()
+				callback(err))
+		)
 }
 
 module.exports = manager
