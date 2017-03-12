@@ -9,6 +9,12 @@ actionsHtml = """
 </div>
 """
 
+orderingHtml = """
+<div class="btn-group">
+	<button class="btn btn-mini btn-default move-up-btn" data-id="__ID__"><i class="fa fa-fw fa-angle-up"></i></button>
+	<button class="btn btn-mini btn-default move-down-btn" data-id="__ID__"><i class="fa fa-fw fa-angle-down"></i></button>
+</div>
+"""
 currentData = {}
 
 $(document).ready(() ->
@@ -17,34 +23,26 @@ $(document).ready(() ->
 )
 
 initDataTable = () ->
-	dataTable = $('#categories').DataTable({
-		paging: true
-		lengthMenu: [
-			[25, 50, 100]
-			[25, 50, 100]
-		]
-		order: [[0, 'asc']]
+	dataTable = $('#accounts').DataTable({
+		paging: false
+		order: [[2, 'asc']]
 		columnDefs: [
-			{ targets: [0], orderable: true }
 			{ targets: '_all', orderable: false }
 		]
 
 		serverSide: true
 		ajax: {
-			url: '/settings/categories/data'
+			url: '/settings/accounts/data'
 			type: 'get'
 			dataSrc: (raw) ->
 				currentData = {}
 				displayData = []
 				for d in raw.data
 					currentData[d['id']] = d
-					isInType = d['summary_visibility'] == 'in' || d['summary_visibility'] == 'both'
-					isOutType = d['summary_visibility'] == 'out' || d['summary_visibility'] == 'both'
 					displayData.push([
 						d['name']
-						'<input type="checkbox" value="in" data-id="' + d['id'] + '" ' + (if (isInType) then 'checked="checked"' else '') + '/>'
-						'<input type="checkbox" value="out" data-id="' + d['id'] + '" ' + (if (isOutType) then 'checked="checked"' else '') + '/>'
 						actionsHtml.replace(///__ID__///g, d['id'])
+						orderingHtml.replace(///__ID__///g, d['id'])
 					])
 				return displayData
 		}
@@ -59,40 +57,48 @@ initEditor = () ->
 	editor['_createOnly'] = editor['_modal'].find('.create-only')
 	editor['_editOnly'] = editor['_modal'].find('.edit-only')
 	editor['name'] = editor['_modal'].find('#name')
+	editor['description'] = editor['_modal'].find('#description')
+	editor['type'] = editor['_modal'].find('#type')
 	editor['save-btn'] = editor['_modal'].find('#save-btn')
 
 	editor['_modal'].on('shown.bs.modal', () ->
 		editor['name'].focus()
 	)
 
-	$('#add-btn').click(() -> editCategory(0))
+	$('#add-btn').click(() -> editAccount(0))
 
-	editor['name'].keydown((e) ->
-		if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10))
-			editor['_form'].submit()
-	)
+	for field in [editor['name'], editor['description']]
+		field.keydown((e) ->
+			if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10))
+				editor['_form'].submit()
+		)
 
 	editor['_form'].submit((e) ->
 		if ($(this).valid())
-			saveCategory()
+			saveAccount()
 		e.preventDefault()
 	)
 
 initRowButtons = () ->
-	$('.delete-btn').click(() -> deleteCategory($(this), $(this).data('id')))
-	$('.edit-btn').click(() -> editCategory($(this).data('id')))
-	$('td input[type=checkbox]').click((e) -> e.stopPropagation())
-	$('td').click(() ->
-		$(this).find('input[type=checkbox]').click()
-	)
-	$('td input[type=checkbox]').change(() -> toggleCategoryVisibility($(this)))
+	$('.delete-btn').click(() -> deleteAccount($(this), $(this).data('id')))
+	$('.edit-btn').click(() -> editAccount($(this).data('id')))
+	rows = $('#accounts tbody tr')
+	rows.first().find('.move-up-btn').prop('disabled', true)
+	rows.last().find('.move-down-btn').prop('disabled', true)
+	$('.move-up-btn').click(() -> reOrderAccount($(this), -1))
+	$('.move-down-btn').click(() -> reOrderAccount($(this), 1))
 
-clearEditor = () -> editor['name'].val('')
+clearEditor = () ->
+	editor['name'].val('')
+	editor['description'].val('')
+	editor['type'].prop('selectedIndex', 0)
 
 populateEditor = (id) ->
-	category = currentData[id]
-	if (category)
-		editor['name'].val(category['name'])
+	account = currentData[id]
+	if (account)
+		editor['name'].val(account['name'])
+		editor['description'].val(account['description'])
+		editor['type'].val(account['type'])
 
 setEditorLock = (locked) ->
 	editor['name'].prop('disabled', locked)
@@ -102,14 +108,14 @@ setEditorLock = (locked) ->
 	else
 		editor['save-btn'].find('i').addClass('fa-save').removeClass('fa-circle-o-notch').removeClass('fa-spin')
 
-deleteCategory = (btn, id) ->
+deleteAccount = (btn, id) ->
 	if (btn.hasClass('btn-danger'))
 		$.post(
-			"/settings/categories/delete/#{id}"
+			"/settings/accounts/delete/#{id}"
 		).done(() ->
 			dataTable.ajax.reload()
 		).fail(() ->
-			toastr.error('Sorry, that category couldn\'t be deleted!')
+			toastr.error('Sorry, that account couldn\'t be deleted!')
 		)
 	else
 		btn.removeClass('btn-default').addClass('btn-danger')
@@ -117,7 +123,7 @@ deleteCategory = (btn, id) ->
 			btn.addClass('btn-default').removeClass('btn-danger')
 		), 2000)
 
-editCategory = (id) ->
+editAccount = (id) ->
 	editId = id
 	clearEditor(true)
 	if (id == 0)
@@ -130,32 +136,32 @@ editCategory = (id) ->
 
 	editor['_modal'].modal('show')
 
-saveCategory = () ->
+saveAccount = () ->
 	setEditorLock(true)
-	$.post("/settings/categories/edit/#{editId}", {
+	$.post("/settings/accounts/edit/#{editId}", {
 		name: editor['name'].val()
+		description: editor['description'].val()
+		type: editor['type'].val()
 	}).done(() ->
 		dataTable.ajax.reload()
 		setEditorLock(false)
 		clearEditor()
 		editor['_modal'].modal('hide')
 	).fail(() ->
-		toastr.error('Sorry, that category couldn\'t be saved!')
+		toastr.error('Sorry, that account couldn\'t be saved!')
 		setEditorLock(false)
 	)
 
-toggleCategoryVisibility = (checkbox) ->
-	id = checkbox.data('id')
-	row = checkbox.closest('tr')
-	inChecked = row.find('input[value="in"]').is(':checked')
-	outChecked = row.find('input[value="out"]').is(':checked')
-	value = if (inChecked && outChecked)
-		'both'
-	else if (inChecked)
-		'in'
-	else if (outChecked)
-		'out'
-	else
-		null
+reOrderAccount = (btn, direction) ->
+	$('.move-up-btn').prop('disabled', true)
+	$('.move-down-btn').prop('disabled', true)
 
-	$.post("/settings/categories/set-summary-visibility/#{id}", { value: value })
+	id = btn.data('id')
+	$.post("/settings/accounts/reorder/#{id}", {
+		direction: direction
+	}).done(() ->
+		dataTable.ajax.reload()
+	).fail(() ->
+		toastr.error('Sorry, that account couldn\'t be moved!')
+		dataTable.ajax.reload()
+	)

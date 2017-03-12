@@ -26,6 +26,48 @@ manager = {
 		))
 
 
+	getAccountsCount: (user, callback) ->
+		mysql.getConnection((conn) -> conn.query('SELECT COUNT(*) AS result FROM account WHERE owner = ? AND active = true;', user.id, (err, result) ->
+			conn.release()
+			if (err) then return callback(err)
+			if (result) then return callback(null, result[0]['result'])
+			callback(null, null)
+		))
+
+
+	getFilteredAccountsCount: (user, query, callback) ->
+		mysql.getConnection((conn) -> conn.query(
+			"""
+			SELECT COUNT(*) AS result
+			FROM account
+			WHERE owner = ? AND LOWER(CONCAT(name, description)) LIKE ? AND active = true;
+			""",
+			[user.id, "%#{query.toLowerCase()}%"],
+			(err, result) ->
+				conn.release()
+				if (err) then return callback(err)
+				if (result) then return callback(null, result[0]['result'])
+				callback(null, null)
+		))
+
+
+	getFilteredAccounts: (user, query, callback) ->
+		mysql.getConnection((conn) -> conn.query(
+			"""
+			SELECT *
+			FROM account
+			WHERE owner = ? AND LOWER(CONCAT(name, description)) LIKE ? AND active = true
+			ORDER BY display_order ASC;
+			""",
+			[user.id, "%#{query.toLowerCase()}%"],
+			(err, result) ->
+				conn.release()
+				if (err) then return callback(err)
+				if (result) then return callback(null, result)
+				callback(null, null)
+		))
+
+
 	saveAccount: (user, id, account, callback) ->
 		if (!id || id == 0 || id == '0')
 			id = uuid.v1()
@@ -46,8 +88,38 @@ manager = {
 			))
 
 
-	setAccountDisplayOrder: (user, id, order, callback) ->
-		mysql.getConnection((conn) -> conn.query('UPDATE account SET display_order = ? WHERE id = ? AND owner = ?;', [order, id, user.id], (err) ->
+	# TODO
+	reorderAccount: (user, id, direction, callback) ->
+		callback(null)
+#		mysql.getConnection((conn) ->
+#			conn.beginTransaction((err) ->
+#				if (err)
+#					conn.rollback(() -> callback(err))
+#					return conn.release()
+#				conn.query('SELECT display_order FROM account WHERE id = ? AND owner = ?;', [id, user.id], (err, result) ->
+#					if (err)
+#						conn.rollback(() -> callback(err))
+#						return conn.release()
+#
+#					conn.query('UPDATE account SET display_order = display_order + (? * -1) WHERE display_order = (SELECT display_order FROM ((SELECT * FROM account WHERE id = ?) AS temp_table)) AND owner = ? AND id != ?;', [direction, id, id, user.id], (err) ->
+#						if (err)
+#							conn.rollback(() -> callback(err))
+#							return conn.release()
+#						conn.commit((err) ->
+#							if (err)
+#								conn.rollback(() -> callback(err))
+#								return conn.release()
+#							conn.release()
+#							callback(null)
+#						)
+#					)
+#				)
+#			)
+#		)
+
+
+	deleteAccount: (user, id, callback) ->
+		mysql.getConnection((conn) -> conn.query('UPDATE account SET active = false WHERE id = ? AND owner = ?;', [id, user.id], (err) ->
 			conn.release()
 			callback(err)
 		))

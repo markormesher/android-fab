@@ -94,11 +94,10 @@ manager = {
 
 
 	deleteCategory: (user, id, callback) ->
-		mysql.getConnection((conn) ->
-			conn.query('UPDATE category SET active = false WHERE id = ? AND owner = ? AND system = false;', [id, user.id], (err) ->
-				conn.release()
-				callback(err))
-		)
+		mysql.getConnection((conn) -> conn.query('UPDATE category SET active = false WHERE id = ? AND owner = ? AND system = false;', [id, user.id], (err) ->
+			conn.release()
+			callback(err)
+		))
 }
 
 module.exports = manager

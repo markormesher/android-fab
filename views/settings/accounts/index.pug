@@ -1,36 +1,30 @@
 extends ../../_shared/page-layout
 
+block page-head
+	link(rel = 'stylesheet', href = '/_vendor/datatables/css/dataTables.bootstrap.min.css')
+	link(rel = 'stylesheet', href = '/_vendor/datatables-fixed-header/css/fixedHeader.bootstrap.min.css')
+
 block page-title-extra
-	a.btn.btn-success.pull-right(href = '/settings/accounts/create')
+	button#add-btn.btn.btn-success.pull-right
 		i.fa.fa-fw.fa-plus
-		|  Create Account
+		|  Add Account
 
 block page-body
 
-	- accounts = accounts || []
-
 	div.row: div.col-xs-12
-		if accounts.length == 0
-			div.alert.alert-danger No accounts set up!
-		else
-			table.table.table-condensed.table-hover
-				thead
-					tr
-						th Name
-						th Actions
-						th Ordering
-				tbody#accounts
-					for a in accounts
-						tr(data-id = a.id)
-							td= a.name
-							td
-								a.label.label-warning(href = '/settings/accounts/edit/' + a.id)
-									i.fa.fa-fw.fa-pencil
-									|  Edit
-							td
-								a.label.label-info.move-up: i.fa.fa-fw.fa-caret-up
-								| &nbsp
-								a.label.label-info.move-down: i.fa.fa-fw.fa-caret-down
+		table#accounts.table.table-condensed.table-hover
+			thead
+				tr
+					th Category
+					th Actions
+					th Display Order
+
+	include modal-editor
 
 block page-scripts
-	script(src = '/settings/accounts/js/ordering.js')
+	script(src = '/_vendor/datatables/js/jquery.dataTables.min.js')
+	script(src = '/_vendor/datatables/js/dataTables.bootstrap.min.js')
+	script(src = '/_vendor/datatables-fixed-header/js/dataTables.fixedHeader.min.js')
+	script(src = '/_vendor/jquery-validation/js/jquery.validate.min.js')
+	script(src = '/_shared/js/form-validation.js')
+	script(src = '/settings/accounts/js/accounts.js')

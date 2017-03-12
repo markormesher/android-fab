@@ -87,11 +87,10 @@ manager = {
 
 
 	deleteTransaction: (user, id, callback) ->
-		mysql.getConnection((conn) ->
-			conn.query('DELETE FROM transaction WHERE id = ? AND owner = ?;', [id, user.id], (err) ->
-				conn.release()
-				callback(err))
-		)
+		mysql.getConnection((conn) -> conn.query('DELETE FROM transaction WHERE id = ? AND owner = ?;', [id, user.id], (err) ->
+			conn.release()
+			callback(err)
+		))
 
 }
 
