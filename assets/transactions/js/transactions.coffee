@@ -91,6 +91,13 @@ initEditor = () ->
 		editor['effective-date'].val(editor['transaction-date'].val())
 	)
 
+	for key, field of editor
+		if (field.prop('type') != undefined || field.prop('tagName') == 'TEXTAREA')
+			field.keydown((e) ->
+				if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10))
+					editor['_form'].submit()
+			)
+
 	editor['_form'].submit((e) ->
 		if ($(this).valid())
 			saveTransaction()
