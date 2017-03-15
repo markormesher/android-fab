@@ -34,6 +34,7 @@ app.use(sassMiddleware({
 app.use(cookieParser(secrets.COOKIE_KEY))
 app.use(session({
 	name: 'session'
+	maxAge: 1000 * 60 * 60 * 24 * 14 # two weeks
 	secret: secrets.SESSION_KEY
 }))
 app.use((req, res, next) ->
