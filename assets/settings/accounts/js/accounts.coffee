@@ -119,7 +119,7 @@ deleteAccount = (btn, id) ->
 		)
 	else
 		btn.removeClass('btn-default').addClass('btn-danger')
-		setTimeout((() ->
+		setTimeout((() ->connectionLimit
 			btn.addClass('btn-default').removeClass('btn-danger')
 		), 2000)
 

@@ -88,34 +88,41 @@ manager = {
 			))
 
 
-	# TODO
 	reorderAccount: (user, id, direction, callback) ->
 		callback(null)
-#		mysql.getConnection((conn) ->
-#			conn.beginTransaction((err) ->
-#				if (err)
-#					conn.rollback(() -> callback(err))
-#					return conn.release()
-#				conn.query('SELECT display_order FROM account WHERE id = ? AND owner = ?;', [id, user.id], (err, result) ->
-#					if (err)
-#						conn.rollback(() -> callback(err))
-#						return conn.release()
-#
-#					conn.query('UPDATE account SET display_order = display_order + (? * -1) WHERE display_order = (SELECT display_order FROM ((SELECT * FROM account WHERE id = ?) AS temp_table)) AND owner = ? AND id != ?;', [direction, id, id, user.id], (err) ->
-#						if (err)
-#							conn.rollback(() -> callback(err))
-#							return conn.release()
-#						conn.commit((err) ->
-#							if (err)
-#								conn.rollback(() -> callback(err))
-#								return conn.release()
-#							conn.release()
-#							callback(null)
-#						)
-#					)
-#				)
-#			)
-#		)
+		mysql.getConnection((conn) ->
+
+			conn.query('SELECT id, display_order FROM account WHERE owner = ?;', user.id, (err, result) ->
+				conn.release()
+				if (err) then return callback(err)
+
+				newOrders = {}
+				for r in result
+					newOrders[r['id']] = r['display_order'] * 10
+
+				newOrders[id] += 15 * direction
+
+				updates = []
+				for k, v of newOrders
+					updates.push([k, v])
+				updates.sort((a, b) -> a[1] - b[1])
+
+				query = ''
+				queryArgs = []
+				for u, i in updates
+					query += ' UPDATE account SET display_order = ? WHERE id = ? AND owner = ?;'
+					queryArgs.push(i)
+					queryArgs.push(u[0])
+					queryArgs.push(user.id)
+
+				mysql.getConnection((conn) ->
+					conn.query(query, queryArgs, (err) ->
+						conn.release()
+						callback(err)
+					)
+				)
+			)
+		)
 
 
 	deleteAccount: (user, id, callback) ->
