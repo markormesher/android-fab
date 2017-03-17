@@ -6,8 +6,8 @@ block page-body
 	- budget.amount = budget.amount || 0
 	- budget.categories = budget.categories || []
 	- now = new Date()
-	- startDate = budget.start_date || new Date(now.getFullYear(), now.getMonth(), 1)
-	- endDate = budget.end_date || new Date(now.getFullYear(), now.getMonth() + 1, 0)
+	- startDate = budget.start_date || new Date(now.getFullYear(), now.getMonth(), 1, 12, 0, 0)
+	- endDate = budget.end_date || new Date(now.getFullYear(), now.getMonth() + 1, 0, 12, 0, 0)
 
 	form.validate(action = '/settings/budgets/edit/' + (budget.id || 0), method = 'post')
 		div.row
