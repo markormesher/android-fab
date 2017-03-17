@@ -13,13 +13,52 @@ block page-body
 
 	div.row
 		div.col-lg-12.col-md-12.col-sm-12.col-xs-12
-			div.dashboard_graph
+			div.dashboard_graph.row
 				div.col-xs-12.loading-pane
 					p.text-center(style = 'margin: 20px;'): i.fa.fa-fw.fa-hourglass.fa-spin.fa-2x
-				div.col-xs-12.error-pane
+				div.col-xs-12.error-pane(style = 'display: none;')
 					p.text-center(style = 'margin: 20px;'): i.fa.fa-fw.fa-exclamation-triangle.fa-2x.text-danger
-				div.col-xs-12.content-pane
-					canvas#history-chart(width = '4', height = '3')
+
+				div.col-sm-12.col-md-9.content-pane(style = 'display: none;')
+					canvas#history-chart
+				div.col-sm-12.col-md-3.content-pane(style = 'display: none;')
+					div.row
+						div.col-xs-6
+							h4 Start
+							p: span.start-balance.currency 0.00
+
+						div.col-xs-6
+							h4 End
+							p: span.end-balance.currency 0.00
+
+					div.row
+						div.col-xs-12
+							h4.gap Change over Period
+
+					div.row
+						div.col-xs-6
+							p: span.real-change.currency + 0.00
+						div.col-xs-6
+							p
+								i.fa.fa-caret-up.fa-fw.percent-change-icon
+								| &nbsp;
+								span.percent-change.currency 0%
+
+					div.row
+						div.col-xs-6
+							h4.gap Min
+							p
+								span.min-balance.currency 0.00
+								br
+								span.text-muted.min-date (date)
+
+						div.col-xs-6
+							h4.gap Max
+							p
+								span.max-balance.currency 0.00
+								br
+								span.text-muted.max-date (date)
+
 				div.clearfix
 
 block page-scripts

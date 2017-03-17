@@ -188,13 +188,33 @@ manager = {
 			(err, results) ->
 				if (err) then return callback(err)
 
+				high = results['initial']
+				highDate = start
+				low = results['initial']
+				lowDate = start
+
 				lastBalance = results['initial']
-				output = []
-				output.push({ date: start, balance: results['initial'] })
+				output = { history: [] }
+				output['history'].push({ date: start, balance: results['initial'] })
 
 				for row in results['history']
 					lastBalance += row['balance']
-					output.push({ date: new Date(row['effective_date']), balance: lastBalance })
+					output['history'].push({ date: new Date(row['effective_date']), balance: lastBalance })
+
+					if (lastBalance > high)
+						high = lastBalance
+						highDate = new Date(row['effective_date'])
+
+					if (lastBalance < low)
+						low = lastBalance
+						lowDate = new Date(row['effective_date'])
+
+				output['start'] = results['initial']
+				output['end'] = lastBalance
+				output['high'] = high
+				output['highDate'] = highDate
+				output['low'] = low
+				output['lowDate'] = lowDate
 
 				callback(null, output)
 		)

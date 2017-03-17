@@ -22,7 +22,7 @@ ul.ui-autocomplete {
 	}
 }
 
-td.currency {
+span.currency, td.currency {
 	font-family: monospace;
 }
 
@@ -49,4 +49,13 @@ i.title-icon {
 
 .form-control:focus {
 	border-color: #66afe9;
+}
+
+.text-muted {
+	color: inherit !important;
+	opacity: 0.6;
+}
+
+h4.gap {
+	margin-top: 18px !important;
 }
