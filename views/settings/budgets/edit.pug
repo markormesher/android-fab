@@ -58,12 +58,6 @@ block page-body
 								input(type = 'radio', name = 'type', value = 'bill', required = true, checked = (budget.type == 'bill'))
 								|  Bill
 
-				div.row
-					div.col-lg-6.form-group
-						button.btn.btn-success
-							i.fa.fa-save
-							| &nbsp;&nbsp;
-							| Save
 
 			div.col-xs-12.col-md-6
 				div.form-group
@@ -73,6 +67,14 @@ block page-body
 							div.checkbox(style = 'width: 49%; display: inline-block;'): label
 								input(type = 'checkbox', name = 'categories', value = c.id, required = true, checked = (budget.categories.indexOf(c.id) >= 0))
 								|  #{c.name}
+
+		div.row
+			div.col-lg-6.form-group
+				button.btn.btn-success
+					i.fa.fa-save
+					| &nbsp;&nbsp;
+					| Save
+
 
 block page-scripts
 	script(src = '/_vendor/jquery-validation/js/jquery.validate.min.js')
