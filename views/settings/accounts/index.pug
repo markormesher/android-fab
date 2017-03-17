@@ -2,7 +2,6 @@ extends ../../_shared/page-layout
 
 block page-head
 	link(rel = 'stylesheet', href = '/_vendor/datatables/css/dataTables.bootstrap.min.css')
-	link(rel = 'stylesheet', href = '/_vendor/datatables-fixed-header/css/fixedHeader.bootstrap.min.css')
 
 block page-title-extra
 	button#add-btn.btn.btn-success.pull-right
@@ -24,7 +23,6 @@ block page-body
 block page-scripts
 	script(src = '/_vendor/datatables/js/jquery.dataTables.min.js')
 	script(src = '/_vendor/datatables/js/dataTables.bootstrap.min.js')
-	script(src = '/_vendor/datatables-fixed-header/js/dataTables.fixedHeader.min.js')
-	script(src = '/_vendor/jquery-validation/js/jquery.validate.min.js')
-	script(src = '/_shared/js/form-validation.js')
-	script(src = '/settings/accounts/js/accounts.js')
+	script(src = '/_vendor/jquery-validation/jquery.validate.min.js')
+	script(src = '/_shared/form-validation.js')
+	script(src = '/settings/accounts.js')

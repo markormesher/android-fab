@@ -23,6 +23,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(coffeeMiddleware({
 	src: __dirname + '/assets'
 	compress: true
+	encodeSrc: false
 }))
 app.use(sassMiddleware({
 	src: __dirname + '/assets/'

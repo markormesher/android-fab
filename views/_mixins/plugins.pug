@@ -1,17 +1,4 @@
-mixin plugin_bootbox
-	script(src = '/_vendor/js/bootbox.min.js')
-
-mixin plugin_validation
-	script(src = '/_vendor/js/jquery.form-validator.min.js')
-	script(type = 'text/javascript').
-		$.validate({
-			'inputParentClassOnSuccess': false
-		});
-		$('.btn').click(function () {
-			$(this).validate();
-		})
-
 mixin plugin_toastrListener
 	script(type = 'text/javascript').
 		var toastrMessages = !{JSON.stringify(locals.messages || [])};
-	script(src = '/_shared/js/toastr-listener.js')
+	script(src = '/_shared/toastr-listener.js')
