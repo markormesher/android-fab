@@ -5,28 +5,28 @@ block page-head
 	link(rel = 'stylesheet', href = '/reports/reports.css')
 
 block page-title-extra
-	div#report-range.report-option-btn.pull-right
-		i.fa.fa-fw.fa-calendar.title-icon
-		span
-		i.fa.fa-fw.fa-caret-down
-
-	div#select-accouts.report-option-btn.pull-right(style = 'margin-right: 10px;')
+	button.btn.btn-default#select-accouts(style = 'margin-right: 12px;')
 		i.fa.fa-fw.fa-check-square-o.title-icon
 		| Showing #[span 0 of 0] account(s)
+
+	button.btn.btn-default#report-range
+		i.fa.fa-fw.fa-calendar.title-icon
+		span
+		i.fa.fa-fw.fa-caret-down.text-muted
 
 block page-body
 
 	div.row
 		div.col-lg-12.col-md-12.col-sm-12.col-xs-12
 			div.dashboard_graph.row
-				div.col-xs-12.loading-pane
-					p.text-center(style = 'margin: 20px;'): i.fa.fa-fw.fa-hourglass.fa-spin.fa-2x
+
 				div.col-xs-12.error-pane(style = 'display: none;')
 					p.text-center(style = 'margin: 20px;'): i.fa.fa-fw.fa-exclamation-triangle.fa-2x.text-danger
 
-				div.col-sm-12.col-md-9.content-pane(style = 'display: none;')
+				div.col-xs-12.col-md-9.content-pane
 					canvas#history-chart
-				div.col-sm-12.col-md-3.content-pane(style = 'display: none;')
+
+				div.col-xs-12.col-md-3.content-pane
 					div.row
 						div.col-xs-6
 							h4 Start

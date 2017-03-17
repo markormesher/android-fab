@@ -59,3 +59,31 @@ i.title-icon {
 h4.gap {
 	margin-top: 18px !important;
 }
+
+div.page-title {
+	h3 {
+		float: left;
+	}
+
+	div.extra {
+		float: right;
+		text-align: right;
+	}
+}
+
+
+@media (max-width: 992px) {
+	div.page-title {
+		h3 {
+			display: block;
+		}
+
+		div.extra {
+			display: block;
+			text-align: inherit;
+			width: 100%;
+			clear: both;
+			margin-bottom: 12px;
+		}
+	}
+}

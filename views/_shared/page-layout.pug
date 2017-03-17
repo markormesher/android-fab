@@ -45,10 +45,10 @@ block body
 				div.container-fluid
 					if (!_.noTitle)
 						div.page-title
-							h3.pull-left= _.title
-							div.pull-right
+							h3= _.title
+							div.extra
 								block page-title-extra
-							div.clearfix
+
 						div.clearfix
 
 					block page-body

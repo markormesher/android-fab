@@ -3,11 +3,10 @@ endDate = moment().endOf('month')
 
 activeAccounts = []
 
-loadingPane = $('.loading-pane')
 errorPane = $('.error-pane')
 contentPane = $('.content-pane')
 
-loadingPane.show()
+contentPane.fadeTo(0, 0.4)
 errorPane.hide()
 
 reportRangeBtn = $('#report-range')
@@ -77,9 +76,8 @@ updateChart = () ->
 	if (busy) then return
 	busy = true
 
-	loadingPane.show()
+	contentPane.fadeTo(0, 0.4)
 	errorPane.hide()
-	contentPane.hide()
 
 	# make a copy of the dates, to keep the UI consistent if requests finish out of order
 	selectedStart = startDate
@@ -91,11 +89,10 @@ updateChart = () ->
 		accounts: activeAccounts
 	}).done((data) ->
 		populateChart(data)
-		loadingPane.hide()
-		contentPane.show()
+		contentPane.fadeTo(0, 1.0)
 	).fail(() ->
 		toastr.error('Sorry, the graph couldn\'t be loaded!')
-		loadingPane.hide()
+		contentPane.fadeTo(0, 1.0)
 		errorPane.show()
 	).always(() ->
 		setDateUi(selectedStart, selectedEnd)
