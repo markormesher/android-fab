@@ -31,6 +31,7 @@ router.post('/profile', auth.checkAndRefuse, (req, res, next) ->
 				return next(err)
 		else
 			req.flash('success', 'Your details have been updated.')
+			updatedUser['settings'] = req.user['settings']
 			req.login(updatedUser, (err) ->
 				if (err) then return next(err)
 				res.redirect('/users/profile')

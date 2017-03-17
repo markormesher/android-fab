@@ -10,7 +10,6 @@ funcs = {
 		res.locals.user = req.user || null
 		next()
 
-
 	checkAndRefuse: (req, res, next) ->
 		if (req.user)
 			funcs.checkOnly(req, res, next)
