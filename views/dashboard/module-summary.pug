@@ -1,6 +1,6 @@
 mixin row(label, value, strong)
 	- strong = strong || false
-	p(style = 'margin-left: 10px')
+	p
 		if (strong)
 			strong= label
 			strong.pull-right= formatters.formatCurrency(value)
@@ -29,7 +29,7 @@ div.x_panel
 			p.text-muted: i No income
 
 
-		h4 Expenses
+		h4(style = 'margin-top: 18px') Expenses
 		- blank = true
 		for row in summaryData['expense']
 			- blank = false
