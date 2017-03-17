@@ -1,9 +1,22 @@
-defaultStart = moment().startOf('month')
-defaultEnd = moment().endOf('month')
+startDate = moment().startOf('month')
+endDate = moment().endOf('month')
+
+activeAccounts = []
 
 loadingPane = $('.loading-pane')
 errorPane = $('.error-pane')
 contentPane = $('.content-pane')
+
+loadingPane.show()
+errorPane.hide()
+
+reportRangeBtn = $('#report-range')
+selectAccountsBtn = $('#select-accouts')
+activeAccountsField = selectAccountsBtn.find('span')
+
+accountsModal = $('#accounts-modal')
+accountsModalCheckboxes = accountsModal.find('input[type = checkbox]')
+accountsModalUpdateBtn = accountsModal.find('#update-btn')
 
 startBalanceField = $('.start-balance')
 endBalanceField = $('.end-balance')
@@ -15,9 +28,6 @@ realChangeField = $('.real-change')
 percentChangeField = $('.percent-change')
 percentChangeIcon = $('.percent-change-icon')
 colouredChangeFields = realChangeField.add(percentChangeField).add(percentChangeIcon)
-
-loadingPane.show()
-errorPane.hide()
 
 chart = new Chart($('#history-chart'), {
 	type: 'line'
@@ -33,17 +43,12 @@ chart = new Chart($('#history-chart'), {
 			yAxes: [{
 				type: 'linear'
 				position: 'left'
-				ticks: {
-					#beginAtZero: true
-					callback: (value, index, values) -> window.formatters.formatCurrency(value)
-				}
+				ticks: { callback: (value) -> window.formatters.formatCurrency(value) }
 			}]
 			xAxes: [{
 				type: 'linear'
 				position: 'bottom'
-				ticks: {
-					callback: (value, index, values) -> moment(value).format('DD MMM')
-				}
+				ticks: { callback: (value) -> moment(value).format('DD MMM') }
 			}]
 		}
 		legend: {
@@ -52,21 +57,39 @@ chart = new Chart($('#history-chart'), {
 	}
 })
 
-busy = false
-
 onDateSet = (start, end) ->
 	if (busy) then return
-	busy = true
-
+	startDate = start
+	endDate = end
 	setDateUi(start, end)
+	updateChart()
+
+setDateUi = (start, end) -> $('#report-range span').html(start.format('D MMM, YYYY') + ' - ' + end.format('D MMM, YYYY'))
+
+updateActiveAccounts = () ->
+	activeAccounts = []
+	accountsModalCheckboxes.each(() -> if ($(this).is(':checked')) then activeAccounts.push($(this).val()))
+	activeAccountsField.html(activeAccounts.length + ' of ' + accountsModalCheckboxes.length)
+
+busy = false
+
+updateChart = () ->
+	if (busy) then return
+	busy = true
 
 	loadingPane.show()
 	errorPane.hide()
 	contentPane.hide()
 
-	$.get(
-		'/reports/balance-history/data?start=' + start.format('YYYY-MM-DD') + '&end=' + end.format('YYYY-MM-DD')
-	).done((data) ->
+	# make a copy of the dates, to keep the UI consistent if requests finish out of order
+	selectedStart = startDate
+	selectedEnd = endDate
+
+	$.post('/reports/balance-history/data', {
+		start: selectedStart.format('YYYY-MM-DD')
+		end: selectedEnd.format('YYYY-MM-DD')
+		accounts: activeAccounts
+	}).done((data) ->
 		populateChart(data)
 		loadingPane.hide()
 		contentPane.show()
@@ -75,11 +98,9 @@ onDateSet = (start, end) ->
 		loadingPane.hide()
 		errorPane.show()
 	).always(() ->
-		setDateUi(start, end)
+		setDateUi(selectedStart, selectedEnd)
 		busy = false
 	)
-
-setDateUi = (start, end) -> $('#report-range span').html(start.format('D MMM, YYYY') + ' - ' + end.format('D MMM, YYYY'))
 
 populateChart = (data) ->
 	dataset = {
@@ -124,10 +145,10 @@ populateChart = (data) ->
 		colouredChangeFields.addClass('text-danger')
 		percentChangeIcon.addClass('fa-caret-down')
 
-$('#report-range').daterangepicker(
+reportRangeBtn.daterangepicker(
 	{
-		startDate: defaultStart
-		endDate: defaultEnd
+		startDate: startDate
+		endDate: endDate
 		ranges: {
 			'This Month': [moment().startOf('month'), moment().endOf('month')]
 			'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
@@ -138,4 +159,17 @@ $('#report-range').daterangepicker(
 	onDateSet
 )
 
-onDateSet(defaultStart, defaultEnd)
+selectAccountsBtn.click(() ->
+	accountsModal.modal('show')
+)
+
+accountsModalUpdateBtn.click(() ->
+	accountsModal.modal('hide')
+	updateActiveAccounts()
+	updateChart()
+)
+
+# go!
+
+updateActiveAccounts()
+onDateSet(startDate, endDate)

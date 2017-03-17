@@ -167,18 +167,18 @@ manager = {
 		)
 
 
-	getBalanceHistory: (user, start, end, callback) ->
+	getBalanceHistory: (user, start, end, accounts, callback) ->
 		async.parallel(
 			{
 				'initial': (c) -> mysql.getConnection((conn) -> conn.query(
-					'SELECT COALESCE(SUM(amount), 0) AS initial FROM transaction WHERE effective_date <= ? AND owner = ?;', [start, user.id],
+					'SELECT COALESCE(SUM(amount), 0) AS initial FROM transaction WHERE effective_date <= ? AND owner = ? AND account_id IN (?);', [start, user.id, accounts],
 					(err, results) ->
 						conn.release()
 						if (err) then return c(err)
 						c(null, results[0]['initial'])
 				))
 				'history': (c) -> mysql.getConnection((conn) -> conn.query(
-					'SELECT effective_date, COALESCE(SUM(amount), 0) AS balance FROM transaction WHERE effective_date > ? AND effective_date <= ? AND owner = ? GROUP BY effective_date ORDER BY effective_date ASC;', [start, end, user.id],
+					'SELECT effective_date, COALESCE(SUM(amount), 0) AS balance FROM transaction WHERE effective_date > ? AND effective_date <= ? AND owner = ? AND account_id IN (?) GROUP BY effective_date ORDER BY effective_date ASC;', [start, end, user.id, accounts],
 					(err, results) ->
 						conn.release()
 						if (err) then return c(err)
