@@ -6,8 +6,8 @@ block page-body
 	- budget.amount = budget.amount || 0
 	- budget.categories = budget.categories || []
 	- now = new Date()
-	- startDate = budget.start_date || new Date(now.getFullYear(), now.getMonth(), 1, 12, 0, 0)
-	- endDate = budget.end_date || new Date(now.getFullYear(), now.getMonth() + 1, 0, 12, 0, 0)
+	- startDate = budget.start_date || new Date(now.getFullYear(), now.getMonth(), 1)
+	- endDate = budget.end_date || new Date(now.getFullYear(), now.getMonth() + 1, 0)
 
 	form.validate(action = '/settings/budgets/edit/' + (budget.id || 0), method = 'post')
 		div.row
@@ -27,11 +27,11 @@ block page-body
 				div.row
 					div.col-xs-12.col-sm-6.form-group
 						label(for = 'start-date') Start Date:
-						input#start-date.form-control(name = 'start_date', type = 'date', value = startDate.toJSON().slice(0, 10) || '')
+						input#start-date.form-control(name = 'start_date', type = 'date', value = new Date(startDate.getTime() + 12 * 60 * 60 * 1000).toJSON().slice(0, 10) || '')
 
 					div.col-xs-12.col-sm-6.form-group
 						label(for = 'end-date') End Date:
-						input#end-date.form-control(name = 'end_date', type = 'date', value = endDate.toJSON().slice(0, 10) || '')
+						input#end-date.form-control(name = 'end_date', type = 'date', value = new Date(endDate.getTime() + 12 * 60 * 60 * 1000).toJSON().slice(0, 10) || '')
 
 				div.row
 					div.col-lg-12.form-group
