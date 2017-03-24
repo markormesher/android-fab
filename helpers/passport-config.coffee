@@ -1,13 +1,13 @@
 LocalPassportStrategy = require('passport-local').Strategy
 rfr = require('rfr')
-auth = rfr('./helpers/auth')
+hashing = rfr('./helpers/hashing')
 UserManager = rfr('./managers/users')
 
 module.exports = (passport) ->
 
 	passport.serializeUser((user, callback) ->
 		delete user['password']
-		user['emailHash'] = auth.md5(user['email'].trim().toLowerCase())
+		user['emailHash'] = hashing.md5(user['email'].trim().toLowerCase())
 		callback(null, JSON.stringify(user))
 	)
 
@@ -21,11 +21,8 @@ module.exports = (passport) ->
 				if (!user)
 					req.flash('error', 'Invalid email/password combination!')
 					req.flash('data-username', username)
-					return callback(null, false)
-				UserManager.getUserSettings(user.id, (err, settings) ->
-					if (err) then return callback(err)
-					user['settings'] = settings
-					return callback(null, user)
-				)
+					callback(null, false)
+				else
+					callback(null, user)
 			)
 	))

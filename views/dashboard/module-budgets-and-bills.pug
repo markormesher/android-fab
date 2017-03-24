@@ -10,28 +10,47 @@
 - taxYearBills = allBills['tax-year'] || []
 - otherBills = allBills['other'] || []
 
+- warningRatio = locals.user.settings['over_budget_warning_ratio']
 
 mixin bar(b, showDate)
-	- ratio = b.spend/b.amount
+	- name = b['name']
+	- type = b['type']
+	- spend = b['spend']
+	- amount = b['amount']
+	- startDate = b['start_date']
+	- endDate = b['end_date']
+	- ratio = spend/amount
 	- width = ratio <= 0 ? '1px' : (Math.min(ratio, 1) * 100) + '%'
-	- title = 'Spent ' + formatters.formatCurrency(b.spend) + ' of ' + formatters.formatCurrency(b.amount)
-	if (b.type == 'budget')
-		- barClass = ratio <= 1 ? 'progress-bar progress-bar-info' : 'progress-bar progress-bar-danger'
-		- content = ratio <= 1 ? '' : 'Overspent by ' + formatters.formatCurrency(b.spend - b.amount)
-	else
-		- barClass = ratio <= 1 ? 'progress-bar progress-bar-success' : 'progress-bar progress-bar-danger'
-		- content = ratio > 0 ? 'Paid ' + formatters.formatCurrency(b.spend) : ''
-		if (ratio > 1)
-			- content += ' (' + formatters.formatCurrency(b.spend - b.amount) + ' over budget)'
+	- title = 'Spent ' + formatters.formatCurrency(spend) + ' of ' + formatters.formatCurrency(amount)
 
+	// determine bar class
+	if (ratio <= 1)
+		- barClass = type == 'budget' ? 'info' : 'success'
+	else if (ratio <= warningRatio)
+		- barClass = 'warning'
+	else
+		- barClass = 'danger'
+
+	// determine message
+	if (type == 'budget')
+		if (ratio > 1)
+			- content = 'Overspent by ' + formatters.formatCurrency(spend - amount)
+		else
+			- content = ''
+	else
+		- content = ratio > 0 ? 'Paid ' + formatters.formatCurrency(spend) : ''
+		if (ratio > 1)
+			- content += ' (' + formatters.formatCurrency(spend - amount) + ' over budget)'
+
+	// build content
 	div.col-xs-12.col-sm-6.col-md-4
 		p(style = 'margin-bottom: 4px;')
-			strong= b.name
+			strong= name
 			if (showDate)
 				span &nbsp;&nbsp;
-				span.text-muted.small= formatters.formatBudgetSpan(b.start_date, b.end_date)
+				span.text-muted.small= formatters.formatBudgetSpan(startDate, endDate)
 		div.progress(title = title, style = 'margin-bottom: 14px;')
-			div(class = barClass, style = 'width: ' + width)= content
+			div.progress-bar(class = 'progress-bar-' + barClass, style = 'width: ' + width)= content
 
 
 if (monthBudgets.length || monthBills.length)

@@ -1,14 +1,24 @@
 crypto = require('crypto')
+rfr = require('rfr')
+constants = rfr('./constants')
+hashing = rfr('./helpers/hashing')
+UserManager = rfr('./managers/users')
 
 funcs = {
 
-	sha256: (data) -> crypto.createHash('sha256').update(data).digest('hex')
-
-	md5: (data) -> crypto.createHash('md5').update(data).digest('hex')
+	userHasSetting: (user) -> user['settings'] && user['settings']['__version'] == constants['settingsVersion']
 
 	checkOnly: (req, res, next) ->
-		res.locals.user = req.user || null
-		next()
+		user = req.user
+		res.locals.user = user || null
+		if (user && !funcs.userHasSetting(user))
+			UserManager.getUserSettings(user.id, (err, settings) ->
+				if (err) then return next(err)
+				user['settings'] = settings
+				req.login(user, (err) -> next(err))
+			)
+		else
+			next()
 
 	checkAndRefuse: (req, res, next) ->
 		if (req.user)

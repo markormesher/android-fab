@@ -1,6 +1,6 @@
 rfr = require('rfr')
 mysql = rfr('./helpers/mysql')
-auth = rfr('./helpers/auth')
+hashing = rfr('./helpers/hashing')
 constants = rfr('./constants.json')
 
 manager = {
@@ -8,7 +8,7 @@ manager = {
 	getUserForAuth: (emailOrId, password, callback) ->
 		mysql.getConnection((conn) -> conn.query(
 			'SELECT * FROM user WHERE (email = ? OR id = ?) AND password = ? LIMIT 1;',
-			[emailOrId, emailOrId, auth.sha256(password)],
+			[emailOrId, emailOrId, hashing.sha256(password)],
 			(err, results) ->
 				conn.release()
 				if (err) then return callback(err)
@@ -34,7 +34,7 @@ manager = {
 			updates['first_name'] = user['first_name']
 			updates['last_name'] = user['last_name']
 			if (newPassword)
-				updates['password'] = auth.sha256(newPassword)
+				updates['password'] = hashing.sha256(newPassword)
 
 			mysql.getConnection((conn) -> conn.query('UPDATE user SET ? WHERE id = ? LIMIT 1;', [updates, id], (err) ->
 				conn.release()
@@ -62,12 +62,13 @@ manager = {
 
 
 	getUserSettings: (userId, callback) ->
-		settings = constants.defaultSettings
+		settings = constants['defaultSettings']
 		mysql.getConnection((conn) -> conn.query('SELECT * FROM setting WHERE user_id = ?;', userId, (err, results) ->
 			conn.release()
 			if (err) then return callback(err)
 			for r in results
-				settings[r.setting_key] = r.setting_value
+				settings[r['setting_key']] = r['setting_value']
+			settings['__version'] = constants['settingsVersion']
 			callback(null, settings)
 		))
 }

@@ -1,8 +1,10 @@
 {
 	"port": 3005,
 
+	"settingsVersion": 20170324.03,
 	"defaultSettings": {
 		"balance_transfer_category_id": null,
-		"balance_update_category_id": null
+		"balance_update_category_id": null,
+		"over_budget_warning_ratio": 1.02
 	}
 }
