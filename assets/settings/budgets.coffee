@@ -14,8 +14,6 @@ activeOnlyCheckbox = $('#active-only')
 
 $(document).ready(() ->
 	initDataTable()
-	#initEditor()
-
 	activeOnlyCheckbox.change(() -> dataTable.ajax.reload())
 )
 
@@ -53,7 +51,4 @@ initDataTable = () ->
 					])
 				return displayData
 		}
-
-		drawCallback: () ->
-	#initRowButtons()
 	})
