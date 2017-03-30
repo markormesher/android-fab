@@ -24,7 +24,7 @@ manager = {
 				else
 					conn.release()
 					callback(null, null)
-		))
+			))
 
 
 	getBudgets: (user, activeOnly, callback) ->
@@ -38,6 +38,45 @@ manager = {
 			if (err) then return callback(err)
 			if (results) then return callback(null, results)
 			callback(null, [])
+		))
+
+
+	getBudgetCount: (user, activeOnly, callback) ->
+		if (activeOnly)
+			query = 'SELECT COUNT(*) AS result FROM budget WHERE owner = ? AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW());'
+		else
+			query = 'SELECT COUNT(*) AS result FROM budget WHERE owner = ?;'
+		mysql.getConnection((conn) -> conn.query(query, user.id, (err, result) ->
+			conn.release()
+			if (err) then return callback(err)
+			if (result) then return callback(null, result[0]['result'])
+			callback(null, null)
+		))
+
+
+	getFilteredBudgetCount: (user, activeOnly, search, callback) ->
+		if (activeOnly)
+			query = 'SELECT COUNT(*) AS result FROM budget WHERE owner = ? AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW()) AND LOWER(name) LIKE ?;'
+		else
+			query = 'SELECT COUNT(*) AS result FROM budget WHERE owner = ? AND LOWER(name) LIKE ?;'
+		mysql.getConnection((conn) -> conn.query(query, [user.id, "%#{search.toLowerCase()}%"], (err, result) ->
+			conn.release()
+			if (err) then return callback(err)
+			if (result) then return callback(null, result[0]['result'])
+			callback(null, null)
+		))
+
+
+	getFilteredBudgets: (user, activeOnly, search, start, count, order, callback) ->
+		if (activeOnly)
+			query = 'SELECT * FROM budget WHERE owner = ? AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW()) AND LOWER(name) LIKE ? ORDER BY start_date ' + order + ', name ASC LIMIT ? OFFSET ?;'
+		else
+			query = 'SELECT * FROM budget WHERE owner = ? AND LOWER(name) LIKE ? ORDER BY start_date ' + order + ', name ASC LIMIT ? OFFSET ?;'
+		mysql.getConnection((conn) -> conn.query(query, [user.id, "%#{search.toLowerCase()}%", count, start], (err, result) ->
+			conn.release()
+			if (err) then return callback(err)
+			if (result) then return callback(null, result)
+			callback(null, null)
 		))
 
 

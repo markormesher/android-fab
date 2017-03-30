@@ -1,24 +1,42 @@
 express = require('express')
+async = require('async')
 rfr = require('rfr')
 auth = rfr('./helpers/auth')
 BudgetManager = rfr('./managers/budgets')
 CategoryManager = rfr('./managers/categories')
 router = express.Router()
 
-router.get('/', auth.checkAndRefuse, (req, res, next) ->
-	activeOnly = !req.query.activeOnly || req.query.activeOnly == 'yes'
-	BudgetManager.getBudgets(res.locals.user, activeOnly, (err, budgets) ->
-		if (err)
-			return next(err)
+router.get('/', auth.checkAndRefuse, (req, res) ->
+	res.render('settings/budgets/index', {
+		_: {
+			title: 'Settings: Budgets'
+			activePage: 'settings-budgets'
+		}
+	})
+)
 
-		res.render('settings/budgets/index', {
-			_: {
-				title: 'Settings: Budgets'
-				activePage: 'settings-budgets'
-			},
-			budgets: budgets
-			activeOnly: activeOnly
-		})
+router.get('/data', auth.checkAndRefuse, (req, res, next) ->
+	start = parseInt(req.query['start'])
+	count = parseInt(req.query['length'])
+	order = req.query['order'][0]['dir']
+	search = req.query['search']['value']
+	activeOnly = req.query['activeOnly'] == 'true'
+
+	async.parallel(
+		{
+			'totalCount': (callback) -> BudgetManager.getBudgetCount(res.locals.user, activeOnly, (err, result) -> callback(err, result))
+			'filteredCount': (callback) -> BudgetManager.getFilteredBudgetCount(res.locals.user, activeOnly, search, (err, result) -> callback(err, result))
+			'data': (callback) -> BudgetManager.getFilteredBudgets(res.locals.user, activeOnly, search, start, count, order, (err, result) -> callback(err, result))
+		},
+		(err, results) ->
+			if (err)
+				return next(err)
+
+			res.json({
+				recordsTotal: results.totalCount
+				recordsFiltered: results.filteredCount
+				data: results.data
+			})
 	)
 )
 
