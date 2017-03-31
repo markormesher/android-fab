@@ -1,0 +1,24 @@
+div#clone-modal.modal.fade(tabindex = -1)
+	div.modal-dialog
+		div.modal-content
+			form#clone-form.validate
+				div.modal-header
+					button.close(type = "button", data-dismiss = "modal" aria-label = "Close"): span(aria-hidden = "true") &times;
+					h4.modal-title Clone #[span.clone-qty ?] Budget(s)
+
+				div.modal-body
+					div.row
+						div.col-xs-12.col-sm-6.form-group
+							label(for = 'start-date') Start Date:
+							input#start-date.form-control(name = 'start_date', type = 'date', required = true)
+
+						div.col-xs-12.col-sm-6.form-group
+							label(for = 'end-date') End Date:
+							input#end-date.form-control(name = 'end_date', type = 'date', required = true)
+
+					include quick-dates
+
+				div.modal-footer
+					button#save-btn.btn.btn-primary
+						i.fa.fa-fw.fa-copy
+						|  Clone

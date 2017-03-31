@@ -85,11 +85,22 @@ router.post('/edit/:budgetId', auth.checkAndRefuse, (req, res) ->
 	budgetId = req.params['budgetId']
 	budget = req.body
 
-	BudgetManager.saveBudget(res.locals.user, budgetId, budget, (err) ->
+	BudgetManager.saveBudget(res.locals.user, budgetId, budget, null, (err) ->
 		if (err)
 			req.flash('error', 'Sorry, that budget couldn\'t be saved!')
 
 		res.writeHead(302, { Location: '/settings/budgets' })
+		res.end()
+	)
+)
+
+router.post('/clone', auth.checkAndRefuse, (req, res) ->
+	startDate  = req.body['startDate']
+	endDate  = req.body['endDate']
+	budgetIds  = req.body['budgetIds[]']
+
+	BudgetManager.cloneBudgets(res.locals.user, budgetIds, startDate, endDate, (err) ->
+		res.status(if (err) then 400 else 200)
 		res.end()
 	)
 )

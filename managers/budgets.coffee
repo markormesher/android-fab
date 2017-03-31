@@ -80,7 +80,7 @@ manager = {
 		))
 
 
-	saveBudget: (user, id, budget, callback) ->
+	saveBudget: (user, id, budget, preConn, callback) ->
 		insert = false
 		if (!id || id == 0 || id == '0')
 			insert = true
@@ -97,20 +97,26 @@ manager = {
 
 		delete budget['categories']
 
+		doTransaction = (exec) ->
+			if (!preConn)
+				mysql.getConnection((conn) -> conn.beginTransaction((err) -> exec(conn, true, err)))
+			else
+				exec(preConn, false, null)
+
 		if (insert)
-			mysql.getConnection((conn) ->
-				conn.beginTransaction((err) ->
+			doTransaction((conn, canCommit, err) ->
+				if (err)
+					conn.rollback(() -> callback(err))
+					return conn.release()
+				conn.query('INSERT INTO budget SET ?;', [budget], (err) ->
 					if (err)
 						conn.rollback(() -> callback(err))
 						return conn.release()
-					conn.query('INSERT INTO budget SET ?;', [budget], (err) ->
+					conn.query('INSERT INTO budget_category VALUES ?;', [budgetCategoryInserts], (err) ->
 						if (err)
 							conn.rollback(() -> callback(err))
 							return conn.release()
-						conn.query('INSERT INTO budget_category VALUES ?;', [budgetCategoryInserts], (err) ->
-							if (err)
-								conn.rollback(() -> callback(err))
-								return conn.release()
+						if (canCommit)
 							conn.commit((err) ->
 								if (err)
 									conn.rollback(() -> callback(err))
@@ -118,39 +124,88 @@ manager = {
 								conn.release()
 								callback(null)
 							)
-						)
+						else
+							callback(null)
 					)
 				)
 			)
 		else
-			mysql.getConnection((conn) ->
-				conn.beginTransaction((err) ->
+			doTransaction((conn, canCommit, err) ->
+				if (err)
+					conn.rollback(() -> callback(err))
+					return conn.release()
+				conn.query('UPDATE budget SET ? WHERE id = ? AND owner = ?;', [budget, id, user.id], (err) ->
 					if (err)
 						conn.rollback(() -> callback(err))
 						return conn.release()
-					conn.query('UPDATE budget SET ? WHERE id = ? AND owner = ?;', [budget, id, user.id], (err) ->
+					conn.query('DELETE FROM budget_category WHERE budget_id = ?;', [id], (err) ->
 						if (err)
 							conn.rollback(() -> callback(err))
 							return conn.release()
-						conn.query('DELETE FROM budget_category WHERE budget_id = ?;', [id], (err) ->
+						conn.query('INSERT INTO budget_category VALUES ?;', [budgetCategoryInserts], (err) ->
 							if (err)
 								conn.rollback(() -> callback(err))
 								return conn.release()
-							conn.query('INSERT INTO budget_category VALUES ?;', [budgetCategoryInserts], (err) ->
-								if (err)
-									conn.rollback(() -> callback(err))
-									return conn.release()
+							if (canCommit)
 								conn.commit((err) ->
 									if (err)
 										conn.rollback(() -> callback(err))
 										return conn.release()
+									conn.release()
 									callback(null)
 								)
-							)
+							else
+								callback(null)
 						)
 					)
 				)
 			)
+
+
+	cloneBudgets: (user, originalIds, startDate, endDate, callback) ->
+		mysql.getConnection((conn) -> conn.query('SELECT * FROM budget WHERE owner = ? AND id IN (?);', [user.id, originalIds], (err, originalBudgets) ->
+			conn.release()
+			if (err) then return callback(err)
+			if (originalBudgets.length != originalIds.length) then return callback('Invalid ID')
+
+			mysql.getConnection((conn) -> conn.beginTransaction((err) ->
+				if (err)
+					conn.rollback(() -> callback(err))
+					return conn.release()
+
+				innerClone = (i) ->
+					if (i == originalBudgets.length)
+						conn.commit((err) ->
+							if (err)
+								conn.rollback(() -> callback(err))
+								return conn.release()
+							callback(null)
+						)
+					else
+						conn.query('SELECT category_id FROM budget_category WHERE budget_id = ?', originalBudgets[i]['id'], (err, result) ->
+							if (err)
+								conn.rollback(() -> callback(err))
+								return conn.release()
+							categoryIds = (r['category_id'] for r in result)
+							newBudget = {
+									name: originalBudgets[i]['name']
+									amount: originalBudgets[i]['amount']
+									type: originalBudgets[i]['type']
+									start_date: startDate
+									end_date: endDate
+									categories: categoryIds
+							}
+							manager.saveBudget(user, 0, newBudget, conn, (err) ->
+								if (err)
+									conn.rollback(() -> callback(err))
+									return conn.release()
+								innerClone(i + 1)
+							)
+						)
+
+				innerClone(0)
+			))
+		))
 
 
 	getBudgetPeriodType: (start, end) ->

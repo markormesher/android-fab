@@ -33,19 +33,7 @@ block page-body
 						label(for = 'end-date') End Date:
 						input#end-date.form-control(name = 'end_date', type = 'date', value = new Date(endDate.getTime() + 12 * 60 * 60 * 1000).toJSON().slice(0, 10) || '')
 
-				div.row
-					div.col-lg-12.form-group
-						a#insert-this-month(href = '#') This month
-						| &nbsp;&bull;&nbsp;
-						a#insert-this-year(href = '#') This year
-						| &nbsp;&bull;&nbsp;
-						a#insert-this-tax-year(href = '#') This tax year
-						br
-						a#insert-next-month(href = '#') Next month
-						| &nbsp;&bull;&nbsp;
-						a#insert-next-year(href = '#') Next year
-						| &nbsp;&bull;&nbsp;
-						a#insert-next-tax-year(href = '#') Next tax year
+				include quick-dates
 
 				div.row
 					div.col-lg-6
@@ -79,4 +67,4 @@ block page-body
 block page-scripts
 	script(src = '/_vendor/jquery-validation/jquery.validate.min.js')
 	script(src = '/_shared/form-validation.js')
-	script(src = '/settings/budgets-editing.js')
+	script(src = '/settings/budget-quick-dates.js')
