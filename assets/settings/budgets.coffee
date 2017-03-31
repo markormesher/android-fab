@@ -13,12 +13,12 @@ nameHtml = """
 </div>
 """
 
-checkedBudgets = []
-dataTable = null
-
 cloneModal = {}
 activeOnlyCheckbox = $('#active-only')
 cloneBtn = $('.clone-btn')
+dataTable = null
+
+checkedBudgets = []
 
 $(document).ready(() ->
 	initDataTable()
@@ -63,10 +63,14 @@ initDataTable = () ->
 				return displayData
 		}
 
-		drawCallback: () -> onTableReload()
+		drawCallback: onTableReload
 	})
 
 onTableReload = () ->
+	$('td input[type=checkbox]').click((e) -> e.stopPropagation())
+	$('td').click(() ->
+		$(this).find('input[type=checkbox]').click()
+	)
 	$('.clone-checkbox').change(() -> onCheckedBudgetsChange())
 
 initCloneModal = () ->

@@ -1,7 +1,3 @@
-editor = {}
-editId = 0
-dataTable = null
-
 actionsHtml = """
 <div class="btn-group">
 	<button class="btn btn-mini btn-default delete-btn" data-id="__ID__"><i class="fa fa-fw fa-trash"></i></button>
@@ -15,17 +11,22 @@ orderingHtml = """
 	<button class="btn btn-mini btn-default move-down-btn" data-id="__ID__"><i class="fa fa-fw fa-angle-down"></i></button>
 </div>
 """
+
+editorModal = {}
+dataTable = null
+
 currentData = {}
+editId = 0
 
 $(document).ready(() ->
 	initDataTable()
-	initEditor()
+	initEditorModal()
 )
 
 initDataTable = () ->
 	dataTable = $('#accounts').DataTable({
 		paging: false
-		order: [[2, 'asc']]
+		order: []
 		columnDefs: [
 			{ targets: '_all', orderable: false }
 		]
@@ -47,66 +48,65 @@ initDataTable = () ->
 				return displayData
 		}
 
-		drawCallback: () ->
-			initRowButtons()
+		drawCallback: onTableReload
 	})
 
-initEditor = () ->
-	editor['_modal'] = $('#editor-modal')
-	editor['_form'] = $('#editor-form')
-	editor['_createOnly'] = editor['_modal'].find('.create-only')
-	editor['_editOnly'] = editor['_modal'].find('.edit-only')
-	editor['name'] = editor['_modal'].find('#name')
-	editor['description'] = editor['_modal'].find('#description')
-	editor['type'] = editor['_modal'].find('#type')
-	editor['save-btn'] = editor['_modal'].find('#save-btn')
-
-	editor['_modal'].on('shown.bs.modal', () ->
-		editor['name'].focus()
-	)
-
-	$('#add-btn').click(() -> editAccount(0))
-
-	for field in [editor['name'], editor['description']]
-		field.keydown((e) ->
-			if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10))
-				editor['_form'].submit()
-		)
-
-	editor['_form'].submit((e) ->
-		if ($(this).valid())
-			saveAccount()
-		e.preventDefault()
-	)
-
-initRowButtons = () ->
+onTableReload = () ->
 	$('.delete-btn').click(() -> deleteAccount($(this), $(this).data('id')))
-	$('.edit-btn').click(() -> editAccount($(this).data('id')))
+	$('.edit-btn').click(() -> startEditAccount($(this).data('id')))
 	rows = $('#accounts tbody tr')
 	rows.first().find('.move-up-btn').prop('disabled', true)
 	rows.last().find('.move-down-btn').prop('disabled', true)
 	$('.move-up-btn').click(() -> reOrderAccount($(this), -1))
 	$('.move-down-btn').click(() -> reOrderAccount($(this), 1))
 
-clearEditor = () ->
-	editor['name'].val('')
-	editor['description'].val('')
-	editor['type'].prop('selectedIndex', 0)
+initEditorModal = () ->
+	editorModal['_modal'] = $('#editor-modal')
+	editorModal['_form'] = $('#editor-form')
+	editorModal['_createOnly'] = editorModal['_modal'].find('.create-only')
+	editorModal['_editOnly'] = editorModal['_modal'].find('.edit-only')
+	editorModal['name'] = editorModal['_modal'].find('#name')
+	editorModal['description'] = editorModal['_modal'].find('#description')
+	editorModal['type'] = editorModal['_modal'].find('#type')
+	editorModal['save-btn'] = editorModal['_modal'].find('#save-btn')
 
-populateEditor = (id) ->
+	editorModal['_modal'].on('shown.bs.modal', () ->
+		editorModal['name'].focus()
+	)
+
+	$('#add-btn').click(() -> startEditAccount(0))
+
+	for field in [editorModal['name'], editorModal['description']]
+		field.keydown((e) ->
+			if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10))
+				editorModal['_form'].submit()
+		)
+
+	editorModal['_form'].submit((e) ->
+		if ($(this).valid())
+			saveAccount()
+		e.preventDefault()
+	)
+
+clearEditorModal = () ->
+	editorModal['name'].val('')
+	editorModal['description'].val('')
+	editorModal['type'].prop('selectedIndex', 0)
+
+populateEditorModal = (id) ->
 	account = currentData[id]
 	if (account)
-		editor['name'].val(account['name'])
-		editor['description'].val(account['description'])
-		editor['type'].val(account['type'])
+		editorModal['name'].val(account['name'])
+		editorModal['description'].val(account['description'])
+		editorModal['type'].val(account['type'])
 
-setEditorLock = (locked) ->
-	editor['name'].prop('disabled', locked)
-	editor['save-btn'].prop('disabled', locked)
+setEditorModalLock = (locked) ->
+	editorModal['name'].prop('disabled', locked)
+	editorModal['save-btn'].prop('disabled', locked)
 	if (locked)
-		editor['save-btn'].find('i').removeClass('fa-save').addClass('fa-circle-o-notch').addClass('fa-spin')
+		editorModal['save-btn'].find('i').removeClass('fa-save').addClass('fa-circle-o-notch').addClass('fa-spin')
 	else
-		editor['save-btn'].find('i').addClass('fa-save').removeClass('fa-circle-o-notch').removeClass('fa-spin')
+		editorModal['save-btn'].find('i').addClass('fa-save').removeClass('fa-circle-o-notch').removeClass('fa-spin')
 
 deleteAccount = (btn, id) ->
 	if (btn.hasClass('btn-danger'))
@@ -123,33 +123,34 @@ deleteAccount = (btn, id) ->
 			btn.addClass('btn-default').removeClass('btn-danger')
 		), 2000)
 
-editAccount = (id) ->
+startEditAccount = (id) ->
 	editId = id
-	clearEditor(true)
+	clearEditorModal(true)
 	if (id == 0)
-		editor['_createOnly'].show()
-		editor['_editOnly'].hide()
+		editorModal['_createOnly'].show()
+		editorModal['_editOnly'].hide()
 	else
-		editor['_createOnly'].hide()
-		editor['_editOnly'].show()
-		populateEditor(id)
+		editorModal['_createOnly'].hide()
+		editorModal['_editOnly'].show()
+		populateEditorModal(id)
 
-	editor['_modal'].modal('show')
+	editorModal['_modal'].modal('show')
 
 saveAccount = () ->
-	setEditorLock(true)
+	setEditorModalLock(true)
 	$.post("/settings/accounts/edit/#{editId}", {
-		name: editor['name'].val()
-		description: editor['description'].val()
-		type: editor['type'].val()
+		name: editorModal['name'].val()
+		description: editorModal['description'].val()
+		type: editorModal['type'].val()
 	}).done(() ->
 		dataTable.ajax.reload()
-		setEditorLock(false)
-		clearEditor()
-		editor['_modal'].modal('hide')
+		toastr.success('Account saved!')
+		editorModal['_modal'].modal('hide')
+		clearEditorModal()
+		setEditorModalLock(false)
 	).fail(() ->
 		toastr.error('Sorry, that account couldn\'t be saved!')
-		setEditorLock(false)
+		setEditorModalLock(false)
 	)
 
 reOrderAccount = (btn, direction) ->

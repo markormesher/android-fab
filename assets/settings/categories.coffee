@@ -1,7 +1,3 @@
-editor = {}
-editId = 0
-dataTable = null
-
 actionsHtml = """
 <div class="btn-group">
 	<button class="btn btn-mini btn-default delete-btn" data-id="__ID__"><i class="fa fa-fw fa-trash"></i></button>
@@ -9,11 +5,15 @@ actionsHtml = """
 </div>
 """
 
+editorModal = {}
+dataTable = null
+
 currentData = {}
+editId = 0
 
 $(document).ready(() ->
 	initDataTable()
-	initEditor()
+	initEditorModal()
 )
 
 initDataTable = () ->
@@ -49,58 +49,58 @@ initDataTable = () ->
 				return displayData
 		}
 
-		drawCallback: () ->
-			initRowButtons()
+		drawCallback: onTableReload
 	})
 
-initEditor = () ->
-	editor['_modal'] = $('#editor-modal')
-	editor['_form'] = $('#editor-form')
-	editor['_createOnly'] = editor['_modal'].find('.create-only')
-	editor['_editOnly'] = editor['_modal'].find('.edit-only')
-	editor['name'] = editor['_modal'].find('#name')
-	editor['save-btn'] = editor['_modal'].find('#save-btn')
-
-	editor['_modal'].on('shown.bs.modal', () ->
-		editor['name'].focus()
-	)
-
-	$('#add-btn').click(() -> editCategory(0))
-
-	editor['name'].keydown((e) ->
-		if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10))
-			editor['_form'].submit()
-	)
-
-	editor['_form'].submit((e) ->
-		if ($(this).valid())
-			saveCategory()
-		e.preventDefault()
-	)
-
-initRowButtons = () ->
+onTableReload = () ->
 	$('.delete-btn').click(() -> deleteCategory($(this), $(this).data('id')))
-	$('.edit-btn').click(() -> editCategory($(this).data('id')))
+	$('.edit-btn').click(() -> startEditCategory($(this).data('id')))
 	$('td input[type=checkbox]').click((e) -> e.stopPropagation())
 	$('td').click(() ->
 		$(this).find('input[type=checkbox]').click()
 	)
 	$('td input[type=checkbox]').change(() -> toggleCategoryVisibility($(this)))
 
-clearEditor = () -> editor['name'].val('')
+initEditorModal = () ->
+	editorModal['_modal'] = $('#editor-modal')
+	editorModal['_form'] = $('#editor-form')
+	editorModal['_createOnly'] = editorModal['_modal'].find('.create-only')
+	editorModal['_editOnly'] = editorModal['_modal'].find('.edit-only')
+	editorModal['name'] = editorModal['_modal'].find('#name')
+	editorModal['save-btn'] = editorModal['_modal'].find('#save-btn')
 
-populateEditor = (id) ->
+	editorModal['_modal'].on('shown.bs.modal', () ->
+		editorModal['name'].focus()
+	)
+
+	$('#add-btn').click(() -> startEditCategory(0))
+
+	editorModal['name'].keydown((e) ->
+		if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10))
+			editorModal['_form'].submit()
+	)
+
+	editorModal['_form'].submit((e) ->
+		if ($(this).valid())
+			saveCategory()
+		e.preventDefault()
+	)
+
+clearEditorModal = () ->
+	editorModal['name'].val('')
+
+populateEditorModal = (id) ->
 	category = currentData[id]
 	if (category)
-		editor['name'].val(category['name'])
+		editorModal['name'].val(category['name'])
 
-setEditorLock = (locked) ->
-	editor['name'].prop('disabled', locked)
-	editor['save-btn'].prop('disabled', locked)
+setEditorModalLock = (locked) ->
+	editorModal['name'].prop('disabled', locked)
+	editorModal['save-btn'].prop('disabled', locked)
 	if (locked)
-		editor['save-btn'].find('i').removeClass('fa-save').addClass('fa-circle-o-notch').addClass('fa-spin')
+		editorModal['save-btn'].find('i').removeClass('fa-save').addClass('fa-circle-o-notch').addClass('fa-spin')
 	else
-		editor['save-btn'].find('i').addClass('fa-save').removeClass('fa-circle-o-notch').removeClass('fa-spin')
+		editorModal['save-btn'].find('i').addClass('fa-save').removeClass('fa-circle-o-notch').removeClass('fa-spin')
 
 deleteCategory = (btn, id) ->
 	if (btn.hasClass('btn-danger'))
@@ -117,31 +117,32 @@ deleteCategory = (btn, id) ->
 			btn.addClass('btn-default').removeClass('btn-danger')
 		), 2000)
 
-editCategory = (id) ->
+startEditCategory = (id) ->
 	editId = id
-	clearEditor(true)
+	clearEditorModal(true)
 	if (id == 0)
-		editor['_createOnly'].show()
-		editor['_editOnly'].hide()
+		editorModal['_createOnly'].show()
+		editorModal['_editOnly'].hide()
 	else
-		editor['_createOnly'].hide()
-		editor['_editOnly'].show()
-		populateEditor(id)
+		editorModal['_createOnly'].hide()
+		editorModal['_editOnly'].show()
+		populateEditorModal(id)
 
-	editor['_modal'].modal('show')
+	editorModal['_modal'].modal('show')
 
 saveCategory = () ->
-	setEditorLock(true)
+	setEditorModalLock(true)
 	$.post("/settings/categories/edit/#{editId}", {
-		name: editor['name'].val()
+		name: editorModal['name'].val()
 	}).done(() ->
 		dataTable.ajax.reload()
-		setEditorLock(false)
-		clearEditor()
-		editor['_modal'].modal('hide')
+		toastr.success('Category saved!')
+		editorModal['_modal'].modal('hide')
+		clearEditorModal()
+		setEditorModalLock(false)
 	).fail(() ->
 		toastr.error('Sorry, that category couldn\'t be saved!')
-		setEditorLock(false)
+		setEditorModalLock(false)
 	)
 
 toggleCategoryVisibility = (checkbox) ->

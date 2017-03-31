@@ -1,7 +1,3 @@
-editor = {}
-editId = 0
-dataTable = null
-
 actionsHtml = """
 <div class="text-center">
 	<div class="btn-group">
@@ -11,11 +7,22 @@ actionsHtml = """
 </div>
 """
 
+formatDatePair = (trDate, efDate) ->
+	if (trDate == efDate)
+		return window.formatters.formatDate(trDate)
+	else
+		return "#{window.formatters.formatDate(trDate)} <i class=\"fa fa-fw fa-info-circle text-muted\" title=\"Effective date: #{window.formatters.formatDate(efDate)}\"></i>"
+
+
 currentData = {}
+editId = 0
+
+editorModal = {}
+dataTable = null
 
 $(document).ready(() ->
 	initDataTable()
-	initEditor()
+	initEditorModal()
 )
 
 initDataTable = () ->
@@ -52,96 +59,89 @@ initDataTable = () ->
 				return displayData
 		}
 
-		drawCallback: () ->
-			initRowButtons()
+		drawCallback: onTableReload
 	})
 
-formatDatePair = (trDate, efDate) ->
-	if (trDate == efDate)
-		return window.formatters.formatDate(trDate)
-	else
-		return "#{window.formatters.formatDate(trDate)} <i class=\"fa fa-fw fa-info-circle text-muted\" title=\"Effective date: #{window.formatters.formatDate(efDate)}\"></i>"
+onTableReload = () ->
+	$('.delete-btn').click(() -> deleteTransaction($(this), $(this).data('id')))
+	$('.edit-btn').click(() -> startEditTransaction($(this).data('id')))
 
-initEditor = () ->
-	editor['_modal'] = $('#editor-modal')
-	editor['_form'] = $('#editor-form')
-	editor['_createOnly'] = editor['_modal'].find('.create-only')
-	editor['_editOnly'] = editor['_modal'].find('.edit-only')
-	editor['transaction-date'] = editor['_modal'].find('#transaction-date')
-	editor['effective-date'] = editor['_modal'].find('#effective-date')
-	editor['account'] = editor['_modal'].find('#account')
-	editor['payee'] = editor['_modal'].find('#payee')
-	editor['category'] = editor['_modal'].find('#category')
-	editor['amount'] = editor['_modal'].find('#amount')
-	editor['memo'] = editor['_modal'].find('#memo')
-	editor['add-another'] = editor['_modal'].find('#add-another')
-	editor['save-btn'] = editor['_modal'].find('#save-btn')
+initEditorModal = () ->
+	editorModal['_modal'] = $('#editor-modal')
+	editorModal['_form'] = $('#editor-form')
+	editorModal['_createOnly'] = editorModal['_modal'].find('.create-only')
+	editorModal['_editOnly'] = editorModal['_modal'].find('.edit-only')
+	editorModal['transaction-date'] = editorModal['_modal'].find('#transaction-date')
+	editorModal['effective-date'] = editorModal['_modal'].find('#effective-date')
+	editorModal['account'] = editorModal['_modal'].find('#account')
+	editorModal['payee'] = editorModal['_modal'].find('#payee')
+	editorModal['category'] = editorModal['_modal'].find('#category')
+	editorModal['amount'] = editorModal['_modal'].find('#amount')
+	editorModal['memo'] = editorModal['_modal'].find('#memo')
+	editorModal['add-another'] = editorModal['_modal'].find('#add-another')
+	editorModal['save-btn'] = editorModal['_modal'].find('#save-btn')
 
-	editor['_modal'].on('shown.bs.modal', () ->
-		editor['transaction-date'].focus()
+	editorModal['_modal'].on('shown.bs.modal', () ->
+		editorModal['transaction-date'].focus()
 	)
 
-	editor['payee'].autocomplete({
+	editorModal['payee'].autocomplete({
 		source: payees
 	})
 
-	$('#add-btn').click(() -> editTransaction(0))
+	$('#add-btn').click(() -> startEditTransaction(0))
 	$('#copy-date').click((e) ->
 		e.preventDefault()
-		editor['effective-date'].val(editor['transaction-date'].val())
+		editorModal['effective-date'].val(editorModal['transaction-date'].val())
 	)
 
-	for key, field of editor
+	for key, field of editorModal
 		if (field.prop('type') != undefined || field.prop('tagName') == 'TEXTAREA')
 			field.keydown((e) ->
 				if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10))
-					editor['_form'].submit()
+					editorModal['_form'].submit()
 			)
 
-	editor['_form'].submit((e) ->
+	editorModal['_form'].submit((e) ->
 		if ($(this).valid())
 			saveTransaction()
 		e.preventDefault()
 	)
 
-initRowButtons = () ->
-	$('.delete-btn').click(() -> deleteTransaction($(this), $(this).data('id')))
-	$('.edit-btn').click(() -> editTransaction($(this).data('id')))
-
-clearEditor = (clearDates) ->
+clearEditorModal = (clearDates) ->
 	if (clearDates)
-		editor['transaction-date'].val((new Date()).toJSON().slice(0, 10))
-		editor['effective-date'].val((new Date()).toJSON().slice(0, 10))
-	editor['account'].prop('selectedIndex', 0)
-	editor['payee'].val('')
-	editor['category'].prop('selectedIndex', 0)
-	editor['amount'].val('')
-	editor['memo'].val('')
+		editorModal['transaction-date'].val((new Date()).toJSON().slice(0, 10))
+		editorModal['effective-date'].val((new Date()).toJSON().slice(0, 10))
+	editorModal['account'].prop('selectedIndex', 0)
+	editorModal['payee'].val('')
+	editorModal['category'].prop('selectedIndex', 0)
+	editorModal['amount'].val('')
+	editorModal['memo'].val('')
 
-populateEditor = (id) ->
+populateEditorModal = (id) ->
 	transaction = currentData[id]
 	if (transaction)
-		editor['transaction-date'].val((new Date(transaction['transaction_date'])).toJSON().slice(0, 10))
-		editor['effective-date'].val((new Date(transaction['effective_date'])).toJSON().slice(0, 10))
-		editor['account'].val(transaction['account_id'])
-		editor['payee'].val(transaction['payee'])
-		editor['category'].val(transaction['category_id'])
-		editor['amount'].val(transaction['amount'].toFixed(2))
-		editor['memo'].val(transaction['memo'])
+		editorModal['transaction-date'].val((new Date(transaction['transaction_date'])).toJSON().slice(0, 10))
+		editorModal['effective-date'].val((new Date(transaction['effective_date'])).toJSON().slice(0, 10))
+		editorModal['account'].val(transaction['account_id'])
+		editorModal['payee'].val(transaction['payee'])
+		editorModal['category'].val(transaction['category_id'])
+		editorModal['amount'].val(transaction['amount'].toFixed(2))
+		editorModal['memo'].val(transaction['memo'])
 
-setEditorLock = (locked) ->
-	editor['transaction-date'].prop('disabled', locked)
-	editor['effective-date'].prop('disabled', locked)
-	editor['account'].prop('disabled', locked)
-	editor['payee'].prop('disabled', locked)
-	editor['category'].prop('disabled', locked)
-	editor['amount'].prop('disabled', locked)
-	editor['memo'].prop('disabled', locked)
-	editor['save-btn'].prop('disabled', locked)
+setEditorModalLock = (locked) ->
+	editorModal['transaction-date'].prop('disabled', locked)
+	editorModal['effective-date'].prop('disabled', locked)
+	editorModal['account'].prop('disabled', locked)
+	editorModal['payee'].prop('disabled', locked)
+	editorModal['category'].prop('disabled', locked)
+	editorModal['amount'].prop('disabled', locked)
+	editorModal['memo'].prop('disabled', locked)
+	editorModal['save-btn'].prop('disabled', locked)
 	if (locked)
-		editor['save-btn'].find('i').removeClass('fa-save').addClass('fa-circle-o-notch').addClass('fa-spin')
+		editorModal['save-btn'].find('i').removeClass('fa-save').addClass('fa-circle-o-notch').addClass('fa-spin')
 	else
-		editor['save-btn'].find('i').addClass('fa-save').removeClass('fa-circle-o-notch').removeClass('fa-spin')
+		editorModal['save-btn'].find('i').addClass('fa-save').removeClass('fa-circle-o-notch').removeClass('fa-spin')
 
 deleteTransaction = (btn, id) ->
 	if (btn.hasClass('btn-danger'))
@@ -158,39 +158,40 @@ deleteTransaction = (btn, id) ->
 			btn.addClass('btn-default').removeClass('btn-danger')
 		), 2000)
 
-editTransaction = (id) ->
+startEditTransaction = (id) ->
 	editId = id
-	clearEditor(true)
+	clearEditorModal(true)
 	if (id == 0)
-		editor['_createOnly'].show()
-		editor['_editOnly'].hide()
+		editorModal['_createOnly'].show()
+		editorModal['_editOnly'].hide()
 	else
-		editor['_createOnly'].hide()
-		editor['_editOnly'].show()
-		populateEditor(id)
+		editorModal['_createOnly'].hide()
+		editorModal['_editOnly'].show()
+		populateEditorModal(id)
 
-	editor['_modal'].modal('show')
+	editorModal['_modal'].modal('show')
 
 saveTransaction = () ->
-	setEditorLock(true)
+	setEditorModalLock(true)
 	$.post("/transactions/edit/#{editId}", {
-		transaction_date: editor['transaction-date'].val()
-		effective_date: editor['effective-date'].val()
-		account: editor['account'].val()
-		payee: editor['payee'].val()
-		category: editor['category'].val()
-		amount: editor['amount'].val()
-		memo: editor['memo'].val().trim() || null
+		transaction_date: editorModal['transaction-date'].val()
+		effective_date: editorModal['effective-date'].val()
+		account: editorModal['account'].val()
+		payee: editorModal['payee'].val()
+		category: editorModal['category'].val()
+		amount: editorModal['amount'].val()
+		memo: editorModal['memo'].val().trim() || null
 	}).done(() ->
 		dataTable.ajax.reload()
-		setEditorLock(false)
-		if (!editor['add-another'].is(':checked') || editId != 0)
-			clearEditor(true)
-			editor['_modal'].modal('hide')
+		toastr.success('Transaction saved!')
+		setEditorModalLock(false)
+		if (!editorModal['add-another'].is(':checked') || editId != 0)
+			clearEditorModal(true)
+			editorModal['_modal'].modal('hide')
 		else
-			clearEditor(false)
-			editor['transaction-date'].focus()
+			clearEditorModal(false)
+			editorModal['transaction-date'].focus()
 	).fail(() ->
 		toastr.error('Sorry, that transaction couldn\'t be saved!')
-		setEditorLock(false)
+		setEditorModalLock(false)
 	)

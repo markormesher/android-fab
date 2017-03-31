@@ -1,4 +1,8 @@
 mixin plugin_toastrListener
 	script(type = 'text/javascript').
+		toastr.options.closeButton = true;
+		toastr.options.timeOut = 1000; // 1s
+		toastr.options.extendedTimeOut = 10000; // 10s
+		toastr.options.progressBar = true;
 		var toastrMessages = !{JSON.stringify(locals.messages || [])};
 	script(src = '/_shared/toastr-listener.js')
