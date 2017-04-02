@@ -1,0 +1,34 @@
+div#key-shortcut-modal.modal.fade(tabindex = -1)
+	div.modal-dialog
+		div.modal-content
+			form#clone-form.validate
+				div.modal-header
+					button.close(type = "button", data-dismiss = "modal" aria-label = "Close"): span(aria-hidden = "true") &times;
+					h4.modal-title Keyboard Shortcuts
+
+				div.modal-body
+					div.row
+						div.col-xs-12.col-sm-6.form-group
+							p: strong Navigation
+							p #[kbd g] + #[kbd d] &nbsp; Goto dashboard
+							p #[kbd g] + #[kbd t] &nbsp; Goto transactions
+
+							br
+							p: strong Settings
+							p #[kbd s] + #[kbd a] &nbsp; Goto account settings
+							p #[kbd s] + #[kbd b] &nbsp; Goto budget settings
+							p #[kbd s] + #[kbd c] &nbsp; Goto category settings
+
+						div.col-xs-12.col-sm-6.form-group
+							p: strong Reports
+							p #[kbd r] + #[kbd b] &nbsp; Goto balance history
+
+							br
+							p: strong Account
+							p #[kbd a] + #[kbd p] &nbsp; Goto profile
+							p #[kbd a] + #[kbd l] &nbsp; Logout
+
+							br
+							p: strong Other
+							p #[kbd c] &nbsp; Create/insert item
+							p #[kbd ?] &nbsp; Show this help
