@@ -109,7 +109,6 @@ router.post('/clone', auth.checkAndRefuse, (req, res) ->
 	budgetIds  = req.body['budgetIds[]']
 
 	BudgetManager.cloneBudgets(res.locals.user, budgetIds, startDate, endDate, (err) ->
-		console.log(err)
 		res.status(if (err) then 400 else 200)
 		res.end()
 	)
