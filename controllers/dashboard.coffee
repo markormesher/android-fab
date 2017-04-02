@@ -15,7 +15,7 @@ router.get('/', auth.checkAndRefuse, (req, res, next) ->
 	async.parallel(
 		{
 			'accountBalances': (callback) -> StatisticsManager.getActiveAccountBalances(res.locals.user, (err, result) -> callback(err, result))
-			'budgets': (callback) -> StatisticsManager.getActiveBudgets(res.locals.user, (err, result) -> callback(err, result))
+			'budgets': (callback) -> StatisticsManager.getCurrentBudgets(res.locals.user, (err, result) -> callback(err, result))
 			'alerts': (callback) -> StatisticsManager.getAlerts(res.locals.user, (err, result) -> callback(err, result))
 			'summaryData': (callback) -> StatisticsManager.getSummaryData(res.locals.user, startDate, endDate, (err, result) -> callback(err, result))
 		},

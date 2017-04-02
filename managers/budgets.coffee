@@ -27,8 +27,8 @@ manager = {
 			))
 
 
-	getBudgets: (user, activeOnly, callback) ->
-		if (activeOnly)
+	getBudgets: (user, currentOnly, callback) ->
+		if (currentOnly)
 			query = 'SELECT * FROM budget WHERE owner = ? AND active = true AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW()) ORDER BY start_date DESC, name ASC;'
 		else
 			query = 'SELECT * FROM budget WHERE owner = ? AND active = true ORDER BY start_date DESC, name ASC;'
@@ -41,8 +41,8 @@ manager = {
 		))
 
 
-	getBudgetCount: (user, activeOnly, callback) ->
-		if (activeOnly)
+	getBudgetCount: (user, currentOnly, callback) ->
+		if (currentOnly)
 			query = 'SELECT COUNT(*) AS result FROM budget WHERE owner = ? AND active = true AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW());'
 		else
 			query = 'SELECT COUNT(*) AS result FROM budget WHERE owner = ? AND active = true;'
@@ -54,8 +54,8 @@ manager = {
 		))
 
 
-	getFilteredBudgetCount: (user, activeOnly, search, callback) ->
-		if (activeOnly)
+	getFilteredBudgetCount: (user, currentOnly, search, callback) ->
+		if (currentOnly)
 			query = 'SELECT COUNT(*) AS result FROM budget WHERE owner = ? AND active = true AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW()) AND LOWER(name) LIKE ?;'
 		else
 			query = 'SELECT COUNT(*) AS result FROM budget WHERE owner = ? AND active = true AND LOWER(name) LIKE ?;'
@@ -67,8 +67,8 @@ manager = {
 		))
 
 
-	getFilteredBudgets: (user, activeOnly, search, start, count, order, callback) ->
-		if (activeOnly)
+	getFilteredBudgets: (user, currentOnly, search, start, count, order, callback) ->
+		if (currentOnly)
 			query = 'SELECT * FROM budget WHERE owner = ? AND active = true AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW()) AND LOWER(name) LIKE ? ORDER BY start_date ' + order + ', name ASC LIMIT ? OFFSET ?;'
 		else
 			query = 'SELECT * FROM budget WHERE owner = ? AND active = true AND LOWER(name) LIKE ? ORDER BY start_date ' + order + ', name ASC LIMIT ? OFFSET ?;'
@@ -164,6 +164,9 @@ manager = {
 
 
 	cloneBudgets: (user, originalIds, startDate, endDate, callback) ->
+		if (!Array.isArray(originalIds))
+			originalIds = [originalIds]
+
 		mysql.getConnection((conn) -> conn.query('SELECT * FROM budget WHERE owner = ? AND id IN (?);', [user.id, originalIds], (err, originalBudgets) ->
 			conn.release()
 			if (err) then return callback(err)

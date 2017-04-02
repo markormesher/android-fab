@@ -145,6 +145,7 @@ setEditorModalLock = (locked) ->
 
 deleteTransaction = (btn, id) ->
 	if (btn.hasClass('btn-danger'))
+		btn.find('i').removeClass('fa-trash').addClass('fa-circle-o-notch').addClass('fa-spin')
 		$.post(
 			"/transactions/delete/#{id}"
 		).done(() ->

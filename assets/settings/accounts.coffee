@@ -109,6 +109,7 @@ setEditorModalLock = (locked) ->
 		editorModal['save-btn'].find('i').addClass('fa-save').removeClass('fa-circle-o-notch').removeClass('fa-spin')
 
 deleteAccount = (btn, id) ->
+	btn.find('i').removeClass('fa-trash').addClass('fa-circle-o-notch').addClass('fa-spin')
 	if (btn.hasClass('btn-danger'))
 		$.post(
 			"/settings/accounts/delete/#{id}"

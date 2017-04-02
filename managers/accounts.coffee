@@ -13,8 +13,8 @@ manager = {
 		))
 
 
-	getAccounts: (user, activeOnly, callback) ->
-		query = if (activeOnly)
+	getAccounts: (user, currentOnly, callback) ->
+		query = if (currentOnly)
 			'SELECT * FROM account WHERE active = 1 AND owner = ? ORDER BY display_order ASC;'
 		else
 			'SELECT * FROM account WHERE owner = ? ORDER BY display_order ASC;'

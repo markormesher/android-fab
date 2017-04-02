@@ -6,16 +6,13 @@ actionsHtml = """
 """
 
 nameHtml = """
-<div class="checkbox">
-	<label>
-		<input type="checkbox" data-id="__ID__" class="clone-checkbox" />
-		__NAME__
-	</label>
-</div>
+<input type="checkbox" data-id="__ID__" class="clone-checkbox" />
+&nbsp;
+__NAME__
 """
 
 cloneModal = {}
-activeOnlyCheckbox = $('#active-only')
+currentOnlyCheckbox = $('#current-only')
 cloneBtn = $('.clone-btn')
 dataTable = null
 
@@ -26,7 +23,7 @@ $(document).ready(() ->
 	initCloneModal()
 	clearCloneModal()
 
-	activeOnlyCheckbox.change(() -> dataTable.ajax.reload())
+	currentOnlyCheckbox.change(() -> dataTable.ajax.reload())
 	cloneBtn.click(() -> startClone())
 )
 
@@ -49,7 +46,7 @@ initDataTable = () ->
 			url: '/settings/budgets/data'
 			type: 'get'
 			data: (d) ->
-				d['activeOnly'] = activeOnlyCheckbox.is(':checked')
+				d['currentOnly'] = currentOnlyCheckbox.is(':checked')
 				return d
 			dataSrc: (raw) ->
 				displayData = []
@@ -118,6 +115,7 @@ onCheckedBudgetsChange = () ->
 
 deleteBudget = (btn, id) ->
 	if (btn.hasClass('btn-danger'))
+		btn.find('i').removeClass('fa-trash').addClass('fa-circle-o-notch').addClass('fa-spin')
 		$.post(
 			"/settings/budgets/delete/#{id}"
 		).done(() ->

@@ -24,7 +24,7 @@ manager = {
 		))
 
 
-	getActiveBudgets: (user, callback) ->
+	getCurrentBudgets: (user, callback) ->
 		mysql.getConnection((conn) -> conn.query(
 			"""
 			SELECT budget.*, COALESCE((
@@ -34,7 +34,7 @@ manager = {
 				AND transaction.effective_date >= budget.start_date AND transaction.effective_date <= budget.end_date
 			), 0) * -1 AS spend
 			FROM budget
-			WHERE budget.owner = ? AND budget.start_date <= DATE(NOW()) AND budget.end_date >= DATE(NOW())
+			WHERE budget.owner = ? AND budget.active = true AND budget.start_date <= DATE(NOW()) AND budget.end_date >= DATE(NOW())
 			ORDER BY budget.start_date DESC, budget.name ASC;
 			"""
 			user.id,

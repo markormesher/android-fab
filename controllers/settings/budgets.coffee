@@ -20,13 +20,13 @@ router.get('/data', auth.checkAndRefuse, (req, res, next) ->
 	count = parseInt(req.query['length'])
 	order = req.query['order'][0]['dir']
 	search = req.query['search']['value']
-	activeOnly = req.query['activeOnly'] == 'true'
+	currentOnly = req.query['currentOnly'] == 'true'
 
 	async.parallel(
 		{
-			'totalCount': (callback) -> BudgetManager.getBudgetCount(res.locals.user, activeOnly, (err, result) -> callback(err, result))
-			'filteredCount': (callback) -> BudgetManager.getFilteredBudgetCount(res.locals.user, activeOnly, search, (err, result) -> callback(err, result))
-			'data': (callback) -> BudgetManager.getFilteredBudgets(res.locals.user, activeOnly, search, start, count, order, (err, result) -> callback(err, result))
+			'totalCount': (callback) -> BudgetManager.getBudgetCount(res.locals.user, currentOnly, (err, result) -> callback(err, result))
+			'filteredCount': (callback) -> BudgetManager.getFilteredBudgetCount(res.locals.user, currentOnly, search, (err, result) -> callback(err, result))
+			'data': (callback) -> BudgetManager.getFilteredBudgets(res.locals.user, currentOnly, search, start, count, order, (err, result) -> callback(err, result))
 		},
 		(err, results) ->
 			if (err)
@@ -109,6 +109,7 @@ router.post('/clone', auth.checkAndRefuse, (req, res) ->
 	budgetIds  = req.body['budgetIds[]']
 
 	BudgetManager.cloneBudgets(res.locals.user, budgetIds, startDate, endDate, (err) ->
+		console.log(err)
 		res.status(if (err) then 400 else 200)
 		res.end()
 	)
