@@ -1,5 +1,6 @@
 actionsHtml = """
 <div class="btn-group">
+	<button class="btn btn-mini btn-default delete-btn" data-id="__ID__"><i class="fa fa-fw fa-trash"></i></button>
 	<a href="/settings/budgets/edit/__ID__" class="btn btn-mini btn-default edit-btn" data-id="__ID__"><i class="fa fa-fw fa-pencil"></i></a>
 </div>
 """
@@ -67,6 +68,7 @@ initDataTable = () ->
 	})
 
 onTableReload = () ->
+	$('.delete-btn').click(() -> deleteBudget($(this), $(this).data('id')))
 	$('td input[type=checkbox]').click((e) -> e.stopPropagation())
 	$('td').click(() ->
 		$(this).find('input[type=checkbox]').click()
@@ -113,6 +115,21 @@ onCheckedBudgetsChange = () ->
 		cloneBtn.prop('disabled', false)
 	else
 		cloneBtn.prop('disabled', true)
+
+deleteBudget = (btn, id) ->
+	if (btn.hasClass('btn-danger'))
+		$.post(
+			"/settings/budgets/delete/#{id}"
+		).done(() ->
+			dataTable.ajax.reload()
+		).fail(() ->
+			toastr.error('Sorry, that budget couldn\'t be deleted!')
+		)
+	else
+		btn.removeClass('btn-default').addClass('btn-danger')
+		setTimeout((() ->
+			btn.addClass('btn-default').removeClass('btn-danger')
+		), 2000)
 
 startClone = () ->
 	cloneModal['qty'].html(checkedBudgets.length)

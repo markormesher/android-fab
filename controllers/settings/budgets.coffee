@@ -94,6 +94,15 @@ router.post('/edit/:budgetId', auth.checkAndRefuse, (req, res) ->
 	)
 )
 
+router.post('/delete/:budgetId', auth.checkAndRefuse, (req, res) ->
+	budgetId = req.params['budgetId']
+
+	BudgetManager.deleteBudget(res.locals.user, budgetId, (err) ->
+		res.status(if (err) then 400 else 200)
+		res.end()
+	)
+)
+
 router.post('/clone', auth.checkAndRefuse, (req, res) ->
 	startDate  = req.body['startDate']
 	endDate  = req.body['endDate']

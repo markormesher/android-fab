@@ -8,7 +8,7 @@ manager = {
 
 	getBudget: (user, id, callback) ->
 		mysql.getConnection((conn) ->
-			conn.query('SELECT * FROM budget WHERE id = ? AND owner = ? LIMIT 1;', [id, user.id], (err, results) ->
+			conn.query('SELECT * FROM budget WHERE id = ? AND owner = ? AND active = true LIMIT 1;', [id, user.id], (err, results) ->
 				if (err)
 					conn.release()
 					return callback(err)
@@ -29,9 +29,9 @@ manager = {
 
 	getBudgets: (user, activeOnly, callback) ->
 		if (activeOnly)
-			query = 'SELECT * FROM budget WHERE owner = ? AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW()) ORDER BY start_date DESC, name ASC;'
+			query = 'SELECT * FROM budget WHERE owner = ? AND active = true AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW()) ORDER BY start_date DESC, name ASC;'
 		else
-			query = 'SELECT * FROM budget WHERE owner = ? ORDER BY start_date DESC, name ASC;'
+			query = 'SELECT * FROM budget WHERE owner = ? AND active = true ORDER BY start_date DESC, name ASC;'
 
 		mysql.getConnection((conn) -> conn.query(query, user.id, (err, results) ->
 			conn.release()
@@ -43,9 +43,9 @@ manager = {
 
 	getBudgetCount: (user, activeOnly, callback) ->
 		if (activeOnly)
-			query = 'SELECT COUNT(*) AS result FROM budget WHERE owner = ? AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW());'
+			query = 'SELECT COUNT(*) AS result FROM budget WHERE owner = ? AND active = true AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW());'
 		else
-			query = 'SELECT COUNT(*) AS result FROM budget WHERE owner = ?;'
+			query = 'SELECT COUNT(*) AS result FROM budget WHERE owner = ? AND active = true;'
 		mysql.getConnection((conn) -> conn.query(query, user.id, (err, result) ->
 			conn.release()
 			if (err) then return callback(err)
@@ -56,9 +56,9 @@ manager = {
 
 	getFilteredBudgetCount: (user, activeOnly, search, callback) ->
 		if (activeOnly)
-			query = 'SELECT COUNT(*) AS result FROM budget WHERE owner = ? AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW()) AND LOWER(name) LIKE ?;'
+			query = 'SELECT COUNT(*) AS result FROM budget WHERE owner = ? AND active = true AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW()) AND LOWER(name) LIKE ?;'
 		else
-			query = 'SELECT COUNT(*) AS result FROM budget WHERE owner = ? AND LOWER(name) LIKE ?;'
+			query = 'SELECT COUNT(*) AS result FROM budget WHERE owner = ? AND active = true AND LOWER(name) LIKE ?;'
 		mysql.getConnection((conn) -> conn.query(query, [user.id, "%#{search.toLowerCase()}%"], (err, result) ->
 			conn.release()
 			if (err) then return callback(err)
@@ -69,9 +69,9 @@ manager = {
 
 	getFilteredBudgets: (user, activeOnly, search, start, count, order, callback) ->
 		if (activeOnly)
-			query = 'SELECT * FROM budget WHERE owner = ? AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW()) AND LOWER(name) LIKE ? ORDER BY start_date ' + order + ', name ASC LIMIT ? OFFSET ?;'
+			query = 'SELECT * FROM budget WHERE owner = ? AND active = true AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW()) AND LOWER(name) LIKE ? ORDER BY start_date ' + order + ', name ASC LIMIT ? OFFSET ?;'
 		else
-			query = 'SELECT * FROM budget WHERE owner = ? AND LOWER(name) LIKE ? ORDER BY start_date ' + order + ', name ASC LIMIT ? OFFSET ?;'
+			query = 'SELECT * FROM budget WHERE owner = ? AND active = true AND LOWER(name) LIKE ? ORDER BY start_date ' + order + ', name ASC LIMIT ? OFFSET ?;'
 		mysql.getConnection((conn) -> conn.query(query, [user.id, "%#{search.toLowerCase()}%", count, start], (err, result) ->
 			conn.release()
 			if (err) then return callback(err)
@@ -88,6 +88,7 @@ manager = {
 		budget['id'] = id
 
 		budget['owner'] = user.id
+		budget['active'] = true
 
 		budgetCategoryInserts = []
 		if (typeof budget['categories'] == 'string')
@@ -205,6 +206,13 @@ manager = {
 
 				innerClone(0)
 			))
+		))
+
+
+	deleteBudget: (user, id, callback) ->
+		mysql.getConnection((conn) -> conn.query('UPDATE budget SET active = false WHERE id = ? AND owner = ?;', [id, user.id], (err) ->
+			conn.release()
+			callback(err)
 		))
 
 
