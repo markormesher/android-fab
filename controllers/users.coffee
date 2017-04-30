@@ -38,4 +38,21 @@ router.post('/profile', auth.checkAndRefuse, (req, res, next) ->
 	)
 )
 
+router.post('/settings', auth.checkAndRefuse, (req, res, next) ->
+	userId = res.locals.user.id
+	settings = req.body
+
+	UserManager.setUserSettings(userId, settings, (err) ->
+		if (err)
+			next(err)
+		else
+			user = res.locals.user
+			delete user.settings
+			req.login(user, (err) ->
+				if (err) then return next(err)
+				res.end()
+			)
+	)
+)
+
 module.exports = router

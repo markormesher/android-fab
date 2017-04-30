@@ -4,14 +4,14 @@ constants = rfr('./constants')
 hashing = rfr('./helpers/hashing')
 UserManager = rfr('./managers/users')
 
-funcs = {
+exports = {
 
 	userHasSetting: (user) -> user['settings'] && user['settings']['__version'] == constants['settingsVersion']
 
 	checkOnly: (req, res, next) ->
 		user = req.user
 		res.locals.user = user || null
-		if (user && !funcs.userHasSetting(user))
+		if (user && !exports.userHasSetting(user))
 			UserManager.getUserSettings(user.id, (err, settings) ->
 				if (err) then return next(err)
 				user['settings'] = settings
@@ -22,10 +22,10 @@ funcs = {
 
 	checkAndRefuse: (req, res, next) ->
 		if (req.user)
-			funcs.checkOnly(req, res, next)
+			exports.checkOnly(req, res, next)
 		else
 			req.flash('error', 'You need to log in first.')
 			res.redirect('/auth/login')
 }
 
-module.exports = funcs
+module.exports = exports

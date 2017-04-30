@@ -15,36 +15,44 @@ manager = {
 
 
 	getFilteredTransactionsCount: (user, query, callback) ->
-		mysql.getConnection((conn) -> conn.query(
-			"""
+		querySql = """
 			SELECT COUNT(*) AS result FROM
 			(transaction LEFT JOIN account ON transaction.account_id = account.id)
 			LEFT JOIN category ON transaction.category_id = category.id
-			WHERE transaction.owner = ? AND LOWER(CONCAT(transaction.payee, COALESCE(transaction.memo, ''), account.name, category.name)) LIKE ?;
-			""",
-			[user.id, "%#{query.toLowerCase()}%"],
-			(err, result) ->
-				conn.release()
-				if (err) then return callback(err)
-				if (result) then return callback(null, result[0]['result'])
-				callback(null, null)
+			WHERE transaction.owner = ? AND LOWER(CONCAT(transaction.payee, COALESCE(transaction.memo, ''), account.name, category.name)) LIKE ?
+			"""
+
+		if (user.settings['transactions_settings_show_future_transactions'] != '1')
+			querySql += ' AND transaction.effective_date <= NOW()'
+
+		querySql += ';'
+
+		mysql.getConnection((conn) -> conn.query(querySql, [user.id, "%#{query.toLowerCase()}%"], (err, result) ->
+			conn.release()
+			if (err) then return callback(err)
+			if (result) then return callback(null, result[0]['result'])
+			callback(null, null)
 		))
 
 
 	getFilteredTransactions: (user, query, start, count, order, callback) ->
-		mysql.getConnection((conn) -> conn.query(
-			"""
+		querySql = """
 			SELECT transaction.*, account_id, account.name AS account_name, category_id, category.name AS category_name FROM
 			(transaction LEFT JOIN account ON transaction.account_id = account.id)
 			LEFT JOIN category ON transaction.category_id = category.id
 			WHERE transaction.owner = ? AND LOWER(CONCAT(transaction.payee, COALESCE(transaction.memo, ''), account.name, category.name)) LIKE ?
-			""" + 'ORDER BY effective_date ' + order + ', record_date DESC LIMIT ? OFFSET ?;',
-			[user.id, "%#{query.toLowerCase()}%", count, start],
-			(err, result) ->
-				conn.release()
-				if (err) then return callback(err)
-				if (result) then return callback(null, result)
-				callback(null, null)
+			"""
+
+		if (user.settings['transactions_settings_show_future_transactions'] != '1')
+			querySql += ' AND transaction.effective_date <= NOW()'
+
+		querySql += ' ORDER BY effective_date ' + order + ', record_date DESC LIMIT ? OFFSET ?;'
+
+		mysql.getConnection((conn) -> conn.query(querySql, [user.id, "%#{query.toLowerCase()}%", count, start], (err, result) ->
+			conn.release()
+			if (err) then return callback(err)
+			if (result) then return callback(null, result)
+			callback(null, null)
 		))
 
 

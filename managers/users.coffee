@@ -71,6 +71,17 @@ manager = {
 			settings['__version'] = constants['settingsVersion']
 			callback(null, settings)
 		))
+
+
+	setUserSettings: (userId, settings, callback) ->
+		inserts = []
+		for k, v of settings
+			inserts.push([userId, k, v])
+		mysql.getConnection((conn) -> conn.query('REPLACE INTO setting VALUES ?;', [inserts], (err) ->
+			conn.release()
+			if (err) then return callback(err)
+			callback(null)
+		))
 }
 
 module.exports = manager

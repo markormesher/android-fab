@@ -35,6 +35,9 @@ html
 		script(src = '/_vendor/gentelella/custom.min.js')
 		+plugin_toastrListener(_)
 
+		script window.user = !{JSON.stringify(locals.user, null, 0)}
+
 		script(src = '/_shared/formatters.js')
 		script(src = '/_shared/key-shortcuts.js')
+
 		block scripts
