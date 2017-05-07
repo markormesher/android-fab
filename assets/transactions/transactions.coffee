@@ -211,7 +211,7 @@ initSettingsModal = () ->
 	settingsModal['_form'] = $('#settings-form')
 	settingsModal['date-display-mode'] = settingsModal['_modal'].find('#date-display-mode')
 	settingsModal['show-future-transactions'] = settingsModal['_modal'].find('#show-future-transactions')
-	settingsModal['save-btn'] = editorModal['_modal'].find('#save-settings-btn')
+	settingsModal['save-btn'] = settingsModal['_modal'].find('#save-settings-btn')
 
 	settingsModal['_form'].submit((e) ->
 		if ($(this).valid())

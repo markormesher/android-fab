@@ -1,0 +1,21 @@
+div#settings-modal.modal.fade(tabindex = -1)
+	div.modal-dialog
+		div.modal-content
+			form#settings-form.validate
+				div.modal-header
+					button.close(type = "button", data-dismiss = "modal" aria-label = "Close"): span(aria-hidden = "true") &times;
+					h4.modal-title Settings
+
+				div.modal-body
+					div.row
+						div.form-group.col-xs-12.col-sm-6
+							label(for = 'date-display-mode') Date Display Mode:
+							select#date-display-mode.form-control(name = 'date-display-mode', required = true)
+								option(value = 'effective') Effective date
+								option(value = 'transaction') Transaction date
+
+				div.modal-footer
+
+					button#save-settings-btn.btn.btn-primary
+						i.fa.fa-fw.fa-save
+						|  Save

@@ -1,0 +1,18 @@
+div#accounts-modal.modal.fade(tabindex = -1)
+	div.modal-dialog
+		div.modal-content
+			div.modal-header
+				button.close(type = "button", data-dismiss = "modal" aria-label = "Close"): span(aria-hidden = "true") &times;
+				h4.modal-title Select Accounts to Show
+
+			div.modal-body
+				div.checkbox-set
+					for a in accounts
+						div.checkbox(style = 'width: 49%; display: inline-block;'): label
+							input(type = 'checkbox', value = a.id, checked = true)
+							|  #{a.name}
+
+			div.modal-footer
+				button#update-btn.btn.btn-primary
+					i.fa.fa-fw.fa-check
+					|  Update

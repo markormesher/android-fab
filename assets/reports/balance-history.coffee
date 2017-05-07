@@ -56,6 +56,15 @@ chart = new Chart($('#history-chart'), {
 	}
 })
 
+settingsModal = {}
+
+$(document).ready(() ->
+	updateActiveAccounts()
+	onDateSet(startDate, endDate)
+	initSettingsModal()
+	populateSettingsModal()
+)
+
 onDateSet = (start, end) ->
 	if (busy) then return
 	startDate = start
@@ -166,7 +175,45 @@ accountsModalUpdateBtn.click(() ->
 	updateChart()
 )
 
-# go!
+initSettingsModal = () ->
+	settingsModal['_modal'] = $('#settings-modal')
+	settingsModal['_form'] = $('#settings-form')
+	settingsModal['date-display-mode'] = settingsModal['_modal'].find('#date-display-mode')
+	settingsModal['save-btn'] = settingsModal['_modal'].find('#save-settings-btn')
 
-updateActiveAccounts()
-onDateSet(startDate, endDate)
+	settingsModal['_form'].submit((e) ->
+		e.preventDefault()
+		if ($(this).valid())
+			saveSettings()
+	)
+
+	$('#settings-btn').click(() -> openSettings())
+
+populateSettingsModal = () ->
+	settingsModal['date-display-mode'].val(window.user.settings['report_bal_history_settings_date_display_mode'])
+
+setSettingsModalLock = (locked) ->
+	settingsModal['date-display-mode'].prop('disabled', locked)
+	settingsModal['save-btn'].prop('disabled', locked)
+	if (locked)
+		settingsModal['save-btn'].find('i').removeClass('fa-save').addClass('fa-circle-o-notch').addClass('fa-spin')
+	else
+		settingsModal['save-btn'].find('i').addClass('fa-save').removeClass('fa-circle-o-notch').removeClass('fa-spin')
+
+openSettings = () ->
+	populateSettingsModal()
+	settingsModal['_modal'].modal('show')
+
+saveSettings = () ->
+	setSettingsModalLock(true)
+	$.post('/users/settings', {
+		'report_bal_history_settings_date_display_mode': settingsModal['date-display-mode'].val()
+	}).done(() ->
+		setSettingsModalLock(false)
+		window.user.settings['report_bal_history_settings_date_display_mode'] = settingsModal['date-display-mode'].val()
+		updateChart()
+		settingsModal['_modal'].modal('hide')
+	).fail(() ->
+		setSettingsModalLock(false)
+		toastr.error('Sorry, those settings couldn\'t be saved!')
+	)

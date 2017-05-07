@@ -168,17 +168,22 @@ manager = {
 
 
 	getBalanceHistory: (user, start, end, accounts, callback) ->
+		if (user.settings['report_bal_history_settings_date_display_mode'] == 'effective')
+			dateField = 'effective_date'
+		else
+			dateField = 'transaction_date'
+
 		async.parallel(
 			{
 				'initial': (c) -> mysql.getConnection((conn) -> conn.query(
-					'SELECT COALESCE(SUM(amount), 0) AS initial FROM transaction WHERE effective_date <= ? AND owner = ? AND account_id IN (?);', [start, user.id, accounts],
+					'SELECT COALESCE(SUM(amount), 0) AS initial FROM transaction WHERE ' + dateField + ' <= ? AND owner = ? AND account_id IN (?);', [start, user.id, accounts],
 					(err, results) ->
 						conn.release()
 						if (err) then return c(err)
 						c(null, results[0]['initial'])
 				))
 				'history': (c) -> mysql.getConnection((conn) -> conn.query(
-					'SELECT effective_date, COALESCE(SUM(amount), 0) AS balance FROM transaction WHERE effective_date > ? AND effective_date <= ? AND owner = ? AND account_id IN (?) GROUP BY effective_date ORDER BY effective_date ASC;', [start, end, user.id, accounts],
+					'SELECT ' + dateField + ', COALESCE(SUM(amount), 0) AS balance FROM transaction WHERE ' + dateField + ' > ? AND ' + dateField + ' <= ? AND owner = ? AND account_id IN (?) GROUP BY ' + dateField + ' ORDER BY ' + dateField + ' ASC;', [start, end, user.id, accounts],
 					(err, results) ->
 						conn.release()
 						if (err) then return c(err)
@@ -199,15 +204,15 @@ manager = {
 
 				for row in results['history']
 					lastBalance += row['balance']
-					output['history'].push({ date: new Date(row['effective_date']), balance: lastBalance })
+					output['history'].push({ date: new Date(row[dateField]), balance: lastBalance })
 
 					if (lastBalance > high)
 						high = lastBalance
-						highDate = new Date(row['effective_date'])
+						highDate = new Date(row[dateField])
 
 					if (lastBalance < low)
 						low = lastBalance
-						lowDate = new Date(row['effective_date'])
+						lowDate = new Date(row[dateField])
 
 				output['start'] = results['initial']
 				output['end'] = lastBalance
