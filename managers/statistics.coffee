@@ -58,14 +58,22 @@ manager = {
 		async.parallel(
 			[
 				(c) -> mysql.getConnection((conn) ->
-					conn.query('SELECT COALESCE(SUM(amount), 0) AS balance FROM transaction JOIN category ON transaction.category_id = category.id WHERE category.type = \'memo\';', (err, results) ->
-						conn.release()
-						if (err) then return c(err)
-						balance = results[0]['balance']
-						if (balance != 0)
-							c(null, ['Transfer balance is ' + formatters.formatCurrency(balance) + '.'])
-						else
-							c(null, [])
+					conn.query(
+						"""
+						SELECT category.name AS category_name, COALESCE(SUM(transaction.amount), 0) AS balance
+						FROM transaction JOIN category ON transaction.category_id = category.id
+						WHERE transaction.owner = ? AND category.type = 'memo'
+						GROUP BY category.name;
+						"""
+						[user.id],
+						(err, results) ->
+							conn.release()
+							if (err) then return c(err)
+							alerts = []
+							for r in results
+								if (r['balance'] != 0)
+									alerts.push(r['category_name'] + ' balance is ' + formatters.formatCurrency(r['balance']) + '.')
+							c(null, alerts)
 					)
 				)
 			],
