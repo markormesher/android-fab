@@ -12,6 +12,11 @@ div#editor-modal.modal.fade(tabindex = -1)
 						div.form-group.col-xs-12.col-sm-6
 							label(for = 'name') Name:
 							input#name.form-control(name = 'name', type = 'text', required = true)
+						div.form-group.col-xs-12.col-sm-6
+							label(for = 'type') Type:
+							select#type.form-control(name = 'type', required = true)
+								option(value = 'regular') Regular
+								option(value = 'memo') Memo
 
 				div.modal-footer
 					button#save-btn.btn.btn-primary

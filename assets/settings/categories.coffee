@@ -41,7 +41,7 @@ initDataTable = () ->
 					isInType = d['summary_visibility'] == 'in' || d['summary_visibility'] == 'both'
 					isOutType = d['summary_visibility'] == 'out' || d['summary_visibility'] == 'both'
 					displayData.push([
-						d['name']
+						d['name'] + (if (d['type'] == 'memo') then ' <i class="fa fa-fw fa-exchange text-muted" title="Memo account"></i>' else '')
 						'<input type="checkbox" value="in" data-id="' + d['id'] + '" ' + (if (isInType) then 'checked="checked"' else '') + '/>'
 						'<input type="checkbox" value="out" data-id="' + d['id'] + '" ' + (if (isOutType) then 'checked="checked"' else '') + '/>'
 						actionsHtml.replace(///__ID__///g, d['id'])
@@ -67,6 +67,7 @@ initEditorModal = () ->
 	editorModal['_createOnly'] = editorModal['_modal'].find('.create-only')
 	editorModal['_editOnly'] = editorModal['_modal'].find('.edit-only')
 	editorModal['name'] = editorModal['_modal'].find('#name')
+	editorModal['type'] = editorModal['_modal'].find('#type')
 	editorModal['save-btn'] = editorModal['_modal'].find('#save-btn')
 
 	editorModal['_modal'].on('shown.bs.modal', () ->
@@ -93,9 +94,11 @@ populateEditorModal = (id) ->
 	category = currentData[id]
 	if (category)
 		editorModal['name'].val(category['name'])
+		editorModal['type'].val(category['type'])
 
 setEditorModalLock = (locked) ->
 	editorModal['name'].prop('disabled', locked)
+	editorModal['type'].prop('disabled', locked)
 	editorModal['save-btn'].prop('disabled', locked)
 	if (locked)
 		editorModal['save-btn'].find('i').removeClass('fa-save').addClass('fa-circle-o-notch').addClass('fa-spin')
@@ -135,6 +138,7 @@ saveCategory = () ->
 	setEditorModalLock(true)
 	$.post("/settings/categories/edit/#{editId}", {
 		name: editorModal['name'].val()
+		type: editorModal['type'].val()
 	}).done(() ->
 		dataTable.ajax.reload()
 		toastr.success('Category saved!')

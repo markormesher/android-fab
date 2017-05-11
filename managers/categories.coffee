@@ -24,7 +24,7 @@ manager = {
 
 
 	getCategoriesCount: (user, callback) ->
-		mysql.getConnection((conn) -> conn.query('SELECT COUNT(*) AS result FROM category WHERE owner = ? AND active = true AND system = false;', user.id, (err, result) ->
+		mysql.getConnection((conn) -> conn.query('SELECT COUNT(*) AS result FROM category WHERE owner = ? AND active = true;', user.id, (err, result) ->
 			conn.release()
 			if (err) then return callback(err)
 			if (result) then return callback(null, result[0]['result'])
@@ -37,7 +37,7 @@ manager = {
 			"""
 			SELECT COUNT(*) AS result
 			FROM category
-			WHERE owner = ? AND LOWER(name) LIKE ? AND active = true AND system = false;
+			WHERE owner = ? AND LOWER(name) LIKE ? AND active = true;
 			""",
 			[user.id, "%#{query.toLowerCase()}%"],
 			(err, result) ->
@@ -53,7 +53,7 @@ manager = {
 			"""
 			SELECT *
 			FROM category
-			WHERE owner = ? AND LOWER(name) LIKE ? AND active = true AND system = false
+			WHERE owner = ? AND LOWER(name) LIKE ? AND active = true
 			""" + ' ORDER BY name ' + order + ' LIMIT ? OFFSET ?;',
 			[user.id, "%#{query.toLowerCase()}%", count, start],
 			(err, result) ->
@@ -68,8 +68,8 @@ manager = {
 		if (!id || id == 0 || id == '0')
 			id = uuid.v1()
 			mysql.getConnection((conn) -> conn.query(
-				'INSERT INTO category (id, owner, name, active, system) VALUES (?, ?, ?, 1, 0);',
-				[id, user.id, category.name],
+				'INSERT INTO category (id, owner, name, type, active) VALUES (?, ?, ?, ?, 1);',
+				[id, user.id, category.name, category.type],
 				(err) ->
 					conn.release()
 					callback(err)
@@ -86,7 +86,7 @@ manager = {
 
 	setSummaryVisibility: (user, id, value, callback) ->
 		if (['in', 'out', 'both'].indexOf(value) < 0) then value = null
-		mysql.getConnection((conn) -> conn.query('UPDATE category SET summary_visibility = ? WHERE id = ? AND owner = ? AND system = false', [value, id, user.id],
+		mysql.getConnection((conn) -> conn.query('UPDATE category SET summary_visibility = ? WHERE id = ? AND owner = ?;', [value, id, user.id],
 			(err) ->
 				conn.release()
 				callback(err)
@@ -94,7 +94,7 @@ manager = {
 
 
 	deleteCategory: (user, id, callback) ->
-		mysql.getConnection((conn) -> conn.query('UPDATE category SET active = false WHERE id = ? AND owner = ? AND system = false;', [id, user.id], (err) ->
+		mysql.getConnection((conn) -> conn.query('UPDATE category SET active = false WHERE id = ? AND owner = ?;', [id, user.id], (err) ->
 			conn.release()
 			callback(err)
 		))

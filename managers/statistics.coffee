@@ -58,7 +58,7 @@ manager = {
 		async.parallel(
 			[
 				(c) -> mysql.getConnection((conn) ->
-					conn.query('SELECT COALESCE(SUM(amount), 0) AS balance FROM transaction WHERE category_id = ?;', user.settings['balance_transfer_category_id'], (err, results) ->
+					conn.query('SELECT COALESCE(SUM(amount), 0) AS balance FROM transaction JOIN category ON transaction.category_id = category.id WHERE category.type = \'memo\';', (err, results) ->
 						conn.release()
 						if (err) then return c(err)
 						balance = results[0]['balance']
@@ -129,10 +129,10 @@ manager = {
 				'movedToSavings': (c) -> mysql.getConnection((conn) -> conn.query(
 					"""
 					SELECT COALESCE(SUM(transaction.amount), 0) AS balance
-					FROM transaction JOIN account ON transaction.account_id = account.id
-					WHERE transaction.owner = ? AND account.type = 'savings' AND transaction.category_id = ? AND transaction.effective_date >= ? AND transaction.effective_date <= ?;
+					FROM (transaction JOIN account ON transaction.account_id = account.id) JOIN category ON transaction.category_id = category.id
+					WHERE transaction.owner = ? AND account.type = 'savings' AND category.type = 'memo' AND transaction.effective_date >= ? AND transaction.effective_date <= ?;
 					"""
-					[user.id, user.settings['balance_transfer_category_id'], startDate, endDate],
+					[user.id, startDate, endDate],
 					(err, results) ->
 						conn.release()
 						if (err || results.length != 1) then return c(err)
