@@ -14,6 +14,12 @@ div#settings-modal.modal.fade(tabindex = -1)
 								option(value = 'effective') Effective date
 								option(value = 'transaction') Transaction date
 
+						div.form-group.col-xs-12.col-sm-6
+							label(for = 'start-at-zero') Start Chart at Zero:
+							select#start-at-zero.form-control(name = 'start-at-zero', required = true)
+								option(value = 'no') No
+								option(value = 'yes') Yes
+
 				div.modal-footer
 
 					button#save-settings-btn.btn.btn-primary
