@@ -2,7 +2,7 @@ lastKey = ''
 
 $('body').keypress((event) ->
 	target = $(event.target)
-	if (target.is('input') || target.is('textarea')) then return
+	if (target.is('input') || target.is('select') || target.is('textarea')) then return
 
 	key = event.key
 
