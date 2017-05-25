@@ -103,7 +103,7 @@ Some of the component views that make up the FAB can be accessed (useful for pos
 |Method | Description|
 |:--- | :---|
 |`RelativeLayout getFabContainer()` | Gets the container layout used for the whole FAB arrangement.|
-|`CardView getCardView()` | Gets the `CardView` used for the actual "button" of the FAB.|
+|`ViewGroup getButton()` | Gets the `ViewGroup` used for the actual "button" of the FAB. On SDK >= 21 this can be safely cast to `CardView`.|
 
 ### Speed-Dial Menus
 

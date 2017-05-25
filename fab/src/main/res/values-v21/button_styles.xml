@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<style name="fab_card" parent="CardView">
+		<item name="cardBackgroundColor">#3f51b5</item>
+		<item name="android:foreground">?android:selectableItemBackground</item>
+	</style>
+
+	<style name="speed_dial_item_card" parent="CardView">
+		<item name="cardBackgroundColor">#c0c0c0</item>
+		<item name="android:foreground">?android:selectableItemBackground</item>
+	</style>
+
+</resources>

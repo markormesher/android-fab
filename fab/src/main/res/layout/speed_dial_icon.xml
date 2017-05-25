@@ -1,34 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-	android:id="@+id/speed_dial_item_container"
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:orientation="horizontal"
-	android:gravity="center_vertical"
-	android:padding="@dimen/speed_dial_disc_offset">
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/speed_dial_item_container"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:gravity="center_vertical"
+		android:padding="@dimen/speed_dial_disc_offset"
+		>
 
 	<!-- label view will be inserted here -->
 
-	<android.support.v7.widget.CardView
-		android:id="@+id/card"
-		android:layout_width="@dimen/speed_dial_disc_size"
-		android:layout_height="@dimen/speed_dial_disc_size"
-		android:layout_margin="@dimen/speed_dial_disc_padding"
-		app:cardElevation="2dp"
-		app:cardCornerRadius="@dimen/speed_dial_disc_radius"
-		app:cardPreventCornerOverlap="false"
-		style="@style/speed_dial_item_card">
-
-		<LinearLayout
-			android:id="@+id/icon_container"
-			android:layout_width="@dimen/speed_dial_disc_icon_size"
-			android:layout_height="@dimen/speed_dial_disc_icon_size"
-			android:layout_margin="@dimen/speed_dial_disc_icon_margin"
-			android:gravity="center"
-			android:orientation="vertical"/>
-
-	</android.support.v7.widget.CardView>
+	<include layout="@layout/speed_dial_icon_inner"/>
 
 </LinearLayout>
