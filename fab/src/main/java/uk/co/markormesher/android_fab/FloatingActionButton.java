@@ -231,6 +231,16 @@ public class FloatingActionButton extends RelativeLayout {
 	 * Gets the {@code ViewGroup} used for the actual "button" of the FAB.
 	 *
 	 * @return the {@code ViewGroup} used for the actual "button" of the FAB
+	 * @deprecated Use {@code getButton()} instead.
+	 */
+	public ViewGroup getCardView() {
+		return getButton();
+	}
+
+	/**
+	 * Gets the {@code ViewGroup} used for the actual "button" of the FAB.
+	 *
+	 * @return the {@code ViewGroup} used for the actual "button" of the FAB
 	 */
 	public ViewGroup getButton() {
 		return button;
