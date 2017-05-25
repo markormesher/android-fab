@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -51,7 +52,7 @@ public class FloatingActionButton extends RelativeLayout {
 	 *==============*/
 
 	private RelativeLayout fabContainer;
-	private CardView cardView;
+	private ViewGroup button;
 	private ViewGroup iconContainer;
 	private View coverView;
 
@@ -66,7 +67,7 @@ public class FloatingActionButton extends RelativeLayout {
 
 		// collect views
 		fabContainer = (RelativeLayout) findViewById(R.id.fab_container);
-		cardView = (CardView) findViewById(R.id.card);
+		button = (ViewGroup) findViewById(R.id.card);
 		iconContainer = (ViewGroup) findViewById(R.id.icon_container);
 		coverView = findViewById(R.id.cover);
 
@@ -74,9 +75,9 @@ public class FloatingActionButton extends RelativeLayout {
 		coverView.setAlpha(0F);
 
 		// clicks
-		cardView.setClickable(true);
-		cardView.setFocusable(true);
-		cardView.setOnClickListener(v -> onClick());
+		button.setClickable(true);
+		button.setFocusable(true);
+		button.setOnClickListener(v -> onClick());
 
 		// make sure Android knows we want to save this state
 		setSaveEnabled(true);
@@ -147,7 +148,11 @@ public class FloatingActionButton extends RelativeLayout {
 	 */
 	public void setBackgroundColour(int colour) {
 		savedBgColour = colour;
-		cardView.setCardBackgroundColor(colour);
+		if (Build.VERSION.SDK_INT >= 21) {
+			((CardView) button).setCardBackgroundColor(colour);
+		} else {
+			((GradientDrawable) button.getBackground()).setColor(colour);
+		}
 	}
 
 	/**
@@ -166,15 +171,15 @@ public class FloatingActionButton extends RelativeLayout {
 		if (!shown && !fast) return;
 
 		closeSpeedDialMenu();
-		cardView.clearAnimation();
-		cardView.animate()
+		button.clearAnimation();
+		button.animate()
 				.scaleX(0F)
 				.scaleY(0F)
 				.setDuration(fast ? 0 : HIDE_SHOW_ANIMATION_DURATION)
 				.setListener(new AnimatorListenerAdapter() {
 					@Override
 					public void onAnimationEnd(Animator animation) {
-						cardView.setVisibility(GONE);
+						button.setVisibility(GONE);
 						shown = false;
 					}
 				});
@@ -186,9 +191,9 @@ public class FloatingActionButton extends RelativeLayout {
 	public void show() {
 		if (shown) return;
 
-		cardView.setVisibility(VISIBLE);
-		cardView.clearAnimation();
-		cardView.animate()
+		button.setVisibility(VISIBLE);
+		button.clearAnimation();
+		button.animate()
 				.scaleX(1F)
 				.scaleY(1F)
 				.setDuration(HIDE_SHOW_ANIMATION_DURATION)
@@ -215,6 +220,7 @@ public class FloatingActionButton extends RelativeLayout {
 
 	/**
 	 * Gets the container layout used for the whole FAB arrangement.
+	 *
 	 * @return the container layout used for the whole FAB arrangement
 	 */
 	public RelativeLayout getFabContainer() {
@@ -222,11 +228,12 @@ public class FloatingActionButton extends RelativeLayout {
 	}
 
 	/**
-	 * Gets the {@code CardView} used for the actual "button" of the FAB.
-	 * @return the {@code CardView} used for the actual "button" of the FAB
+	 * Gets the {@code ViewGroup} used for the actual "button" of the FAB.
+	 *
+	 * @return the {@code ViewGroup} used for the actual "button" of the FAB
 	 */
-	public CardView getCardView() {
-		return cardView;
+	public ViewGroup getButton() {
+		return button;
 	}
 
 	/*=============*
@@ -340,7 +347,11 @@ public class FloatingActionButton extends RelativeLayout {
 			speedDialMenuItems.add(view);
 
 			// set background colour
-			((CardView) view.findViewById(R.id.card)).setCardBackgroundColor(menuAdapter.getBackgroundColour(i));
+			if (Build.VERSION.SDK_INT >= 21) {
+				((CardView) view.findViewById(R.id.card)).setCardBackgroundColor(menuAdapter.getBackgroundColour(i));
+			} else {
+				((GradientDrawable) view.findViewById(R.id.card).getBackground()).setColor(menuAdapter.getBackgroundColour(i));
+			}
 
 			// get child views
 			SpeedDialMenuAdapter.MenuItem itemViews = menuAdapter.getViews(getContext(), i);
@@ -474,7 +485,7 @@ public class FloatingActionButton extends RelativeLayout {
 		coverView.animate()
 				.scaleX(visible ? 50F : 0F)
 				.scaleY(visible ? 50F : 0F)
-				.alpha(visible ? 1F : 0F)
+				//.alpha(visible ? 1F : 0F)
 				.setDuration(SPEED_DIAL_ANIMATION_DURATION)
 				.setListener(new AnimatorListenerAdapter() {
 					@Override
@@ -495,7 +506,7 @@ public class FloatingActionButton extends RelativeLayout {
 		busyAnimatingSpeedDialMenu = true;
 
 		// animate, setting visibility as well to prevent phantom clicks
-		int distance = cardView.getHeight();
+		int distance = button.getHeight();
 		for (int i = 0, n = speedDialMenuItems.size(); i < n; ++i) {
 			final View v = speedDialMenuItems.get(i);
 			if (visible) v.setVisibility(VISIBLE);

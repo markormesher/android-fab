@@ -1,48 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-	android:id="@+id/fab_container"
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:clipChildren="false"
-	android:clipToPadding="false"
-	android:paddingRight="@dimen/fab_offset"
-	android:paddingEnd="@dimen/fab_offset"
-	android:paddingBottom="@dimen/fab_offset"
-	tools:ignore="RtlSymmetry">
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:tools="http://schemas.android.com/tools"
+		tools:ignore="RtlSymmetry"
+		android:id="@+id/fab_container"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:clipChildren="false"
+		android:clipToPadding="false"
+		android:paddingRight="@dimen/fab_offset"
+		android:paddingEnd="@dimen/fab_offset"
+		android:paddingBottom="@dimen/fab_offset"
+		>
 
 	<View
-		android:id="@+id/cover"
-		android:layout_width="@dimen/fab_size"
-		android:layout_height="@dimen/fab_size"
-		android:layout_alignParentBottom="true"
-		android:layout_alignParentEnd="true"
-		android:layout_alignParentRight="true"
-		android:background="@drawable/fab_cover_circle"/>
+			android:id="@+id/cover"
+			android:layout_width="@dimen/fab_size"
+			android:layout_height="@dimen/fab_size"
+			android:layout_alignParentBottom="true"
+			android:layout_alignParentEnd="true"
+			android:layout_alignParentRight="true"
+			android:background="@drawable/fab_cover_circle"
+			/>
 
-	<android.support.v7.widget.CardView
-		android:id="@+id/card"
-		android:layout_width="@dimen/fab_size"
-		android:layout_height="@dimen/fab_size"
-		android:layout_margin="@dimen/fab_padding"
-		android:layout_alignParentBottom="true"
-		android:layout_alignParentEnd="true"
-		android:layout_alignParentRight="true"
-		app:cardElevation="6dp"
-		app:cardCornerRadius="@dimen/fab_radius"
-		app:cardPreventCornerOverlap="false"
-		style="@style/fab_card">
-
-		<LinearLayout
-			android:id="@+id/icon_container"
-			android:layout_width="@dimen/fab_icon_size"
-			android:layout_height="@dimen/fab_icon_size"
-			android:layout_margin="@dimen/fab_icon_margin"
-			android:gravity="center"
-			android:orientation="horizontal"/>
-
-	</android.support.v7.widget.CardView>
+	<include layout="@layout/floating_action_button_inner"/>
 
 </RelativeLayout>
