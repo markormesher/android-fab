@@ -243,9 +243,9 @@ manager = {
 				AND transaction.effective_date >= budget.start_date AND transaction.effective_date <= budget.end_date
 			), 0) * -1 AS spend
 			FROM budget
-			WHERE budget.owner = ? AND budget.active = true AND budget.start_date >= ? AND budget.end_date <= ?
+			WHERE budget.owner = ? AND budget.active = true AND (NOT budget.end_date < ? AND NOT budget.start_date > ?)
 			GROUP BY budget.id
-			ORDER BY budget.start_date ASC, budget.name ASC;
+			ORDER BY budget.name ASC, budget.start_date ASC;
 			""",
 			[user['id'], start, end]
 			(err, results) ->
