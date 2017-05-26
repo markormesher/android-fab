@@ -1,0 +1,25 @@
+extends ../../_shared/page-layout
+
+block page-head
+	link(rel = 'stylesheet', href = '/_vendor/bootstrap-daterangepicker/bootstrap-daterangepicker.css')
+	link(rel = 'stylesheet', href = '/reports/reports.css')
+
+block page-title-extra
+	button.btn.btn-default#report-range
+		i.fa.fa-fw.fa-calendar.title-icon
+		span
+		i.fa.fa-fw.fa-caret-down.text-muted
+
+block page-body
+
+	div.row#error-pane(style = 'display: none;'): div.col-xs-12
+		p.text-center(style = 'margin: 20px;'): i.fa.fa-fw.fa-exclamation-triangle.fa-2x.text-danger
+
+	div.row#content-pane
+
+block page-scripts
+	script(src = '/_vendor/moment/moment.min.js')
+	script(src = '/_vendor/bootstrap-daterangepicker/bootstrap-daterangepicker.js')
+	script(src = '/_vendor/jquery-validation/jquery.validate.min.js')
+	script(src = '/_shared/form-validation.js')
+	script(src = '/reports/budget-performance.js')

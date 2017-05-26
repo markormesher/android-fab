@@ -2,7 +2,7 @@ rfr = require('rfr')
 BudgetManager = rfr('./managers/budgets')
 
 oneDay = 24 * 60 * 60 * 1000
-monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
 formatters = {
 

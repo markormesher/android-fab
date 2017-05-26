@@ -231,6 +231,34 @@ manager = {
 
 				callback(null, output)
 		)
+
+
+	getBudgetPerformance: (user, start, end, callback) ->
+		mysql.getConnection((conn) -> conn.query(
+			"""
+			SELECT budget.*, COALESCE((
+				SELECT SUM(transaction.amount)
+				FROM transaction
+				WHERE transaction.category_id IN (SELECT budget_category.category_id FROM budget_category WHERE budget_category.budget_id = budget.id)
+				AND transaction.effective_date >= budget.start_date AND transaction.effective_date <= budget.end_date
+			), 0) * -1 AS spend
+			FROM budget
+			WHERE budget.owner = ? AND budget.active = true AND budget.start_date >= ? AND budget.end_date <= ?
+			GROUP BY budget.id
+			ORDER BY budget.start_date ASC, budget.name ASC;
+			""",
+			[user['id'], start, end]
+			(err, results) ->
+				conn.release()
+				if (err) then return c(err)
+
+				data = {}
+				for row in results
+					if (!data[row['name']])
+						data[row['name']] = []
+					data[row['name']].push(row)
+				callback(null, data)
+		))
 }
 
 module.exports = manager

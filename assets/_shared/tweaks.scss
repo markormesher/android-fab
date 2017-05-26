@@ -75,6 +75,14 @@ table.table {
 	width: 99%;
 }
 
+table.non-full-width {
+	width: auto !important;
+}
+
+table tfoot tr td {
+	border-top: 2px solid #dddddd !important;
+}
+
 @media (max-width: 992px) {
 	div.page-title {
 		h3 {
