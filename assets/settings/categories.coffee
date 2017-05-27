@@ -164,4 +164,4 @@ toggleCategoryVisibility = (checkbox) ->
 	else
 		null
 
-	$.post("/settings/categories/set-summary-visibility/#{id}", { value: value })
+	$.post("/settings/categories/set-summary-visibility/#{id}", { value: value }).fail(() -> toastr.error('Sorry, that couldn\'t be saved!'))

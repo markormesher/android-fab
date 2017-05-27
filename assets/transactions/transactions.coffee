@@ -25,13 +25,15 @@ currentData = {}
 editId = 0
 
 editorModal = {}
-settingsModal = {}
 dataTable = null
 
 $(document).ready(() ->
 	initDataTable()
 	initEditorModal()
-	initSettingsModal()
+)
+
+$(document).on('settings:updated', () ->
+	dataTable.ajax.reload()
 )
 
 initDataTable = () ->
@@ -204,52 +206,4 @@ saveTransaction = () ->
 	).fail(() ->
 		toastr.error('Sorry, that transaction couldn\'t be saved!')
 		setEditorModalLock(false)
-	)
-
-initSettingsModal = () ->
-	settingsModal['_modal'] = $('#settings-modal')
-	settingsModal['_form'] = $('#settings-form')
-	settingsModal['date-display-mode'] = settingsModal['_modal'].find('#date-display-mode')
-	settingsModal['show-future-transactions'] = settingsModal['_modal'].find('#show-future-transactions')
-	settingsModal['save-btn'] = settingsModal['_modal'].find('#save-settings-btn')
-
-	settingsModal['_form'].submit((e) ->
-		if ($(this).valid())
-			saveSettings()
-		e.preventDefault()
-	)
-
-	$('#settings-btn').click(() -> openSettings())
-
-populateSettingsModal = () ->
-	settingsModal['date-display-mode'].val(window.user.settings['transactions_settings_date_display_mode'])
-	settingsModal['show-future-transactions'].val(window.user.settings['transactions_settings_show_future_transactions'])
-
-setSettingsModalLock = (locked) ->
-	settingsModal['date-display-mode'].prop('disabled', locked)
-	settingsModal['show-future-transactions'].prop('disabled', locked)
-	settingsModal['save-btn'].prop('disabled', locked)
-	if (locked)
-		settingsModal['save-btn'].find('i').removeClass('fa-save').addClass('fa-circle-o-notch').addClass('fa-spin')
-	else
-		settingsModal['save-btn'].find('i').addClass('fa-save').removeClass('fa-circle-o-notch').removeClass('fa-spin')
-
-openSettings = () ->
-	populateSettingsModal()
-	settingsModal['_modal'].modal('show')
-
-saveSettings = () ->
-	setSettingsModalLock(true)
-	$.post('/users/settings', {
-		'transactions_settings_date_display_mode': settingsModal['date-display-mode'].val()
-		'transactions_settings_show_future_transactions': settingsModal['show-future-transactions'].val()
-	}).done(() ->
-		setSettingsModalLock(false)
-		window.user.settings['transactions_settings_date_display_mode'] = settingsModal['date-display-mode'].val()
-		window.user.settings['transactions_settings_show_future_transactions'] = settingsModal['show-future-transactions'].val()
-		dataTable.ajax.reload()
-		settingsModal['_modal'].modal('hide')
-	).fail(() ->
-		setSettingsModalLock(false)
-		toastr.error('Sorry, those settings couldn\'t be saved!')
 	)

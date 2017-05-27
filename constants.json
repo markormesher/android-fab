@@ -5,7 +5,7 @@
 	"defaultSettings": {
 		"over_budget_warning_ratio": 1.02,
 		"transactions_settings_date_display_mode": "effective",
-		"transactions_settings_show_future_transactions": "1",
+		"transactions_settings_show_future_transactions": "no",
 		"report_bal_history_settings_date_display_mode": "effective",
 		"report_bal_history_settings_start_at_zero": "no"
 	}

@@ -22,7 +22,7 @@ manager = {
 			WHERE transaction.owner = ? AND LOWER(CONCAT(transaction.payee, COALESCE(transaction.memo, ''), account.name, category.name)) LIKE ?
 			"""
 
-		if (user.settings['transactions_settings_show_future_transactions'] != '1')
+		if (user.settings['transactions_settings_show_future_transactions'] != 'yes')
 			querySql += ' AND transaction.effective_date <= NOW()'
 
 		querySql += ';'
@@ -43,7 +43,7 @@ manager = {
 			WHERE transaction.owner = ? AND LOWER(CONCAT(transaction.payee, COALESCE(transaction.memo, ''), account.name, category.name)) LIKE ?
 			"""
 
-		if (user.settings['transactions_settings_show_future_transactions'] != '1')
+		if (user.settings['transactions_settings_show_future_transactions'] != 'yes')
 			querySql += ' AND transaction.effective_date <= NOW()'
 
 		querySql += ' ORDER BY effective_date ' + order + ', record_date DESC LIMIT ? OFFSET ?;'

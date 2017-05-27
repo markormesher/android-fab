@@ -1,0 +1,21 @@
+div#settings-modal.modal.fade(tabindex = -1)
+	div.modal-dialog
+		div.modal-content
+			div.modal-header
+				button.close(type = "button", data-dismiss = "modal" aria-label = "Close"): span(aria-hidden = "true") &times;
+				h4.modal-title Settings
+
+			div.modal-body
+				block settings-body
+
+			div.modal-footer
+
+				p.pull-left.settings-saving(style = 'display: none;')
+					i.fa.fa-fw.fa-spin.fa-circle-o-notch.title-icon
+					|  Saving...
+
+				p.pull-left.settings-saved(style = 'display: none;')
+					i.fa.fa-fw.fa-check.title-icon
+					|  Saved!
+
+				p.text-muted.pull-right Changes will save automatically.
