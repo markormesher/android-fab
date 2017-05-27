@@ -124,7 +124,7 @@ makeBudgetSection = (name) -> $("""
 				<h2>#{name}</h2>
 				<div class="clearfix"></div>
 			</div>
-			<div class="x_content">
+			<div class="x_content table-responsive">
 				<table class="table table-condensed table-hover non-full-width">
 					<thead>
 						<tr class="period"><th></th></tr>
