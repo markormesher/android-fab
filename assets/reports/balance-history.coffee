@@ -32,6 +32,14 @@ chart = new Chart($('#history-chart'), {
 	type: 'line'
 	data: { datasets: [] }
 	options: {
+		elements: {
+			line: {
+				tension: 0
+			}
+			point: {
+				radius: 1
+			}
+		}
 		tooltips: {
 			callbacks: {
 				title: (item, data) -> new moment(item[0].xLabel).format('DD MMM')
