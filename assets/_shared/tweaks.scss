@@ -83,6 +83,12 @@ table tfoot tr td {
 	border-top: 2px solid #dddddd !important;
 }
 
+@media screen and (max-width: 767px) {
+	.table-responsive {
+		border: none !important;
+	}
+}
+
 @media (max-width: 992px) {
 	div.page-title {
 		h3 {
