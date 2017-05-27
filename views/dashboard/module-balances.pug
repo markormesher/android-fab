@@ -8,13 +8,23 @@ div.x_panel
 	div.x_content
 		- var sum = 0
 		- var empty = true
-		for ab in accountBalances
-			if ab.balance != 0
-				- sum += ab.balance
+		- var groups = { 'current': [], 'savings': [], 'asset': [] }
+		- var groupTitles = { 'current': 'Current Accounts', 'savings': 'Savings Accounts', 'asset': 'Assets' }
+		for a in accountBalances
+			if a.balance != 0
+				- sum += a.balance
 				- empty = false
-				p
-					=ab.account_name
-					span.pull-right= formatters.formatCurrency(ab.balance)
+				- groups[a.account_type].push(a)
+
+		- firstGroup = true
+		for group in ['current', 'savings', 'asset']
+			if (groups[group].length > 0)
+				h4(class = firstGroup ? '' : 'gap')= groupTitles[group]
+				for a in groups[group]
+					p
+						=a.account_name
+						span.pull-right= formatters.formatCurrency(a.balance)
+				- firstGroup = false
 
 		if (empty)
 			p: i No accounts

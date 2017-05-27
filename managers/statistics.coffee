@@ -10,7 +10,7 @@ manager = {
 	getActiveAccountBalances: (user, callback) ->
 		mysql.getConnection((conn) -> conn.query(
 			"""
-			SELECT account.id AS account_id, account.name AS account_name, SUM(transaction.amount) AS balance
+			SELECT account.id AS account_id, account.name AS account_name, account.type AS account_type, SUM(transaction.amount) AS balance
 			FROM transaction LEFT JOIN account ON transaction.account_id = account.id
 			WHERE account.active = 1 AND account.owner = ?
 			GROUP BY transaction.account_id ORDER BY account.display_order ASC;
