@@ -492,15 +492,19 @@ public class FloatingActionButton extends RelativeLayout {
 		busyAnimatingSpeedDialCover = true;
 
 		// animate
+		coverView.setVisibility(VISIBLE);
 		coverView.animate()
 				.scaleX(visible ? 50F : 0F)
 				.scaleY(visible ? 50F : 0F)
-				//.alpha(visible ? 1F : 0F)
+				.alpha(visible ? 1F : 0F)
 				.setDuration(SPEED_DIAL_ANIMATION_DURATION)
 				.setListener(new AnimatorListenerAdapter() {
 					@Override
 					public void onAnimationEnd(Animator animation) {
 						busyAnimatingSpeedDialCover = false;
+						if (!visible) {
+							coverView.setVisibility(GONE);
+						}
 					}
 				});
 	}
