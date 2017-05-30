@@ -14,13 +14,7 @@ manager = {
 					return callback(err)
 
 				if (results && results.length == 1)
-					budget = results[0]
-					conn.query('SELECT category_id FROM budget_category WHERE budget_id = ?;', budget.id, (err, results) ->
-						conn.release()
-						if (err) then return callback(err)
-						budget['categories'] = (c['category_id'] for c in results)
-						callback(null, budget)
-					)
+					callback(null, results[0])
 				else
 					conn.release()
 					callback(null, null)
@@ -80,87 +74,33 @@ manager = {
 		))
 
 
-	saveBudget: (user, id, budget, preConn, callback) ->
+	saveBudget: (user, id, budget, conn, callback) ->
+		# NOTE: a pre-existing connection MAY be passed in,
+		# because this function MAY be called as part of a transaction
+
 		insert = false
 		if (!id || id == 0 || id == '0')
 			insert = true
 			id = uuid.v1()
-		budget['id'] = id
 
+		budget['id'] = id
 		budget['owner'] = user.id
 		budget['active'] = true
 
-		budgetCategoryInserts = []
-		if (typeof budget['categories'] == 'string')
-			budget.categories = [budget.categories]
-		for c in budget['categories']
-			budgetCategoryInserts.push([id, c])
-
-		delete budget['categories']
-
-		doTransaction = (exec) ->
-			if (!preConn)
-				mysql.getConnection((conn) -> conn.beginTransaction((err) -> exec(conn, true, err)))
-			else
-				exec(preConn, false, null)
-
 		if (insert)
-			doTransaction((conn, canCommit, err) ->
-				if (err)
-					conn.rollback(() -> callback(err))
-					return conn.release()
-				conn.query('INSERT INTO budget SET ?;', [budget], (err) ->
-					if (err)
-						conn.rollback(() -> callback(err))
-						return conn.release()
-					conn.query('INSERT INTO budget_category VALUES ?;', [budgetCategoryInserts], (err) ->
-						if (err)
-							conn.rollback(() -> callback(err))
-							return conn.release()
-						if (canCommit)
-							conn.commit((err) ->
-								if (err)
-									conn.rollback(() -> callback(err))
-									return conn.release()
-								conn.release()
-								callback(null)
-							)
-						else
-							callback(null)
-					)
-				)
-			)
+			query = 'INSERT INTO budget SET ?;'
+			data = [budget]
 		else
-			doTransaction((conn, canCommit, err) ->
-				if (err)
-					conn.rollback(() -> callback(err))
-					return conn.release()
-				conn.query('UPDATE budget SET ? WHERE id = ? AND owner = ?;', [budget, id, user.id], (err) ->
-					if (err)
-						conn.rollback(() -> callback(err))
-						return conn.release()
-					conn.query('DELETE FROM budget_category WHERE budget_id = ?;', [id], (err) ->
-						if (err)
-							conn.rollback(() -> callback(err))
-							return conn.release()
-						conn.query('INSERT INTO budget_category VALUES ?;', [budgetCategoryInserts], (err) ->
-							if (err)
-								conn.rollback(() -> callback(err))
-								return conn.release()
-							if (canCommit)
-								conn.commit((err) ->
-									if (err)
-										conn.rollback(() -> callback(err))
-										return conn.release()
-									conn.release()
-									callback(null)
-								)
-							else
-								callback(null)
-						)
-					)
-				)
-			)
+			query = 'UPDATE budget SET ? WHERE id = ? AND owner = ?;'
+			data = [budget, id, user.id]
+
+		if (conn)
+			conn.query(query, data, (err) -> callback(err))
+		else
+			mysql.getConnection((conn) -> conn.query(query, data, (err) ->
+				conn.release()
+				callback(err)
+			))
 
 
 	cloneBudgets: (user, originalIds, startDate, endDate, callback) ->
@@ -186,25 +126,19 @@ manager = {
 							callback(null)
 						)
 					else
-						conn.query('SELECT category_id FROM budget_category WHERE budget_id = ?', originalBudgets[i]['id'], (err, result) ->
+						newBudget = {
+							name: originalBudgets[i]['name']
+							category_id: originalBudgets[i]['category_id']
+							amount: originalBudgets[i]['amount']
+							type: originalBudgets[i]['type']
+							start_date: startDate
+							end_date: endDate
+						}
+						manager.saveBudget(user, 0, newBudget, conn, (err) ->
 							if (err)
 								conn.rollback(() -> callback(err))
 								return conn.release()
-							categoryIds = (r['category_id'] for r in result)
-							newBudget = {
-									name: originalBudgets[i]['name']
-									amount: originalBudgets[i]['amount']
-									type: originalBudgets[i]['type']
-									start_date: startDate
-									end_date: endDate
-									categories: categoryIds
-							}
-							manager.saveBudget(user, 0, newBudget, conn, (err) ->
-								if (err)
-									conn.rollback(() -> callback(err))
-									return conn.release()
-								innerClone(i + 1)
-							)
+							innerClone(i + 1)
 						)
 
 				innerClone(0)

@@ -27,13 +27,13 @@ manager = {
 	getCurrentBudgets: (user, callback) ->
 		mysql.getConnection((conn) -> conn.query(
 			"""
-			SELECT budget.*, COALESCE((
+			SELECT budget.*, category.name AS name, COALESCE((
 				SELECT SUM(transaction.amount)
 				FROM transaction
-				WHERE transaction.category_id IN (SELECT budget_category.category_id FROM budget_category WHERE budget_category.budget_id = budget.id)
+				WHERE transaction.category_id = budget.category_id
 				AND transaction.effective_date >= budget.start_date AND transaction.effective_date <= budget.end_date
 			), 0) * -1 AS spend
-			FROM budget
+			FROM budget JOIN category ON category.id = budget.category_id
 			WHERE budget.owner = ? AND budget.active = true AND budget.start_date <= DATE(NOW()) AND budget.end_date >= DATE(NOW())
 			ORDER BY budget.start_date DESC, budget.name ASC;
 			"""
@@ -236,13 +236,13 @@ manager = {
 	getBudgetPerformance: (user, start, end, callback) ->
 		mysql.getConnection((conn) -> conn.query(
 			"""
-			SELECT budget.*, COALESCE((
+			SELECT budget.*, category.name AS name, COALESCE((
 				SELECT SUM(transaction.amount)
 				FROM transaction
-				WHERE transaction.category_id IN (SELECT budget_category.category_id FROM budget_category WHERE budget_category.budget_id = budget.id)
+				WHERE transaction.category_id = budget.category_id
 				AND transaction.effective_date >= budget.start_date AND transaction.effective_date <= budget.end_date
 			), 0) * -1 AS spend
-			FROM budget
+			FROM budget JOIN category ON category.id = budget.category_id
 			WHERE budget.owner = ? AND budget.active = true AND (NOT budget.end_date < ? AND NOT budget.start_date > ?)
 			GROUP BY budget.id
 			ORDER BY budget.name ASC, budget.start_date ASC;
