@@ -40,7 +40,6 @@ router.post('/edit/:accountId', auth.checkAndRefuse, (req, res) ->
 	account = req.body
 
 	AccountManager.saveAccount(res.locals.user, accountId, account, (err) ->
-		if (err) then console.log(err)
 		res.status(if (err) then 400 else 200)
 		res.end()
 	)
@@ -50,7 +49,6 @@ router.post('/delete/:accountId', auth.checkAndRefuse, (req, res) ->
 	accountId = req.params['accountId']
 
 	AccountManager.deleteAccount(res.locals.user, accountId, (err) ->
-		if (err) then console.log(err)
 		res.status(if (err) then 400 else 200)
 		res.end()
 	)
@@ -61,7 +59,6 @@ router.post('/reorder/:accountId', auth.checkAndRefuse, (req, res) ->
 	direction = req.body['direction']
 
 	AccountManager.reorderAccount(res.locals.user, accountId, direction, (err) ->
-		if (err) then console.log(err)
 		res.status(if (err) then 400 else 200)
 		res.end()
 	)

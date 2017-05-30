@@ -27,7 +27,7 @@ manager = {
 	getCurrentBudgets: (user, callback) ->
 		mysql.getConnection((conn) -> conn.query(
 			"""
-			SELECT budget.*, category.name AS name, COALESCE((
+			SELECT budget.*, category.name AS category, COALESCE((
 				SELECT SUM(transaction.amount)
 				FROM transaction
 				WHERE transaction.category_id = budget.category_id
@@ -35,7 +35,7 @@ manager = {
 			), 0) * -1 AS spend
 			FROM budget JOIN category ON category.id = budget.category_id
 			WHERE budget.owner = ? AND budget.active = true AND budget.start_date <= DATE(NOW()) AND budget.end_date >= DATE(NOW())
-			ORDER BY budget.start_date DESC, budget.name ASC;
+			ORDER BY budget.start_date DESC, category.name ASC;
 			"""
 			user.id,
 			(err, results) ->
@@ -236,7 +236,7 @@ manager = {
 	getBudgetPerformance: (user, start, end, callback) ->
 		mysql.getConnection((conn) -> conn.query(
 			"""
-			SELECT budget.*, category.name AS name, COALESCE((
+			SELECT budget.*, category.name AS category, COALESCE((
 				SELECT SUM(transaction.amount)
 				FROM transaction
 				WHERE transaction.category_id = budget.category_id
@@ -245,7 +245,7 @@ manager = {
 			FROM budget JOIN category ON category.id = budget.category_id
 			WHERE budget.owner = ? AND budget.active = true AND (NOT budget.end_date < ? AND NOT budget.start_date > ?)
 			GROUP BY budget.id
-			ORDER BY budget.name ASC, budget.start_date ASC;
+			ORDER BY category.name ASC, budget.start_date ASC;
 			""",
 			[user['id'], start, end]
 			(err, results) ->
@@ -254,9 +254,9 @@ manager = {
 
 				data = {}
 				for row in results
-					if (!data[row['name']])
-						data[row['name']] = []
-					data[row['name']].push(row)
+					if (!data[row['category']])
+						data[row['category']] = []
+					data[row['category']].push(row)
 				callback(null, data)
 		))
 }

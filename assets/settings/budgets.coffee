@@ -5,10 +5,10 @@ actionsHtml = """
 </div>
 """
 
-nameHtml = """
+categoryHtml = """
 <input type="checkbox" data-id="__ID__" class="clone-checkbox" />
 &nbsp;
-__NAME__
+__CATEGORY__
 """
 
 cloneModal = {}
@@ -51,9 +51,9 @@ initDataTable = () ->
 			dataSrc: (raw) ->
 				displayData = []
 				for d in raw.data
-					name = d['name'] + (if (d['type'] == 'bill') then ' (Bill)' else '')
+					category = d['category'] + (if (d['type'] == 'bill') then ' (Bill)' else '')
 					displayData.push([
-						nameHtml.replace(///__ID__///g, d['id']).replace(///__NAME__///g, name)
+						categoryHtml.replace(///__ID__///g, d['id']).replace(///__CATEGORY__///g, category)
 						window.formatters.formatBudgetSpan(d['start_date'], d['end_date'])
 						window.formatters.formatCurrency(d['amount'])
 						actionsHtml.replace(///__ID__///g, d['id'])

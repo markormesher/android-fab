@@ -43,7 +43,6 @@ router.post('/edit/:categoryId', auth.checkAndRefuse, (req, res) ->
 	category = req.body
 
 	CategoryManager.saveCategory(res.locals.user, categoryId, category, (err) ->
-		if (err) then console.log(err)
 		res.status(if (err) then 400 else 200)
 		res.end()
 	)

@@ -58,14 +58,14 @@ populateChart = (data) ->
 	tableData = { 'month': {}, 'year': {}, 'tax-year': {}, 'other': {} }
 	periods = { 'month': [], 'year': [], 'tax-year': [] }
 	periodSums = {}
-	for name, budgets of data
+	for category, budgets of data
 		for budget in budgets
 			type = window.formatters.getBudgetPeriodType(budget['start_date'], budget['end_date'])
 			period = window.formatters.formatBudgetSpan(budget['start_date'], budget['end_date'])
 
-			if (!tableData[type][name])
-				tableData[type][name] = {}
-			tableData[type][name][period] = [budget['spend'], budget['amount']]
+			if (!tableData[type][category])
+				tableData[type][category] = {}
+			tableData[type][category][period] = [budget['spend'], budget['amount']]
 
 			if (!periodSums[period])
 				periodSums[period] = [0, 0]
@@ -89,9 +89,9 @@ populateChart = (data) ->
 		for period in periods[type]
 			periodRow.append('<th>' + period + '</th>')
 
-		for name, values of tableData[type]
+		for category, values of tableData[type]
 			row = $('<tr/>')
-			row.append('<td>' + name + '</td>')
+			row.append('<td>' + category + '</td>')
 			for period in periods[type]
 				row.append(getPerformanceCell(values[period]))
 			section.find('tbody').append(row)
@@ -103,13 +103,13 @@ populateChart = (data) ->
 		contentPane.append(section)
 
 	# other budgets
-	for name, budget of tableData['other']
-		section = makeBudgetSection(name)
+	for category, budget of tableData['other']
+		section = makeBudgetSection(category)
 		section.find('tfoot').remove()
 
 		periodRow = section.find('tr.period')
 		performanceRow = $('<tr/>')
-		performanceRow.append('<td>' + name + '</td>')
+		performanceRow.append('<td>' + category + '</td>')
 		for period, values of budget
 			periodRow.append('<th>' + period + '</th>')
 			performanceRow.append(getPerformanceCell(values))
@@ -117,11 +117,11 @@ populateChart = (data) ->
 
 		contentPane.append(section)
 
-makeBudgetSection = (name) -> $("""
+makeBudgetSection = (title) -> $("""
 	<div class="col-xs-12">
 		<div class="x_panel">
 			<div class="x_title">
-				<h2>#{name}</h2>
+				<h2>#{title}</h2>
 				<div class="clearfix"></div>
 			</div>
 			<div class="x_content table-responsive">

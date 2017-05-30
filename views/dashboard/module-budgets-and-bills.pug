@@ -13,7 +13,7 @@
 - warningRatio = locals.user.settings['over_budget_warning_ratio']
 
 mixin bar(b, showDate)
-	- name = b['name']
+	- category = b['category']
 	- type = b['type']
 	- spend = b['spend']
 	- amount = b['amount']
@@ -45,7 +45,7 @@ mixin bar(b, showDate)
 	// build content
 	div.col-xs-12.col-sm-6.col-md-4
 		p(style = 'margin-bottom: 4px;')
-			strong= name
+			strong= category
 			if (showDate)
 				span &nbsp;&nbsp;
 				span.text-muted.small= formatters.formatBudgetSpan(startDate, endDate)

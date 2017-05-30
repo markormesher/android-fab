@@ -14,8 +14,10 @@ block page-body
 			div.col-xs-12.col-md-6
 				div.row
 					div.col-xs-12.col-sm-6.form-group
-						label(for = 'name') Name:
-						input#name.form-control(placeholder = 'e.g. Public Transport', name = 'name', type = 'text', maxlength = 80, required = true, value = budget.name || '')
+						label(for = 'category_id') Category:
+						select#category_id.form-control(name = 'category_id', required = true)
+							for c in categories
+								option(value = c.id, selected = budget.category_id == c.id)= c.name
 
 					div.col-xs-12.col-sm-6.form-group
 						label(for = 'amount') Amount:
@@ -48,13 +50,7 @@ block page-body
 
 
 			div.col-xs-12.col-md-6
-				div.form-group
-					label Category:
-					div.checkbox-set
-						for c in categories
-							div(style = 'width: 49%; display: inline-block;'): label.radio-inline
-								input(type = 'radio', name = 'category_id', value = c.id, required = true, checked = (budget.category_id == c.id))
-								|  #{c.name}
+				p.text-muted Placeholder for future feature.
 
 		div.row
 			div.col-lg-6.form-group
