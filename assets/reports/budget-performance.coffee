@@ -90,7 +90,7 @@ populateChart = (data) ->
 			periodRow.append('<th>' + period + '</th>')
 
 		for category, values of tableData[type]
-			row = $('<tr/>')
+			row = $('<tr title="Click for extra data"/>')
 			row.append('<td>' + category + '</td>')
 			for period in periods[type]
 				row.append(getPerformanceCell(values[period]))
@@ -108,7 +108,7 @@ populateChart = (data) ->
 		section.find('tfoot').remove()
 
 		periodRow = section.find('tr.period')
-		performanceRow = $('<tr/>')
+		performanceRow = $('<tr title="Click for extra data"/>')
 		performanceRow.append('<td>' + category + '</td>')
 		for period, values of budget
 			periodRow.append('<th>' + period + '</th>')
@@ -116,6 +116,8 @@ populateChart = (data) ->
 		section.find('tbody').append(performanceRow)
 
 		contentPane.append(section)
+
+	updateExtraLinks()
 
 makeBudgetSection = (title) -> $("""
 	<div class="col-xs-12">
@@ -155,9 +157,16 @@ getPerformanceCell = (values) ->
 		else
 			performanceClass = 'danger'
 
-		title = 'Spent ' + window.formatters.formatCurrency(values[0]) + ' of ' + window.formatters.formatCurrency(values[1])
+		content =
+			'<span class="extra-data">B: ' + window.formatters.formatCurrency(values[1]) + '<br /></span>' +
+			'<span class="extra-data">S: ' + window.formatters.formatCurrency(values[0]) + '<br /></span>' +
+			'<span class="text-' + performanceClass + '">' + performance + '%</span>'
 
-		return '<td class="text-right text-' + performanceClass + '" title="' + title + '">' + performance + '%</td>'
+		return '<td class="text-right">' + content + '</td>'
+
+updateExtraLinks = () ->
+	$('.extra-data').hide()
+	$('tr').click(() -> $(this).find('.extra-data').toggle())
 
 reportRangeBtn.daterangepicker(
 	{

@@ -89,6 +89,10 @@ table tfoot tr td {
 	border-top: 2px solid #dddddd !important;
 }
 
+td span {
+	line-height: inherit !important;
+}
+
 @media screen and (max-width: 767px) {
 	.table-responsive {
 		border: none !important;
