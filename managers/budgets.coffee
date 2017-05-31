@@ -50,6 +50,29 @@ manager = {
 		))
 
 
+	getBudgetHistoryByCategory: (user, categoryId, callback) ->
+		mysql.getConnection((conn) -> conn.query(
+			"""
+			SELECT *, COALESCE((
+				SELECT SUM(transaction.amount)
+				FROM transaction
+				WHERE transaction.category_id = budget.category_id
+				AND transaction.effective_date >= budget.start_date AND transaction.effective_date <= budget.end_date
+			), 0) * -1 AS spend
+			FROM budget
+			WHERE owner = ? AND active = true AND category_id = ?
+			GROUP BY budget.id
+			ORDER BY budget.start_date ASC;
+			""",
+			[user.id, categoryId]
+			(err, results) ->
+				conn.release()
+				if (err) then return callback(err)
+				if (results) then return callback(null, results)
+				callback(null, [])
+		))
+
+
 	getBudgetCount: (user, currentOnly, callback) ->
 		if (currentOnly)
 			query = 'SELECT COUNT(*) AS result FROM budget WHERE owner = ? AND active = true AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW());'

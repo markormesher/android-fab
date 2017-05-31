@@ -40,6 +40,15 @@ router.get('/data', auth.checkAndRefuse, (req, res, next) ->
 	)
 )
 
+router.get('/prev-budgets', auth.checkAndRefuse, (req, res, next) ->
+	categoryId = req.query['categoryId']
+	BudgetManager.getBudgetHistoryByCategory(res.locals.user, categoryId, (err, result) ->
+		if (err)
+			return next(err)
+		res.json(result)
+	)
+)
+
 router.get('/create', auth.checkAndRefuse, (req, res, next) ->
 	CategoryManager.getCategories(res.locals.user, (err, categories) ->
 		if (err)

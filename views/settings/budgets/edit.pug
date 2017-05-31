@@ -50,7 +50,19 @@ block page-body
 
 
 			div.col-xs-12.col-md-6
-				p.text-muted Placeholder for future feature.
+				div#prev-budgets-list(style = 'display: none;')
+					h4 Other Budgets for #[span]
+					table.table.table-condensed.table-hover
+						thead
+							tr
+								th Period
+								th Amount
+								th Spend
+								th Performance
+						tbody
+					p.text-muted None.
+				div#prev-budgets-loading: p.text-center: i.fa.fa-fw.fa-spin.fa-circle-o-notch
+
 
 		div.row
 			div.col-lg-6.form-group
@@ -63,4 +75,5 @@ block page-body
 block page-scripts
 	script(src = '/_vendor/jquery-validation/jquery.validate.min.js')
 	script(src = '/_shared/form-validation.js')
+	script(src = '/settings/budget-editing.js')
 	script(src = '/settings/budget-quick-dates.js')
