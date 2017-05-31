@@ -48,6 +48,13 @@ block page-body
 								input(type = 'radio', name = 'type', value = 'bill', required = true, checked = (budget.type == 'bill'))
 								|  Bill
 
+				div.row
+					div.col-lg-6.form-group
+						button.btn.btn-success
+							i.fa.fa-save
+							| &nbsp;&nbsp;
+							| Save
+
 
 			div.col-xs-12.col-md-6
 				div#prev-budgets-list(style = 'display: none;')
@@ -60,16 +67,8 @@ block page-body
 								th Spend
 								th Performance
 						tbody
-					p.text-muted None.
+					p.text-muted There are no other budgets for the selected category.
 				div#prev-budgets-loading: p.text-center: i.fa.fa-fw.fa-spin.fa-circle-o-notch
-
-
-		div.row
-			div.col-lg-6.form-group
-				button.btn.btn-success
-					i.fa.fa-save
-					| &nbsp;&nbsp;
-					| Save
 
 
 block page-scripts
