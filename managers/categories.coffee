@@ -14,8 +14,12 @@ manager = {
 		))
 
 
-	getCategories: (user, callback) ->
-		mysql.getConnection((conn) -> conn.query('SELECT * FROM category WHERE owner = ? AND active = true ORDER BY name ASC;', user.id, (err, results) ->
+	getCategories: (user, includeMemo, callback) ->
+		if (includeMemo)
+			query = 'SELECT * FROM category WHERE owner = ? AND active = true ORDER BY name ASC;'
+		else
+			query = 'SELECT * FROM category WHERE owner = ? AND active = true AND type != \'memo\' ORDER BY name ASC;'
+		mysql.getConnection((conn) -> conn.query(query, user.id, (err, results) ->
 			conn.release()
 			if (err) then return callback(err)
 			if (results) then return callback(null, results)
