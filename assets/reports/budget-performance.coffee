@@ -5,14 +5,16 @@ Array::unique = ->
 
 startDate = moment().startOf('year')
 endDate = moment().endOf('year')
+dates = ['ytd', 'this-year', 'last-year']
 
 contentPane = $('#content-pane')
 contentPane.fadeTo(0, 0.4)
 errorPane = $('#error-pane')
 errorPane.hide()
-reportRangeBtn = $('#report-range')
 
-$(document).ready(() -> onDateSet(startDate, endDate))
+$(document).ready(() ->
+	window.initDatePicker($('#report-range'), dates, onDateSet)
+)
 
 onDateSet = (start, end) ->
 	if (busy) then return
@@ -167,15 +169,3 @@ getPerformanceCell = (values) ->
 updateExtraLinks = () ->
 	$('.extra-data').hide()
 	$('tr').click(() -> $(this).find('.extra-data').toggle())
-
-reportRangeBtn.daterangepicker(
-	{
-		startDate: startDate
-		endDate: endDate
-		ranges: {
-			'This Year': [moment().startOf('year'), moment().endOf('year')]
-			'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
-		}
-	}
-	onDateSet
-)

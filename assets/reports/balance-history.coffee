@@ -1,5 +1,6 @@
 startDate = moment().startOf('year')
 endDate = moment().endOf('year')
+dates = ['ytd', 'this-year', 'last-year', 'this-month', 'last-month']
 
 activeAccounts = []
 
@@ -9,7 +10,6 @@ contentPane = $('.content-pane')
 contentPane.fadeTo(0, 0.4)
 errorPane.hide()
 
-reportRangeBtn = $('#report-range')
 selectAccountsBtn = $('#select-accouts')
 activeAccountsField = selectAccountsBtn.find('span')
 
@@ -69,7 +69,7 @@ chart = new Chart($('#history-chart'), {
 
 $(document).ready(() ->
 	updateActiveAccounts()
-	onDateSet(startDate, endDate)
+	window.initDatePicker($('#report-range'), dates, onDateSet)
 )
 
 $(document).on('settings:updated', () ->
@@ -162,20 +162,6 @@ populateChart = (data) ->
 		percentChangeField.html(Math.abs(percentChange).toFixed(2) + '%')
 		colouredChangeFields.addClass('text-danger')
 		percentChangeIcon.addClass('fa-caret-down')
-
-reportRangeBtn.daterangepicker(
-	{
-		startDate: startDate
-		endDate: endDate
-		ranges: {
-			'This Month': [moment().startOf('month'), moment().endOf('month')]
-			'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-			'This Year': [moment().startOf('year'), moment().endOf('year')]
-			'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
-		}
-	}
-	onDateSet
-)
 
 selectAccountsBtn.click(() ->
 	accountsModal.modal('show')
