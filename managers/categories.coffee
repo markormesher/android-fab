@@ -58,7 +58,8 @@ manager = {
 			SELECT *
 			FROM category
 			WHERE owner = ? AND LOWER(name) LIKE ? AND active = true
-			""" + ' ORDER BY name ' + order + ' LIMIT ? OFFSET ?;',
+			ORDER BY name #{order} LIMIT ? OFFSET ?;
+			"""
 			[user.id, "%#{query.toLowerCase()}%", count, start],
 			(err, result) ->
 				conn.release()

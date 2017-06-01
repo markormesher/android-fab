@@ -113,14 +113,14 @@ manager = {
 			SELECT budget.*, category.name AS category
 			FROM budget JOIN category ON category.id = budget.category_id
 			WHERE budget.owner = ? AND budget.active = true AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW()) AND LOWER(category.name) LIKE ?
-			ORDER BY start_date """ + order + """, category ASC LIMIT ? OFFSET ?;
+			ORDER BY start_date #{order}, category ASC LIMIT ? OFFSET ?;
 			"""
 		else
 			query = """
 			SELECT budget.*, category.name AS category
 			FROM budget JOIN category ON category.id = budget.category_id
 			WHERE budget.owner = ? AND budget.active = true AND LOWER(category.name) LIKE ?
-			ORDER BY start_date """ + order + """, category ASC LIMIT ? OFFSET ?;
+			ORDER BY start_date #{order}, category ASC LIMIT ? OFFSET ?;
 			"""
 		mysql.getConnection((conn) -> conn.query(query, [user.id, "%#{search.toLowerCase()}%", count, start], (err, result) ->
 			conn.release()
