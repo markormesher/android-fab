@@ -181,34 +181,57 @@ manager = {
 		else
 			dateField = 'transaction_date'
 
-		async.parallel(
-			{
-				'initial': (c) -> mysql.getConnection((conn) -> conn.query(
-					'SELECT COALESCE(SUM(amount), 0) AS initial FROM transaction WHERE ' + dateField + ' <= ? AND owner = ? AND account_id IN (?);', [start, user.id, accounts],
+		async.waterfall(
+			[
+				# initial date and balance
+				(c) -> mysql.getConnection((conn) -> conn.query(
+					"""
+					SELECT
+						COALESCE(SUM(amount), 0) AS balance,
+						GREATEST(?, (SELECT MIN(#{dateField}) FROM transaction WHERE owner = ?)) AS initial_date
+					FROM transaction
+					WHERE #{dateField} <= GREATEST(?, (SELECT MIN(#{dateField}) FROM transaction WHERE owner = ?)) AND owner = ? AND account_id IN (?);
+					"""
+					[start, user.id, start, user.id, user.id, accounts]
 					(err, results) ->
 						conn.release()
 						if (err) then return c(err)
-						c(null, results[0]['initial'])
+						c(null, results[0])
 				))
-				'history': (c) -> mysql.getConnection((conn) -> conn.query(
-					'SELECT ' + dateField + ', COALESCE(SUM(amount), 0) AS balance FROM transaction WHERE ' + dateField + ' > ? AND ' + dateField + ' <= ? AND owner = ? AND account_id IN (?) GROUP BY ' + dateField + ' ORDER BY ' + dateField + ' ASC;', [start, end, user.id, accounts],
+
+				# historical balance
+				(initial, c) -> mysql.getConnection((conn) -> conn.query(
+					"""
+					SELECT #{dateField}, COALESCE(SUM(amount), 0) AS balance
+					FROM transaction
+					WHERE #{dateField} > ? AND #{dateField} <= ? AND owner = ? AND account_id IN (?)
+					GROUP BY #{dateField} ORDER BY #{dateField} ASC;
+					"""
+					[initial['initial_date'], end, user.id, accounts]
 					(err, results) ->
 						conn.release()
 						if (err) then return c(err)
-						c(null, results)
+						c(null, {
+							initial: initial,
+							history: results
+						})
 				))
-			}
+			]
 			(err, results) ->
 				if (err) then return callback(err)
 
-				high = results['initial']
+				# start date might be overwritten if it is before the earliest transaction
+				start = results['initial']['initial_date']
+
+				initialBalance = results['initial']['balance']
+				high = initialBalance
 				highDate = start
-				low = results['initial']
+				low = initialBalance
 				lowDate = start
 
-				lastBalance = results['initial']
+				lastBalance = initialBalance
 				output = { history: [] }
-				output['history'].push({ date: start, balance: results['initial'] })
+				output['history'].push({ date: start, balance: initialBalance })
 
 				for row in results['history']
 					lastBalance += row['balance']
@@ -222,7 +245,7 @@ manager = {
 						low = lastBalance
 						lowDate = new Date(row[dateField])
 
-				output['start'] = results['initial']
+				output['start'] = initialBalance
 				output['end'] = lastBalance
 				output['high'] = high
 				output['highDate'] = highDate
