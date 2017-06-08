@@ -156,6 +156,16 @@ public class FloatingActionButton extends RelativeLayout {
 	}
 
 	/**
+	 * Sets the colour of the layer that opens behind the speed dial menu.
+	 *
+	 * @param colour the colour of the layer, in aRGB format
+	 */
+	public void setContentCoverColour(int colour) {
+		savedCoverColour = colour;
+		((GradientDrawable) coverView.getBackground()).setColor(colour);
+	}
+
+	/**
 	 * Hide the FAB.
 	 */
 	public void hide() {
@@ -543,7 +553,8 @@ public class FloatingActionButton extends RelativeLayout {
 	 *====================*/
 
 	private int savedIconResId = -1;
-	private int savedBgColour = 0x3f51b5;
+	private int savedBgColour = 0xff3f51b5;
+	private int savedCoverColour = 0x99ffffff;
 
 	@Override
 	protected Parcelable onSaveInstanceState() {
@@ -551,6 +562,7 @@ public class FloatingActionButton extends RelativeLayout {
 		bundle.putBoolean("shown", shown);
 		bundle.putInt("savedIconResId", savedIconResId);
 		bundle.putInt("savedBgColour", savedBgColour);
+		bundle.putInt("savedCoverColour", savedCoverColour);
 		bundle.putParcelable("SUPER", super.onSaveInstanceState());
 		return bundle;
 	}
@@ -575,8 +587,13 @@ public class FloatingActionButton extends RelativeLayout {
 			// background colour
 			if (bundle.containsKey("savedBgColour")) {
 				savedBgColour = bundle.getInt("savedBgColour");
-				Log.d(C.LOG_TAG, "" + savedBgColour);
 				setBackgroundColour(savedBgColour);
+			}
+
+			// cover colour
+			if (bundle.containsKey("savedCoverColour")) {
+				savedCoverColour = bundle.getInt("savedCoverColour");
+				setContentCoverColour(savedCoverColour);
 			}
 
 			// super-state

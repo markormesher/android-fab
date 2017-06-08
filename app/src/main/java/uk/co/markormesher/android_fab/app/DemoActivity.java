@@ -20,7 +20,8 @@ public class DemoActivity extends AppCompatActivity {
 	private boolean fabHidden;
 	private boolean inClickMode;
 	private int iconSelected;
-	private int colourSelected;
+	private int buttonColourSelected;
+	private int coverColourSelected;
 	private boolean speedDialColoursEnabled;
 	private boolean speedDialOptionalCloseEnabled;
 
@@ -28,6 +29,7 @@ public class DemoActivity extends AppCompatActivity {
 	private FloatingActionButton fab;
 	private Button hideShowButton;
 	private Button switchModeButton;
+	private Button changeCoverColourButton;
 	private Button toggleSpeedDialColoursSwitch;
 	private Button toggleSpeedDialOptionalCloseButton;
 	private Button openSpeedDialButton;
@@ -40,11 +42,18 @@ public class DemoActivity extends AppCompatActivity {
 			R.mipmap.ic_swap_horiz,
 			R.mipmap.ic_swap_vert
 	};
-	private static int[] colours = new int[]{
+	private static int[] buttonColours = new int[]{
 			0xff0099ff,
 			0xffff9900,
 			0xffff0099,
 			0xff9900ff
+	};
+	private static int[] coverColours = new int[]{
+			0x99ffffff,
+			0x990099ff,
+			0x99ff9900,
+			0x99ff0099,
+			0x999900ff
 	};
 
 	@Override
@@ -59,7 +68,8 @@ public class DemoActivity extends AppCompatActivity {
 			fabHidden = false;
 			inClickMode = true;
 			iconSelected = 0;
-			colourSelected = 0;
+			buttonColourSelected = 0;
+			coverColourSelected = 0;
 			speedDialColoursEnabled = false;
 			speedDialOptionalCloseEnabled = false;
 		} else {
@@ -67,7 +77,8 @@ public class DemoActivity extends AppCompatActivity {
 			fabHidden = savedInstanceState.getBoolean("fabHidden");
 			inClickMode = savedInstanceState.getBoolean("inClickMode");
 			iconSelected = savedInstanceState.getInt("iconSelected");
-			colourSelected = savedInstanceState.getInt("colourSelected");
+			buttonColourSelected = savedInstanceState.getInt("buttonColourSelected");
+			coverColourSelected = savedInstanceState.getInt("coverColourSelected");
 			speedDialColoursEnabled = savedInstanceState.getBoolean("speedDialColoursEnabled");
 			speedDialOptionalCloseEnabled = savedInstanceState.getBoolean("speedDialOptionalCloseEnabled");
 		}
@@ -78,7 +89,8 @@ public class DemoActivity extends AppCompatActivity {
 		// initialise FAB
 		if (savedInstanceState == null) {
 			fab.setIcon(icons[iconSelected]);
-			fab.setBackgroundColour(colours[colourSelected]);
+			fab.setBackgroundColour(buttonColours[buttonColourSelected]);
+			fab.setContentCoverColour(coverColours[coverColourSelected]);
 		}
 		fab.setMenuAdapter(new SpeedDialAdapter());
 		fab.setOnClickListener(iv -> Toast.makeText(DemoActivity.this, R.string.click_simple, Toast.LENGTH_SHORT).show());
@@ -88,6 +100,7 @@ public class DemoActivity extends AppCompatActivity {
 		// get references to buttons
 		hideShowButton = (Button) findViewById(R.id.hide_show);
 		switchModeButton = (Button) findViewById(R.id.switch_mode);
+		changeCoverColourButton = (Button) findViewById(R.id.change_cover_colour);
 		toggleSpeedDialColoursSwitch = (Button) findViewById(R.id.toggle_colours);
 		toggleSpeedDialOptionalCloseButton = (Button) findViewById(R.id.toggle_optional_close);
 		openSpeedDialButton = (Button) findViewById(R.id.open_speed_dial);
@@ -117,8 +130,13 @@ public class DemoActivity extends AppCompatActivity {
 		});
 
 		findViewById(R.id.change_button_colour).setOnClickListener(v -> {
-			colourSelected = ++colourSelected % colours.length;
-			fab.setBackgroundColour(colours[colourSelected]);
+			buttonColourSelected = ++buttonColourSelected % buttonColours.length;
+			fab.setBackgroundColour(buttonColours[buttonColourSelected]);
+		});
+
+		findViewById(R.id.change_cover_colour).setOnClickListener(v -> {
+			coverColourSelected = ++coverColourSelected % coverColours.length;
+			fab.setContentCoverColour(coverColours[coverColourSelected]);
 		});
 
 		toggleSpeedDialColoursSwitch.setOnClickListener(v -> {
@@ -145,7 +163,8 @@ public class DemoActivity extends AppCompatActivity {
 		outState.putBoolean("fabHidden", fabHidden);
 		outState.putBoolean("inClickMode", inClickMode);
 		outState.putInt("iconSelected", iconSelected);
-		outState.putInt("colourSelected", colourSelected);
+		outState.putInt("buttonColourSelected", buttonColourSelected);
+		outState.putInt("coverColourSelected", coverColourSelected);
 		outState.putBoolean("speedDialColoursEnabled", speedDialColoursEnabled);
 		outState.putBoolean("speedDialOptionalCloseEnabled", speedDialOptionalCloseEnabled);
 	}
@@ -153,6 +172,7 @@ public class DemoActivity extends AppCompatActivity {
 	private void updateButtonStates() {
 		hideShowButton.setText(fabHidden ? R.string.show_fab : R.string.hide_fab);
 		switchModeButton.setText(inClickMode ? R.string.switch_mode_to_speed_dial : R.string.switch_mode_to_click);
+		changeCoverColourButton.setEnabled(!inClickMode);
 		toggleSpeedDialColoursSwitch.setEnabled(!inClickMode);
 		toggleSpeedDialColoursSwitch.setText(speedDialColoursEnabled ? R.string.toggle_colours_off : R.string.toggle_colours_on);
 		toggleSpeedDialOptionalCloseButton.setEnabled(!inClickMode);
