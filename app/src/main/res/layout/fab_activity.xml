@@ -42,6 +42,13 @@
 				android:layout_marginTop="10dp"/>
 
 			<Button
+				android:id="@+id/change_cover_colour"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/change_cover_colour"
+				android:layout_marginTop="10dp"/>
+
+			<Button
 				android:id="@+id/toggle_colours"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
