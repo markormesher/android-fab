@@ -2,7 +2,7 @@
 
 [ ![Download](https://api.bintray.com/packages/markormesher/maven/android-fab/images/download.svg) ](https://bintray.com/markormesher/maven/android-fab/_latestVersion)
 
-This library provides a clickable floating action button (FAB). The FAB can trigger either a standard click listener, or a open a speed-dial menu with further options. All aspects of the FAB and speed-dial menu are customisable.
+This library provides a clickable floating action button (FAB) with an optional speed-dial menu. The FAB can trigger a standard click listener or a open the speed-dial menu with further options. All aspects of the FAB and speed-dial menu are customisable.
 
 - [Demo](#demo)
 - [Installation](#installation)
@@ -126,9 +126,9 @@ If the state or functionality has changed such that `getCount()` or `getViews(..
 
 :warning: See the note below on [click action priority](#note-click-action-priority).
 
-### Speed Dial Content Cover Colour
+### Speed-Dial Content Cover Colour
 
-The colour to be used for the layer that obscures content when the speed dial menu is opened should be set with `fab.setContentCoverColour(...)`, passing in an aRGB colour value (e.g. `0x99ff9900` for a semi-transparent dark orange). Note that this method does **not** take a colour resource ID, so passing in `R.color.some_colour_name` will not work.
+The colour to be used for the layer that obscures content when the speed-dial menu is opened should be set with `fab.setContentCoverColour(...)`, passing in an aRGB colour value (e.g. `0x99ff9900` for a semi-transparent dark orange). Note that this method does **not** take a colour resource ID, so passing in `R.color.some_colour_name` will not work.
 
 :warning: See the note below on [state preservation](#note-state-preservation).
 
@@ -188,5 +188,3 @@ All other properties (`View`/`Drawable` icons, speed-dial menu adapters, etc.) w
 ## Links & Other Projects
 
 - [Mark Ormesher](http://markormesher.co.uk) - My personal site
-- [Android UI Tooltips](https://github.com/markormesher/android-tooltips) - An Android library providing a easy-to-use UI tooltips
-- [Android Utils](https://github.com/markormesher/android-utils) - An Android library providing a collection of utility and helper methods
