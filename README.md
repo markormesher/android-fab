@@ -71,7 +71,7 @@ The icon displayed in the centre of the FAB should be set with `fab.setIcon(...)
 
 ### FAB Background Colour
 
-The background colour to be used for the FAB should be set with `fab.setBackgroundColor(...)`, passing in an RGBa colour value (e.g. `0xffff9900` for a dark orange). Note that this method does **not** take a colour resource ID, so passing in `R.color.some_colour_name` will not work.
+The background colour to be used for the FAB should be set with `fab.setBackgroundColor(...)`, passing in an aRGB colour value (e.g. `0xffff9900` for a dark orange). Note that this method does **not** take a colour resource ID, so passing in `R.color.some_colour_name` will not work.
 
 :warning: See the note below on [state preservation](#note-state-preservation).
 
@@ -126,6 +126,12 @@ If the state or functionality has changed such that `getCount()` or `getViews(..
 
 :warning: See the note below on [click action priority](#note-click-action-priority).
 
+### Speed Dial Content Cover Colour
+
+The colour to be used for the layer that obscures content when the speed dial menu is opened should be set with `fab.setContentCoverColour(...)`, passing in an aRGB colour value (e.g. `0x99ff9900` for a semi-transparent dark orange). Note that this method does **not** take a colour resource ID, so passing in `R.color.some_colour_name` will not work.
+
+:warning: See the note below on [state preservation](#note-state-preservation).
+
 ### Speed-Dial State Change Listeners
 
 Two state change listeners are provided to monitor when the speed-dial menu opens or closes. These can be used as follows:
@@ -174,7 +180,8 @@ When a configuration change happens within your app and the activity/fragment is
 
 - whether the icon is shown or hidden (see [Controls](#controls));
 - the FAB icon, **if and only if** it was set as a `Drawable` resource ID;
-- the FAB background colour.
+- the FAB background colour;
+- the content cover background colour.
 
 All other properties (`View`/`Drawable` icons, speed-dial menu adapters, etc.) will need to be restored "manually". The demo application shows how this can be accomplished.
 
