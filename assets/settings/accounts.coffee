@@ -12,6 +12,12 @@ orderingHtml = """
 </div>
 """
 
+typeNames = {
+	'current': 'Current Account'
+	'savings': 'Savings Account'
+	'asset': 'Asset',
+}
+
 editorModal = {}
 dataTable = null
 
@@ -42,6 +48,7 @@ initDataTable = () ->
 					currentData[d['id']] = d
 					displayData.push([
 						d['name']
+						typeNames[d['type']]
 						actionsHtml.replace(///__ID__///g, d['id'])
 						orderingHtml.replace(///__ID__///g, d['id'])
 					])
