@@ -2,7 +2,6 @@ async = require('async')
 rfr = require('rfr')
 mysql = rfr('./helpers/mysql')
 formatters = rfr('./helpers/formatters')
-constants = rfr('./constants.json')
 BudgetManager = rfr('./managers/budgets')
 
 manager = {
