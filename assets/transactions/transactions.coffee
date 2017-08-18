@@ -1,11 +1,12 @@
-actionsHtml = """
-<div class="text-center">
-	<div class="btn-group">
-		<button class="btn btn-mini btn-default delete-btn" data-id="__ID__"><i class="fa fa-fw fa-trash"></i></button>
-		<button class="btn btn-mini btn-default edit-btn" data-id="__ID__"><i class="fa fa-fw fa-pencil"></i></button>
-	</div>
-</div>
-"""
+getActionsHtml = (id, active) ->
+	disabled = if (active) then '' else ' disabled'
+	out = '<div class="text-center">'
+	out += '<div class="btn-group">'
+	out += '<button class="btn btn-mini btn-default delete-btn" data-id="' + id + '" ' + disabled + '><i class="fa fa-fw fa-trash"></i></button>'
+	out += '<button class="btn btn-mini btn-default edit-btn" data-id="' + id + '" ' + disabled + '><i class="fa fa-fw fa-pencil"></i></button>'
+	out += '</div>'
+	out += '</div>'
+	return out
 
 formatDatePair = (trDate, efDate) ->
 	if (trDate == efDate)
@@ -65,7 +66,7 @@ initDataTable = () ->
 						d['payee'] + (if (d.memo != null && d.memo != '') then " <i class=\"fa fa-fw fa-info-circle text-muted\" title=\"#{d.memo}\"></i>" else '')
 						window.formatters.formatCurrency(d['amount'])
 						d['category_name']
-						actionsHtml.replace(///__ID__///g, d['id'])
+						getActionsHtml(d['id'], d['account_active'])
 					])
 				return displayData
 		}
