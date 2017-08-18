@@ -52,85 +52,34 @@ mixin bar(b, showDate)
 		div.progress(title = title, style = 'margin-bottom: 14px;')
 			div.progress-bar(class = 'progress-bar-' + barClass, style = 'width: ' + width)= content
 
+mixin panel(budgets, bills)
+	- first = budgets[0] || bills[0]
+	div.x_panel
+		div.x_title
+			h2
+				i.fa.fa-fw.fa-pie-chart.text-muted.title-icon
+				=formatters.formatBudgetSpan(first.start_date, first.end_date)
+			div.clearfix
+		div.x_content
+			if (budgets.length)
+				div.row: for b in budgets
+					+bar(b)
+
+			if (budgets.length && bills.length)
+				div.hr: hr
+
+			if (bills.length)
+				div.row: for b in bills
+					+bar(b)
 
 if (monthBudgets.length || monthBills.length)
-	- first = monthBudgets[0] || monthBills[0]
-	div.x_panel
-		div.x_title
-			h2
-				i.fa.fa-fw.fa-pie-chart.text-muted.title-icon
-				=formatters.formatBudgetSpan(first.start_date, first.end_date)
-			div.clearfix
-		div.x_content
-			if (monthBudgets.length)
-				div.row: for b in monthBudgets
-					+bar(b)
-
-			if (monthBudgets.length && monthBills.length)
-				div.hr: hr
-
-			if (monthBills.length)
-				div.row: for b in monthBills
-					+bar(b)
-
+	+panel(monthBudgets, monthBills)
 
 if (yearBudgets.length || yearBills.length)
-	- first = yearBudgets[0] || yearBills[0]
-	div.x_panel
-		div.x_title
-			h2
-				i.fa.fa-fw.fa-pie-chart.text-muted.title-icon
-				=formatters.formatBudgetSpan(first.start_date, first.end_date)
-			div.clearfix
-		div.x_content
-			if (yearBudgets.length)
-				div.row: for b in yearBudgets
-					+bar(b)
-
-			if (yearBudgets.length && yearBills.length)
-				div.hr: hr
-
-			if (yearBills.length)
-				div.row: for b in yearBills
-					+bar(b)
-
+	+panel(yearBudgets, yearBills)
 
 if (taxYearBudgets.length || taxYearBills.length)
-	- first = taxYearBudgets[0] || taxYearBills[0]
-	div.x_panel
-		div.x_title
-			h2
-				i.fa.fa-fw.fa-pie-chart.text-muted.title-icon
-				=formatters.formatBudgetSpan(first.start_date, first.end_date)
-			div.clearfix
-		div.x_content
-			if (taxYearBudgets.length)
-				div.row: for b in taxYearBudgets
-					+bar(b)
-
-			if (taxYearBudgets.length && taxYearBills.length)
-				div.hr: hr
-
-			if (taxYearBills.length)
-				div.row: for b in taxYearBills
-					+bar(b)
-
+	+panel(taxYearBudgets, taxYearBills)
 
 if (otherBudgets.length || otherBills.length)
-	div.x_panel
-		div.x_title
-			h2
-				i.fa.fa-fw.fa-pie-chart.text-muted.title-icon
-				| Other Periods
-			div.clearfix
-		div.x_content
-			if (otherBudgets.length)
-				div.row: for b in otherBudgets
-					+bar(b, true)
-
-			if (otherBudgets.length && otherBills.length)
-				div.hr: hr
-
-			if (otherBills.length)
-				div.row: for b in otherBills
-					+bar(b, true)
+	+panel(otherBudgets, otherBills)
