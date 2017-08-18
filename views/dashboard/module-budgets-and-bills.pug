@@ -54,20 +54,11 @@ mixin bar(b, showDate)
 
 mixin panel(budgets, bills)
 	- first = budgets[0] || bills[0]
-	- spendSum = 0
-	- amountSum = 0
-	for b in budgets
-		- spendSum += b['spend']
-		- amountSum += b['amount']
-	for b in bills
-		- spendSum += b['spend']
-		- amountSum += b['amount']
 	div.x_panel
 		div.x_title
 			h2
 				i.fa.fa-fw.fa-pie-chart.text-muted.title-icon
 				=formatters.formatBudgetSpan(first.start_date, first.end_date)
-				small #{formatters.formatCurrency(spendSum)} of #{formatters.formatCurrency(amountSum)}
 			div.clearfix
 		div.x_content
 			if (budgets.length)
