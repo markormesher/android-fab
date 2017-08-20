@@ -23,9 +23,6 @@
 	<string name="toggle_optional_close_off">Disable Optional Speed-Dial Close</string>
 	<string name="open_speed_dial">Open Speed Dial</string>
 
-	<string name="speed_dial_opened">Speed-dial opened!</string>
-	<string name="speed_dial_closed">Speed-dial closed!</string>
-
 	<string name="speed_dial_label">Option #%d</string>
 
 	<string name="label_optional_close">Optional Close</string>
