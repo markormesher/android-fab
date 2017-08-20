@@ -6,26 +6,15 @@ buildscript {
 	dependencies {
 		classpath 'com.android.tools.build:gradle:2.3.0'
 		classpath 'me.tatarka:gradle-retrolambda:3.2.3'
-		classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
 	}
-
-	configurations.classpath.exclude group: 'com.android.tools.external.lombok'
 }
 
-def version = new Properties()
-version['code'] = 13
-version['name'] = '1.3.3'
-
-apply plugin: 'me.tatarka.retrolambda'
+def properties = getProps()
 
 apply plugin: 'com.android.library'
-android {
-	// required by retrolambda
-	compileOptions {
-		sourceCompatibility JavaVersion.VERSION_1_8
-		targetCompatibility JavaVersion.VERSION_1_8
-	}
+apply plugin: 'kotlin-android'
 
+android {
 	compileSdkVersion 26
 	buildToolsVersion "26.0.1"
 
@@ -34,6 +23,10 @@ android {
 		targetSdkVersion 26
 
 		testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+	}
+
+	sourceSets {
+		main.java.srcDirs += "src/main/kotlin"
 	}
 }
 
@@ -45,6 +38,7 @@ dependencies {
 	compile fileTree(include: ['*.jar'], dir: 'libs')
 	compile 'com.android.support:support-annotations:25.3.1'
 	compile 'com.android.support:cardview-v7:25.3.1'
+	compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
 	androidTestCompile 'junit:junit:4.12'
 	androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
@@ -59,7 +53,7 @@ dependencies {
 
 apply plugin: 'maven'
 
-def localReleaseDest = "${buildDir}/release/${version['name']}"
+def localReleaseDest = "${buildDir}/release/${properties['version_name']}"
 
 task androidJavadocs(type: Javadoc) {
 	failOnError = false
@@ -82,7 +76,7 @@ uploadArchives {
 	repositories.mavenDeployer {
 		pom.groupId = 'uk.co.markormesher'
 		pom.artifactId = 'android-fab'
-		pom.version = version['name']
+		pom.version = properties['version_name']
 		repository(url: "file://${localReleaseDest}")
 	}
 }
@@ -90,12 +84,12 @@ uploadArchives {
 task zipRelease(type: Zip) {
 	from localReleaseDest
 	destinationDir buildDir
-	archiveName "release-${version['name']}.zip"
+	archiveName "release-${properties['version_name']}.zip"
 }
 
 task generateRelease << {
-	println "Release ${version['name']} can be found at ${localReleaseDest}/"
-	println "Release ${version['name']} zipped can be found ${buildDir}/release-${version['name']}.zip"
+	println "Release ${properties['version_name']} can be found at ${localReleaseDest}/"
+	println "Release ${properties['version_name']} zipped can be found ${buildDir}/release-${properties['version_name']}.zip"
 }
 
 generateRelease.dependsOn(uploadArchives)

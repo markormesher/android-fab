@@ -1,42 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!--
-    Strings
-    -->
+    <!-- Strings -->
 
     <string name="app_name">Floating Action Button Demo</string>
 
-	<string name="yes">Yes</string>
-	<string name="no">No</string>
-
-	<string name="hide_fab">Hide FAB</string>
-	<string name="show_fab">Show FAB</string>
-	<string name="switch_mode_to_speed_dial">Switch to Speed-Dial Mode</string>
-	<string name="switch_mode_to_click">Switch to Click Mode</string>
-	<string name="change_icon">Change FAB Icon</string>
-	<string name="change_button_colour">Change FAB Colour</string>
-	<string name="change_cover_colour">Change Content Cover Colour</string>
-	<string name="toggle_colours_on">Enable Speed-Dial Colours</string>
-	<string name="toggle_colours_off">Disable Speed-Dial Colours</string>
-	<string name="toggle_optional_close_on">Enable Optional Speed-Dial Close</string>
-	<string name="toggle_optional_close_off">Disable Optional Speed-Dial Close</string>
-	<string name="open_speed_dial">Open Speed Dial</string>
-
-	<string name="speed_dial_label">Option #%d</string>
-
-	<string name="label_optional_close">Optional Close</string>
-	<string name="menu_close_dialog_title">Hi there!</string>
-	<string name="menu_close_dialog_text">Do you want to close the speed-dial menu?</string>
-
-	<string name="click_simple">You clicked on the FAB!</string>
-	<string name="click_with_item">You clicked on item #%d!</string>
-
-	<string name="disabled_when_hidden">Disabled when the FAB is hidden</string>
-
-    <!--
-    Styles
-    -->
+    <!-- Styles -->
 
     <style name="global_theme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">#3f51b5</item>
