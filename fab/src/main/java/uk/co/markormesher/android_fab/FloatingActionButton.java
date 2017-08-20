@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import uk.co.markormesher.android_fab.constants.C;
@@ -66,9 +67,9 @@ public class FloatingActionButton extends RelativeLayout {
 		inflate(getContext(), R.layout.floating_action_button, this);
 
 		// collect views
-		fabContainer = (RelativeLayout) findViewById(R.id.fab_container);
-		button = (ViewGroup) findViewById(R.id.card);
-		iconContainer = (ViewGroup) findViewById(R.id.icon_container);
+		fabContainer = findViewById(R.id.fab_container);
+		button = findViewById(R.id.card);
+		iconContainer = findViewById(R.id.icon_container);
 		coverView = findViewById(R.id.cover);
 
 		// fade out the cover
@@ -356,6 +357,16 @@ public class FloatingActionButton extends RelativeLayout {
 			speedDialInternallyDisabled = false;
 		}
 
+		// destroy old items
+		if (speedDialMenuItems != null) {
+			for (View existingItem : speedDialMenuItems) {
+				ViewParent parent = existingItem.getParent();
+				if (parent != null) {
+					((ViewGroup) parent).removeView(existingItem);
+				}
+			}
+		}
+
 		// init empty array
 		speedDialMenuItems = new ArrayList<>(menuAdapter.getCount());
 
@@ -377,7 +388,7 @@ public class FloatingActionButton extends RelativeLayout {
 			SpeedDialMenuAdapter.MenuItem itemViews = menuAdapter.getViews(getContext(), i);
 
 			// add icon
-			ViewGroup iconContainer = (ViewGroup) view.findViewById(R.id.icon_container);
+			ViewGroup iconContainer = view.findViewById(R.id.icon_container);
 			if (itemViews.iconView != null) {
 				iconContainer.addView(itemViews.iconView, 0);
 			} else if (itemViews.iconDrawable != null) {
@@ -392,7 +403,7 @@ public class FloatingActionButton extends RelativeLayout {
 			}
 
 			// add label
-			ViewGroup itemContainer = (ViewGroup) view.findViewById(R.id.speed_dial_item_container);
+			ViewGroup itemContainer = view.findViewById(R.id.speed_dial_item_container);
 			if (itemViews.labelView != null) {
 				itemContainer.addView(itemViews.labelView, 0);
 			} else if (itemViews.labelString != null) {
@@ -421,6 +432,10 @@ public class FloatingActionButton extends RelativeLayout {
 			view.setOnClickListener(v -> {
 				if (menuAdapter.onMenuItemClick((int) v.getTag())) closeSpeedDialMenu();
 			});
+		}
+
+		if (speedDialMenuOpen) {
+			setSpeedDialMenuVisible(true, true);
 		}
 	}
 
@@ -457,7 +472,7 @@ public class FloatingActionButton extends RelativeLayout {
 		// change UI
 		if (menuAdapter.rotateFab()) toggleFabIconForSpeedDialMenu(speedDialMenuOpen);
 		setSpeedDialCoverVisible(speedDialMenuOpen);
-		setSpeedDialMenuVisible(speedDialMenuOpen);
+		setSpeedDialMenuVisible(speedDialMenuOpen, false);
 
 		// setup "outside click" listeners
 		coverView.setClickable(speedDialMenuOpen);
@@ -524,7 +539,7 @@ public class FloatingActionButton extends RelativeLayout {
 	 *
 	 * @param visible {@code true} to indicate that the menu is open
 	 */
-	private void setSpeedDialMenuVisible(final boolean visible) {
+	private void setSpeedDialMenuVisible(final boolean visible, final boolean fast) {
 		// busy?
 		if (busyAnimatingSpeedDialMenu) return;
 		busyAnimatingSpeedDialMenu = true;
@@ -537,7 +552,7 @@ public class FloatingActionButton extends RelativeLayout {
 			v.animate()
 					.translationY(visible ? ((i + 1) * distance * -1) - (distance / 8) : 0F)
 					.alpha(visible ? 1F : 0F)
-					.setDuration(SPEED_DIAL_ANIMATION_DURATION)
+					.setDuration(fast ? 0 : SPEED_DIAL_ANIMATION_DURATION)
 					.setListener(new AnimatorListenerAdapter() {
 						@Override
 						public void onAnimationEnd(Animator animation) {

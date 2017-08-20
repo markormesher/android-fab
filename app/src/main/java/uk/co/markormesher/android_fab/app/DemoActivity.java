@@ -257,7 +257,8 @@ public class DemoActivity extends AppCompatActivity {
 				return false;
 			} else {
 				Toast.makeText(DemoActivity.this, getString(R.string.click_with_item, position), Toast.LENGTH_SHORT).show();
-				return true;
+				fab.rebuildSpeedDialMenu();
+				return false;
 			}
 		}
 
