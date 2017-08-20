@@ -94,8 +94,6 @@ public class DemoActivity extends AppCompatActivity {
 		}
 		fab.setMenuAdapter(new SpeedDialAdapter());
 		fab.setOnClickListener(iv -> Toast.makeText(DemoActivity.this, R.string.click_simple, Toast.LENGTH_SHORT).show());
-		fab.setOnSpeedDialOpenListener(f -> Toast.makeText(DemoActivity.this, R.string.speed_dial_opened, Toast.LENGTH_SHORT).show());
-		fab.setOnSpeedDialCloseListener(f -> Toast.makeText(DemoActivity.this, R.string.speed_dial_closed, Toast.LENGTH_SHORT).show());
 
 		// get references to buttons
 		hideShowButton = (Button) findViewById(R.id.hide_show);
