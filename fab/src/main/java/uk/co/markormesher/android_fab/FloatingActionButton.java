@@ -167,6 +167,18 @@ public class FloatingActionButton extends RelativeLayout {
 	}
 
 	/**
+	 * Sets whether the layer that opens behind the speed dial menu is enabled.
+	 *
+	 * @param enabled {@code true} to enable the layer, {@code false} to disable it
+	 */
+	public void setContentCoverEnabled(boolean enabled) {
+		contentCoverEnabled = enabled;
+		if (!enabled) {
+			setSpeedDialCoverVisible(false);
+		}
+	}
+
+	/**
 	 * Hide the FAB.
 	 */
 	public void hide() {
@@ -508,10 +520,14 @@ public class FloatingActionButton extends RelativeLayout {
 
 	/**
 	 * Toggles the "cover", based on whether or not the speed-dial menu is open.
+	 * This method respects values set in {@code setContentCoverEnabled}.
 	 *
 	 * @param visible {@code true} to indicate that the menu is open
 	 */
 	private void setSpeedDialCoverVisible(boolean visible) {
+		// disabled?
+		if (!contentCoverEnabled) return;
+
 		// busy?
 		if (busyAnimatingSpeedDialCover) return;
 		busyAnimatingSpeedDialCover = true;
@@ -570,6 +586,7 @@ public class FloatingActionButton extends RelativeLayout {
 	private int savedIconResId = -1;
 	private int savedBgColour = 0xff3f51b5;
 	private int savedCoverColour = 0x99ffffff;
+	private boolean contentCoverEnabled = true;
 
 	@Override
 	protected Parcelable onSaveInstanceState() {
@@ -578,6 +595,7 @@ public class FloatingActionButton extends RelativeLayout {
 		bundle.putInt("savedIconResId", savedIconResId);
 		bundle.putInt("savedBgColour", savedBgColour);
 		bundle.putInt("savedCoverColour", savedCoverColour);
+		bundle.putBoolean("contentCoverEnabled", contentCoverEnabled);
 		bundle.putParcelable("SUPER", super.onSaveInstanceState());
 		return bundle;
 	}
@@ -609,6 +627,12 @@ public class FloatingActionButton extends RelativeLayout {
 			if (bundle.containsKey("savedCoverColour")) {
 				savedCoverColour = bundle.getInt("savedCoverColour");
 				setContentCoverColour(savedCoverColour);
+			}
+
+			// cover enabled
+			if (bundle.containsKey("contentCoverEnabled")) {
+				contentCoverEnabled = bundle.getBoolean("contentCoverEnabled");
+				setContentCoverEnabled(contentCoverEnabled);
 			}
 
 			// super-state
