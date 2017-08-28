@@ -2,7 +2,7 @@
 <resources>
 
 	<style name="fab_card" parent="CardView">
-		<item name="cardBackgroundColor">#3f51b5</item>
+		<item name="cardBackgroundColor">#ff0099ff</item>
 		<item name="android:foreground">?android:selectableItemBackground</item>
 	</style>
 

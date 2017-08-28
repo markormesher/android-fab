@@ -11,6 +11,15 @@ buildscript {
 	}
 }
 
+allprojects {
+	repositories {
+		jcenter()
+		maven {
+			url "https://maven.google.com"
+		}
+	}
+}
+
 @SuppressWarnings("GroovyUnusedDeclaration")
 static def getSecrets() {
 	try {

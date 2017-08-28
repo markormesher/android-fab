@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<declare-styleable name="FloatingActionButton">
-		<attr name="position">
-			<flag name="top" value="1" />
-			<flag name="bottom" value="2" />
-			<flag name="start" value="4" />
-			<flag name="end" value="8" />
+
+		<attr name="buttonPosition">
+			<flag name="top" value="1"/>
+			<flag name="bottom" value="2"/>
+			<flag name="start" value="4"/>
+			<flag name="end" value="8"/>
 		</attr>
+
+		<attr name="buttonIcon" format="reference"/>
+
+		<attr name="buttonBackgroundColour" format="color"/>
+
 	</declare-styleable>
 </resources>

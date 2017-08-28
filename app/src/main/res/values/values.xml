@@ -5,16 +5,27 @@
 
     <string name="app_name">Floating Action Button Demo</string>
 
-	<string name="option_position">Position:</string>
-	<string name="option_speed_dial_orientation">Speed-dial\norientation:</string>
+	<string name="toast_click">Click %d</string>
+
+	<string name="option_button_position">Button\nPosition:</string>
+	<string name="option_button_icon">Button\nIcon:</string>
+	<string name="option_button_colour">Button\nColour:</string>
 
     <string name="top_end">TE</string>
     <string name="top_start">TS</string>
     <string name="bottom_end">BE</string>
     <string name="bottom_start">BS</string>
 
-	<string name="horizontal">H</string>
-	<string name="vertical">V</string>
+	<string name="icon_1">1</string>
+	<string name="icon_2">2</string>
+	<string name="icon_3">3</string>
+	<string name="icon_4">4</string>
+	<string name="icon_5">5</string>
+
+	<string name="colour_1">1</string>
+	<string name="colour_2">2</string>
+	<string name="colour_3">3</string>
+	<string name="colour_4">4</string>
 
     <!-- Styles -->
 

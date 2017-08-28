@@ -4,7 +4,7 @@
 		>
 
 	<android.support.v7.widget.CardView
-			android:id="@+id/buttonCard"
+			android:id="@+id/button_card"
 			android:layout_width="@dimen/fab_size"
 			android:layout_height="@dimen/fab_size"
 			android:layout_margin="@dimen/fab_padding"

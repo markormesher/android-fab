@@ -3,7 +3,7 @@
 		>
 
 	<LinearLayout
-			android:id="@+id/buttonCard"
+			android:id="@+id/button_card"
 			android:layout_width="@dimen/speed_dial_disc_size"
 			android:layout_height="@dimen/speed_dial_disc_size"
 			android:layout_margin="@dimen/speed_dial_disc_padding"

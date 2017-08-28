@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
 		xmlns:android="http://schemas.android.com/apk/res/android"
-		xmlns:app="http://schemas.android.com/apk/res-auto"
 		android:orientation="vertical"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
@@ -21,7 +20,7 @@
 			<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="@string/option_position"
+					android:text="@string/option_button_position"
 					/>
 
 			<LinearLayout
@@ -73,7 +72,7 @@
 			<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="@string/option_speed_dial_orientation"
+					android:text="@string/option_button_icon"
 					/>
 
 			<LinearLayout
@@ -83,16 +82,94 @@
 					>
 
 				<Button
+						android:id="@+id/setButtonIcon1"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:text="@string/horizontal"
+						android:text="@string/icon_1"
 						style="@style/Widget.AppCompat.Button.Small"
 						/>
 
 				<Button
+						android:id="@+id/setButtonIcon2"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:text="@string/vertical"
+						android:text="@string/icon_2"
+						style="@style/Widget.AppCompat.Button.Small"
+						/>
+
+				<Button
+						android:id="@+id/setButtonIcon3"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="@string/icon_3"
+						style="@style/Widget.AppCompat.Button.Small"
+						/>
+
+				<Button
+						android:id="@+id/setButtonIcon4"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="@string/icon_4"
+						style="@style/Widget.AppCompat.Button.Small"
+						/>
+
+				<Button
+						android:id="@+id/setButtonIcon5"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="@string/icon_5"
+						style="@style/Widget.AppCompat.Button.Small"
+						/>
+
+			</LinearLayout>
+
+		</TableRow>
+
+		<TableRow
+				android:gravity="center_vertical"
+				>
+
+			<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/option_button_colour"
+					/>
+
+			<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					>
+
+				<Button
+						android:id="@+id/setButtonBackgroundColour1"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="@string/colour_1"
+						style="@style/Widget.AppCompat.Button.Small"
+						/>
+
+				<Button
+						android:id="@+id/setButtonBackgroundColour2"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="@string/colour_2"
+						style="@style/Widget.AppCompat.Button.Small"
+						/>
+
+				<Button
+						android:id="@+id/setButtonBackgroundColour3"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="@string/colour_3"
+						style="@style/Widget.AppCompat.Button.Small"
+						/>
+
+				<Button
+						android:id="@+id/setButtonBackgroundColour4"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="@string/colour_4"
 						style="@style/Widget.AppCompat.Button.Small"
 						/>
 
@@ -106,7 +183,6 @@
 			android:id="@+id/fab"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			app:position="bottom|end"
 			/>
 
 </RelativeLayout>
