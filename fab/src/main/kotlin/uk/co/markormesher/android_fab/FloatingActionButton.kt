@@ -3,6 +3,7 @@ package uk.co.markormesher.android_fab
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
+import android.support.annotation.ColorInt
 import android.support.annotation.DrawableRes
 import android.support.v7.widget.CardView
 import android.util.AttributeSet
@@ -118,7 +119,7 @@ class FloatingActionButton: RelativeLayout {
 		cover_view.layoutParams = coverLayoutParams
 	}
 
-	fun setButtonBackgroundColour(colour: Int) {
+	fun setButtonBackgroundColour(@ColorInt colour: Int) {
 		this.buttonBackgroundColour = colour
 		if (Build.VERSION.SDK_INT >= 21) {
 			(button_card as CardView).setCardBackgroundColor(colour)

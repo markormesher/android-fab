@@ -8,27 +8,30 @@ import uk.co.markormesher.android_fab.FloatingActionButton
 
 class DemoActivity: AppCompatActivity() {
 
-	private val TOP_START = FloatingActionButton.POSITION_TOP.or(FloatingActionButton.POSITION_START)
-	private val TOP_END = FloatingActionButton.POSITION_TOP.or(FloatingActionButton.POSITION_END)
-	private val BOTTOM_START = FloatingActionButton.POSITION_BOTTOM.or(FloatingActionButton.POSITION_START)
-	private val BOTTOM_END = FloatingActionButton.POSITION_BOTTOM.or(FloatingActionButton.POSITION_END)
-
-	private val BUTTON_BG_COLOURS = intArrayOf(
-			0xff0099ff.toInt(),
-			0xffff9900.toInt(),
-			0xffff0099.toInt(),
-			0xff9900ff.toInt()
+	private val BUTTON_POSITIONS = arrayOf(
+			Pair("Bottom, end", FloatingActionButton.POSITION_BOTTOM.or(FloatingActionButton.POSITION_END)),
+			Pair("Bottom, start", FloatingActionButton.POSITION_BOTTOM.or(FloatingActionButton.POSITION_START)),
+			Pair("Top, start", FloatingActionButton.POSITION_TOP.or(FloatingActionButton.POSITION_START)),
+			Pair("Top, end", FloatingActionButton.POSITION_TOP.or(FloatingActionButton.POSITION_END))
 	)
 
-	private val ICONS = intArrayOf(
-			R.drawable.ic_add,
-			R.drawable.ic_cloud,
-			R.drawable.ic_done,
-			R.drawable.ic_swap_horiz,
-			R.drawable.ic_swap_vert
+	private val BUTTON_BG_COLOURS = arrayOf(
+			Pair("Blue", 0xff0099ff.toInt()),
+			Pair("Purple", 0xff9900ff.toInt()),
+			Pair("Teal", 0xff00ff99.toInt()),
+			Pair("Pink", 0xffff0099.toInt()),
+			Pair("Orange", 0xffff9900.toInt())
 	)
 
-	private var buttonPosition = BOTTOM_END
+	private val BUTTON_ICONS = arrayOf(
+			Pair("Add", R.drawable.ic_add),
+			Pair("Cloud", R.drawable.ic_cloud),
+			Pair("Done", R.drawable.ic_done),
+			Pair("Swap H", R.drawable.ic_swap_horiz),
+			Pair("Swap V", R.drawable.ic_swap_vert)
+	)
+
+	private var buttonPosition = 0
 	private var buttonBackgroundColour = 0
 	private var buttonIcon = 0
 
@@ -37,21 +40,17 @@ class DemoActivity: AppCompatActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+		restoreSavedInstanceState(savedInstanceState)
 		setContentView(R.layout.demo_activity)
 
-		if (savedInstanceState != null) {
-			buttonPosition = savedInstanceState.getInt("buttonPosition")
-			buttonBackgroundColour = savedInstanceState.getInt("buttonBackgroundColour")
-			buttonIcon = savedInstanceState.getInt("buttonIcon")
-		}
+		table_layout.setColumnStretchable(1, true)
+		fab.setOnClickListener { toast(getString(R.string.toast_click, ++clickCounter)) }
 
 		initControls()
 
-		setButtonPosition(buttonPosition)
-		setButtonBackgroundColour(buttonBackgroundColour)
-		setButtonIcon(buttonIcon)
-
-		fab.setOnClickListener { toast(getString(R.string.toast_click, ++clickCounter)) }
+		updateButtonPosition()
+		updateButtonBackgroundColour()
+		updateButtonIcon()
 	}
 
 	override fun onSaveInstanceState(outState: Bundle) {
@@ -61,40 +60,41 @@ class DemoActivity: AppCompatActivity() {
 		outState.putInt("buttonIcon", buttonIcon)
 	}
 
-	private fun initControls() {
-		setButtonPositionTopStart.setOnClickListener { setButtonPosition(TOP_START) }
-		setButtonPositionTopEnd.setOnClickListener { setButtonPosition(TOP_END) }
-		setButtonPositionBottomStart.setOnClickListener { setButtonPosition(BOTTOM_START) }
-		setButtonPositionBottomEnd.setOnClickListener { setButtonPosition(BOTTOM_END) }
-
-		setButtonBackgroundColour1.setOnClickListener { setButtonBackgroundColour(0) }
-		setButtonBackgroundColour2.setOnClickListener { setButtonBackgroundColour(1) }
-		setButtonBackgroundColour3.setOnClickListener { setButtonBackgroundColour(2) }
-		setButtonBackgroundColour4.setOnClickListener { setButtonBackgroundColour(3) }
-
-		setButtonIcon1.setOnClickListener { setButtonIcon(0) }
-		setButtonIcon2.setOnClickListener { setButtonIcon(1) }
-		setButtonIcon3.setOnClickListener { setButtonIcon(2) }
-		setButtonIcon4.setOnClickListener { setButtonIcon(3) }
-		setButtonIcon5.setOnClickListener { setButtonIcon(4) }
+	private fun restoreSavedInstanceState(savedInstanceState: Bundle?) {
+		if (savedInstanceState != null) {
+			buttonPosition = savedInstanceState.getInt("buttonPosition")
+			buttonBackgroundColour = savedInstanceState.getInt("buttonBackgroundColour")
+			buttonIcon = savedInstanceState.getInt("buttonIcon")
+		}
 	}
 
-	private fun updateDisabledControls() {
-		setButtonPositionTopStart.isEnabled = buttonPosition != TOP_START
-		setButtonPositionTopEnd.isEnabled = buttonPosition != TOP_END
-		setButtonPositionBottomStart.isEnabled = buttonPosition != BOTTOM_START
-		setButtonPositionBottomEnd.isEnabled = buttonPosition != BOTTOM_END
+	private fun initControls() {
+		set_button_position_next.setOnClickListener {
+			buttonPosition = (buttonPosition + 1).rem(BUTTON_POSITIONS.size)
+			updateButtonPosition()
+		}
+		set_button_position_prev.setOnClickListener {
+			buttonPosition = (buttonPosition + BUTTON_POSITIONS.size - 1).rem(BUTTON_POSITIONS.size)
+			updateButtonPosition()
+		}
 
-		setButtonBackgroundColour1.isEnabled = buttonBackgroundColour != 0
-		setButtonBackgroundColour2.isEnabled = buttonBackgroundColour != 1
-		setButtonBackgroundColour3.isEnabled = buttonBackgroundColour != 2
-		setButtonBackgroundColour4.isEnabled = buttonBackgroundColour != 3
+		set_button_background_colour_next.setOnClickListener {
+			buttonBackgroundColour = (buttonBackgroundColour + 1).rem(BUTTON_BG_COLOURS.size)
+			updateButtonBackgroundColour()
+		}
+		set_button_background_colour_prev.setOnClickListener {
+			buttonBackgroundColour = (buttonBackgroundColour + BUTTON_BG_COLOURS.size - 1).rem(BUTTON_BG_COLOURS.size)
+			updateButtonBackgroundColour()
+		}
 
-		setButtonIcon1.isEnabled = buttonIcon != 0
-		setButtonIcon2.isEnabled = buttonIcon != 1
-		setButtonIcon3.isEnabled = buttonIcon != 2
-		setButtonIcon4.isEnabled = buttonIcon != 3
-		setButtonIcon5.isEnabled = buttonIcon != 4
+		set_button_icon_next.setOnClickListener {
+			buttonIcon = (buttonIcon + 1).rem(BUTTON_ICONS.size)
+			updateButtonIcon()
+		}
+		set_button_icon_prev.setOnClickListener {
+			buttonIcon = (buttonIcon + BUTTON_ICONS.size - 1).rem(BUTTON_ICONS.size)
+			updateButtonIcon()
+		}
 	}
 
 	private fun toast(str: String) {
@@ -103,21 +103,18 @@ class DemoActivity: AppCompatActivity() {
 		activeToast?.show()
 	}
 
-	private fun setButtonPosition(buttonPosition: Int) {
-		this.buttonPosition = buttonPosition
-		fab.setButtonPosition(buttonPosition)
-		updateDisabledControls()
+	private fun updateButtonPosition() {
+		button_position.text = BUTTON_POSITIONS[buttonPosition].first
+		fab.setButtonPosition(BUTTON_POSITIONS[buttonPosition].second)
 	}
 
-	private fun setButtonBackgroundColour(buttonBackgroundColour: Int) {
-		this.buttonBackgroundColour = buttonBackgroundColour
-		fab.setButtonBackgroundColour(BUTTON_BG_COLOURS[buttonBackgroundColour])
-		updateDisabledControls()
+	private fun updateButtonBackgroundColour() {
+		button_background_colour.text = BUTTON_BG_COLOURS[buttonBackgroundColour].first
+		fab.setButtonBackgroundColour(BUTTON_BG_COLOURS[buttonBackgroundColour].second)
 	}
 
-	private fun setButtonIcon(buttonIcon: Int) {
-		this.buttonIcon = buttonIcon
-		fab.setButtonIconResource(ICONS[buttonIcon])
-		updateDisabledControls()
+	private fun updateButtonIcon() {
+		button_icon.text = BUTTON_ICONS[buttonIcon].first
+		fab.setButtonIconResource(BUTTON_ICONS[buttonIcon].second)
 	}
 }
