@@ -1,13 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent">
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:app="http://schemas.android.com/apk/res-auto"
+		android:orientation="vertical"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		>
+
+	<TableLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_margin="18dp"
+			android:layout_alignParentTop="true"
+			>
+
+		<TableRow
+				android:gravity="center_vertical"
+				>
+
+			<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/option_position"
+					/>
+
+			<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					>
+
+				<Button
+						android:id="@+id/setButtonPositionTopStart"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="@string/top_start"
+						style="@style/Widget.AppCompat.Button.Small"
+						/>
+
+				<Button
+						android:id="@+id/setButtonPositionTopEnd"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="@string/top_end"
+						style="@style/Widget.AppCompat.Button.Small"
+						/>
+
+				<Button
+						android:id="@+id/setButtonPositionBottomStart"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="@string/bottom_start"
+						style="@style/Widget.AppCompat.Button.Small"
+						/>
+
+				<Button
+						android:id="@+id/setButtonPositionBottomEnd"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="@string/bottom_end"
+						style="@style/Widget.AppCompat.Button.Small"
+						/>
+
+			</LinearLayout>
+
+		</TableRow>
+
+		<TableRow
+				android:gravity="center_vertical"
+				>
+
+			<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/option_speed_dial_orientation"
+					/>
+
+			<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					>
+
+				<Button
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="@string/horizontal"
+						style="@style/Widget.AppCompat.Button.Small"
+						/>
+
+				<Button
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="@string/vertical"
+						style="@style/Widget.AppCompat.Button.Small"
+						/>
+
+			</LinearLayout>
+
+		</TableRow>
+
+	</TableLayout>
 
 	<uk.co.markormesher.android_fab.FloatingActionButton
-		android:id="@+id/fab"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"/>
+			android:id="@+id/fab"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			app:position="bottom|end"
+			/>
 
 </RelativeLayout>
