@@ -31,9 +31,18 @@ class DemoActivity: AppCompatActivity() {
 			Pair("Swap V", R.drawable.ic_swap_vert)
 	)
 
+	private val SPEED_DIAL_SIZES = arrayOf(
+			Pair("None", 0),
+			Pair("1 item", 1),
+			Pair("2 items", 2),
+			Pair("3 items", 3),
+			Pair("4 items", 4)
+	)
+
 	private var buttonPosition = 0
 	private var buttonBackgroundColour = 0
 	private var buttonIcon = 0
+	private var speedDialSize = 0
 
 	private var activeToast: Toast? = null
 	private var clickCounter = 0
@@ -51,6 +60,7 @@ class DemoActivity: AppCompatActivity() {
 		updateButtonPosition()
 		updateButtonBackgroundColour()
 		updateButtonIcon()
+		updateSpeedDialSize()
 	}
 
 	override fun onSaveInstanceState(outState: Bundle) {
@@ -58,6 +68,7 @@ class DemoActivity: AppCompatActivity() {
 		outState.putInt("buttonPosition", buttonPosition)
 		outState.putInt("buttonBackgroundColour", buttonBackgroundColour)
 		outState.putInt("buttonIcon", buttonIcon)
+		outState.putInt("speedDialSize", speedDialSize)
 	}
 
 	private fun restoreSavedInstanceState(savedInstanceState: Bundle?) {
@@ -65,6 +76,7 @@ class DemoActivity: AppCompatActivity() {
 			buttonPosition = savedInstanceState.getInt("buttonPosition")
 			buttonBackgroundColour = savedInstanceState.getInt("buttonBackgroundColour")
 			buttonIcon = savedInstanceState.getInt("buttonIcon")
+			speedDialSize = savedInstanceState.getInt("speedDialSize")
 		}
 	}
 
@@ -95,6 +107,15 @@ class DemoActivity: AppCompatActivity() {
 			buttonIcon = (buttonIcon + BUTTON_ICONS.size - 1).rem(BUTTON_ICONS.size)
 			updateButtonIcon()
 		}
+
+		set_speed_dial_size_next.setOnClickListener {
+			speedDialSize = (speedDialSize + 1).rem(SPEED_DIAL_SIZES.size)
+			updateSpeedDialSize()
+		}
+		set_speed_dial_size_prev.setOnClickListener {
+			speedDialSize = (speedDialSize + SPEED_DIAL_SIZES.size - 1).rem(SPEED_DIAL_SIZES.size)
+			updateSpeedDialSize()
+		}
 	}
 
 	private fun toast(str: String) {
@@ -116,5 +137,10 @@ class DemoActivity: AppCompatActivity() {
 	private fun updateButtonIcon() {
 		button_icon.text = BUTTON_ICONS[buttonIcon].first
 		fab.setButtonIconResource(BUTTON_ICONS[buttonIcon].second)
+	}
+
+	private fun updateSpeedDialSize() {
+		speed_dial_size.text = SPEED_DIAL_SIZES[speedDialSize].first
+		// TODO: update and set adapter
 	}
 }
