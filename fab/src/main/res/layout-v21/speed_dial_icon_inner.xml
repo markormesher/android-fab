@@ -4,7 +4,7 @@
 		>
 
 	<android.support.v7.widget.CardView
-			android:id="@+id/button_card"
+			android:id="@+id/menu_item_icon_background"
 			android:layout_width="@dimen/speed_dial_disc_size"
 			android:layout_height="@dimen/speed_dial_disc_size"
 			android:layout_margin="@dimen/speed_dial_disc_padding"
@@ -15,7 +15,7 @@
 			>
 
 		<LinearLayout
-				android:id="@+id/icon_container"
+				android:id="@+id/menu_item_icon_container"
 				android:layout_width="@dimen/speed_dial_disc_icon_size"
 				android:layout_height="@dimen/speed_dial_disc_icon_size"
 				android:layout_margin="@dimen/speed_dial_disc_icon_margin"
@@ -24,4 +24,5 @@
 				/>
 
 	</android.support.v7.widget.CardView>
+
 </merge>

@@ -1,10 +1,13 @@
 package uk.co.markormesher.android_fab.app
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import kotlinx.android.synthetic.main.demo_activity.*
 import uk.co.markormesher.android_fab.FloatingActionButton
+import uk.co.markormesher.android_fab.SpeedDialMenuAdapter
+import uk.co.markormesher.android_fab.SpeedDialMenuItem
 
 class DemoActivity: AppCompatActivity() {
 
@@ -47,6 +50,28 @@ class DemoActivity: AppCompatActivity() {
 	private var activeToast: Toast? = null
 	private var clickCounter = 0
 
+	private val speedDialMenuAdapter = object: SpeedDialMenuAdapter() {
+		override fun getCount(): Int = SPEED_DIAL_SIZES[speedDialSize].second
+
+		override fun getMenuItem(context: Context, position: Int): SpeedDialMenuItem = when (position) {
+			0 -> SpeedDialMenuItem(context, R.drawable.ic_cloud, "Item One")
+			1 -> SpeedDialMenuItem(context, R.drawable.ic_cloud, "Item Two")
+			2 -> SpeedDialMenuItem(context, R.drawable.ic_cloud, "Item Three")
+			3 -> SpeedDialMenuItem(context, R.drawable.ic_cloud, "Item Four")
+			else -> throw IllegalArgumentException("No menu item: $position")
+		}
+
+		override fun onMenuItemClick(position: Int): Boolean {
+			toast(getString(R.string.toast_click, ++clickCounter))
+			return true
+		}
+
+		// rotate the "+" icon only
+		override fun fabRotationDegrees(): Float = if (buttonIcon == 0) 45F else 0F
+
+		override fun isEnabled(): Boolean = true
+	}
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		restoreSavedInstanceState(savedInstanceState)
@@ -54,6 +79,7 @@ class DemoActivity: AppCompatActivity() {
 
 		table_layout.setColumnStretchable(1, true)
 		fab.setOnClickListener { toast(getString(R.string.toast_click, ++clickCounter)) }
+		fab.speedDialMenuAdapter = speedDialMenuAdapter
 
 		initControls()
 
@@ -141,6 +167,6 @@ class DemoActivity: AppCompatActivity() {
 
 	private fun updateSpeedDialSize() {
 		speed_dial_size.text = SPEED_DIAL_SIZES[speedDialSize].first
-		// TODO: update and set adapter
+		fab.rebuildSpeedDialMenu()
 	}
 }

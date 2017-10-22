@@ -9,7 +9,11 @@
 		android:padding="@dimen/speed_dial_disc_offset"
 		>
 
-	<!-- label view will be inserted here -->
+	<TextView
+			android:id="@+id/menu_item_label"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			/>
 
 	<include layout="@layout/speed_dial_icon_inner"/>
 
