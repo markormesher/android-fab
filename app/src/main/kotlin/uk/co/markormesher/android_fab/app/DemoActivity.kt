@@ -54,9 +54,9 @@ class DemoActivity: AppCompatActivity() {
 		override fun getCount(): Int = SPEED_DIAL_SIZES[speedDialSize].second
 
 		override fun getMenuItem(context: Context, position: Int): SpeedDialMenuItem = when (position) {
-			0 -> SpeedDialMenuItem(context, R.drawable.ic_cloud, "Item One")
-			1 -> SpeedDialMenuItem(context, R.drawable.ic_cloud, "Item Two")
-			2 -> SpeedDialMenuItem(context, R.drawable.ic_cloud, "Item Three")
+			0 -> SpeedDialMenuItem(context, R.drawable.ic_swap_horiz, "Item One")
+			1 -> SpeedDialMenuItem(context, R.drawable.ic_swap_vert, "Item Two")
+			2 -> SpeedDialMenuItem(context, R.drawable.ic_done, "Item Three")
 			3 -> SpeedDialMenuItem(context, R.drawable.ic_cloud, "Item Four")
 			else -> throw IllegalArgumentException("No menu item: $position")
 		}
@@ -68,8 +68,6 @@ class DemoActivity: AppCompatActivity() {
 
 		// rotate the "+" icon only
 		override fun fabRotationDegrees(): Float = if (buttonIcon == 0) 45F else 0F
-
-		override fun isEnabled(): Boolean = true
 	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,6 +78,7 @@ class DemoActivity: AppCompatActivity() {
 		table_layout.setColumnStretchable(1, true)
 		fab.setOnClickListener { toast(getString(R.string.toast_click, ++clickCounter)) }
 		fab.speedDialMenuAdapter = speedDialMenuAdapter
+		fab.contentCoverEnabled = true
 
 		initControls()
 
