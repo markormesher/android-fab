@@ -38,7 +38,7 @@ class FloatingActionButton: RelativeLayout {
 			field = value
 			rebuildSpeedDialMenu()
 		}
-	private val speedDialMenuViews = ArrayList<View>()
+	private val speedDialMenuViews = ArrayList<ViewGroup>()
 	var speedDialMenuOpen = false
 		private set
 
@@ -108,48 +108,74 @@ class FloatingActionButton: RelativeLayout {
 	fun setButtonPosition(position: Int) {
 		this.buttonPosition = position
 
-		val buttonLayoutParams = button_card.layoutParams as RelativeLayout.LayoutParams
-		val coverLayoutParams = content_cover.layoutParams as RelativeLayout.LayoutParams
-		buttonLayoutParams.clearParentAlignmentRules()
-		coverLayoutParams.clearParentAlignmentRules()
+		setViewLayoutParams(button_card)
+		setViewLayoutParams(content_cover)
+		speedDialMenuViews.forEach { setViewLayoutParams(it) }
+		speedDialMenuViews.forEach { setSpeedDialMenuItemViewOrder(it) }
+	}
 
-		if (position.and(POSITION_TOP) > 0) {
-			buttonLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP)
-			coverLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP)
+	private fun setViewLayoutParams(view: View) {
+		val layoutParams = view.layoutParams as RelativeLayout.LayoutParams
+		layoutParams.clearParentAlignmentRules()
+
+		if (buttonPosition.and(POSITION_TOP) > 0) {
+			layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP)
 		}
-		if (position.and(POSITION_BOTTOM) > 0) {
-			buttonLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
-			coverLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+		if (buttonPosition.and(POSITION_BOTTOM) > 0) {
+			layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
 		}
-		if (position.and(POSITION_START) > 0) {
+		if (buttonPosition.and(POSITION_START) > 0) {
 			if (Build.VERSION.SDK_INT >= 17) {
-				buttonLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_START)
-				coverLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_START)
+				layoutParams.addRule(RelativeLayout.ALIGN_PARENT_START)
 			} else {
-				buttonLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
-				coverLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
+				layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
 			}
 		}
-		if (position.and(POSITION_END) > 0) {
+		if (buttonPosition.and(POSITION_END) > 0) {
 			if (Build.VERSION.SDK_INT >= 17) {
-				buttonLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_END)
-				coverLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_END)
+				layoutParams.addRule(RelativeLayout.ALIGN_PARENT_END)
 			} else {
-				buttonLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
-				coverLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
+				layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
 			}
 		}
-		if (position.and(POSITION_LEFT) > 0) {
-			buttonLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
-			coverLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
+		if (buttonPosition.and(POSITION_LEFT) > 0) {
+			layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
 		}
-		if (position.and(POSITION_RIGHT) > 0) {
-			buttonLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
-			coverLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
+		if (buttonPosition.and(POSITION_RIGHT) > 0) {
+			layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
 		}
 
-		button_card.layoutParams = buttonLayoutParams
-		content_cover.layoutParams = coverLayoutParams
+		view.layoutParams = layoutParams
+	}
+
+	private fun setSpeedDialMenuItemViewOrder(view: ViewGroup) {
+		var labelFirst = true
+		val isRightToLeft = resources.getBoolean(R.bool.is_right_to_left)
+		if (buttonPosition.and(POSITION_LEFT) > 0) {
+			labelFirst = false
+		}
+		if (buttonPosition.and(POSITION_RIGHT) > 0) {
+			labelFirst = true
+		}
+		if (buttonPosition.and(POSITION_START) > 0) {
+			labelFirst = isRightToLeft
+		}
+		if (buttonPosition.and(POSITION_END) > 0) {
+			labelFirst = !isRightToLeft
+		}
+
+		val label = view.menu_item_label
+		val icon = view.menu_item_card
+		view.removeView(label)
+		view.removeView(icon)
+
+		if (labelFirst) {
+			view.addView(label)
+			view.addView(icon)
+		} else {
+			view.addView(icon)
+			view.addView(label)
+		}
 	}
 
 	fun setButtonBackgroundColour(@ColorInt colour: Int) {
@@ -191,12 +217,15 @@ class FloatingActionButton: RelativeLayout {
 			container.addView(view)
 			speedDialMenuViews.add(view)
 
+			setViewLayoutParams(view)
+			setSpeedDialMenuItemViewOrder(view)
+
 			view.menu_item_label.text = menuItem.getLabel()
 
 			if (Build.VERSION.SDK_INT >= 21) {
-				(view.menu_item_icon_background as CardView).setCardBackgroundColor(adapter.getBackgroundColour(i))
+				(view.menu_item_card as CardView).setCardBackgroundColor(adapter.getBackgroundColour(i))
 			} else {
-				((view.menu_item_icon_background as ViewGroup).background as GradientDrawable).setColor(adapter.getBackgroundColour(i))
+				((view.menu_item_card as ViewGroup).background as GradientDrawable).setColor(adapter.getBackgroundColour(i))
 			}
 
 			if (Build.VERSION.SDK_INT >= 16) {
@@ -205,13 +234,6 @@ class FloatingActionButton: RelativeLayout {
 				@Suppress("DEPRECATION")
 				view.menu_item_icon_container.setBackgroundDrawable(menuItem.getIcon())
 			}
-
-			// TODO: fix positioning
-			val params = view.layoutParams as RelativeLayout.LayoutParams
-			params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
-			if (Build.VERSION.SDK_INT >= 17) params.addRule(RelativeLayout.ALIGN_PARENT_END)
-			params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
-			view.layoutParams = params
 
 			view.alpha = 0F
 			view.visibility = GONE
@@ -303,7 +325,8 @@ class FloatingActionButton: RelativeLayout {
 				v.visibility = View.VISIBLE
 			}
 			val translation = if (speedDialMenuOpen) {
-				((i + 1) * distance * -1) - (distance / 8)
+				val direction = if (buttonPosition.and(POSITION_TOP) > 0) 1 else -1
+				(i + 1.125F) * distance * direction
 			} else {
 				0f
 			}
