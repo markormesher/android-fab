@@ -11,6 +11,11 @@ import uk.co.markormesher.android_fab.SpeedDialMenuItem
 
 class DemoActivity: AppCompatActivity() {
 
+	private val BUTTON_SHOWN = arrayOf(
+			Pair("Yes", true),
+			Pair("No", false)
+	)
+
 	private val BUTTON_POSITIONS = arrayOf(
 			Pair("Bottom, end", FloatingActionButton.POSITION_BOTTOM.or(FloatingActionButton.POSITION_END)),
 			Pair("Bottom, start", FloatingActionButton.POSITION_BOTTOM.or(FloatingActionButton.POSITION_START)),
@@ -42,6 +47,7 @@ class DemoActivity: AppCompatActivity() {
 			Pair("4 items", 4)
 	)
 
+	private var buttonShown = 0
 	private var buttonPosition = 0
 	private var buttonBackgroundColour = 0
 	private var buttonIcon = 0
@@ -82,6 +88,7 @@ class DemoActivity: AppCompatActivity() {
 
 		initControls()
 
+		updateButtonShown()
 		updateButtonPosition()
 		updateButtonBackgroundColour()
 		updateButtonIcon()
@@ -90,6 +97,7 @@ class DemoActivity: AppCompatActivity() {
 
 	override fun onSaveInstanceState(outState: Bundle) {
 		super.onSaveInstanceState(outState)
+		outState.putInt("buttonShown", buttonShown)
 		outState.putInt("buttonPosition", buttonPosition)
 		outState.putInt("buttonBackgroundColour", buttonBackgroundColour)
 		outState.putInt("buttonIcon", buttonIcon)
@@ -98,6 +106,7 @@ class DemoActivity: AppCompatActivity() {
 
 	private fun restoreSavedInstanceState(savedInstanceState: Bundle?) {
 		if (savedInstanceState != null) {
+			buttonShown = savedInstanceState.getInt("buttonShown")
 			buttonPosition = savedInstanceState.getInt("buttonPosition")
 			buttonBackgroundColour = savedInstanceState.getInt("buttonBackgroundColour")
 			buttonIcon = savedInstanceState.getInt("buttonIcon")
@@ -106,6 +115,15 @@ class DemoActivity: AppCompatActivity() {
 	}
 
 	private fun initControls() {
+		set_button_shown_next.setOnClickListener {
+			buttonShown = (buttonShown + 1).rem(BUTTON_SHOWN.size)
+			updateButtonShown()
+		}
+		set_button_shown_prev.setOnClickListener {
+			buttonShown = (buttonShown + BUTTON_SHOWN.size - 1).rem(BUTTON_SHOWN.size)
+			updateButtonShown()
+		}
+
 		set_button_position_next.setOnClickListener {
 			buttonPosition = (buttonPosition + 1).rem(BUTTON_POSITIONS.size)
 			updateButtonPosition()
@@ -147,6 +165,15 @@ class DemoActivity: AppCompatActivity() {
 		activeToast?.cancel()
 		activeToast = Toast.makeText(this, str, Toast.LENGTH_SHORT)
 		activeToast?.show()
+	}
+
+	private fun updateButtonShown() {
+		button_shown.text = BUTTON_SHOWN[buttonShown].first
+		if (BUTTON_SHOWN[buttonShown].second) {
+			fab.showButton()
+		} else {
+			fab.hideButton()
+		}
 	}
 
 	private fun updateButtonPosition() {

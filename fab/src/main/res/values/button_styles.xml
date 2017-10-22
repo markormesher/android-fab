@@ -6,7 +6,7 @@
 	</style>
 
 	<style name="speed_dial_item_card">
-		<item name="android:background">@drawable/speed_dial_button_background</item>
+		<item name="android:background">@drawable/menu_item_card_background</item>
 	</style>
 
 </resources>
