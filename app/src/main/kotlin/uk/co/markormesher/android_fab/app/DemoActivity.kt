@@ -11,19 +11,19 @@ import uk.co.markormesher.android_fab.SpeedDialMenuItem
 
 class DemoActivity: AppCompatActivity() {
 
-	private val BUTTON_SHOWN = arrayOf(
+	private val buttonShownOptions = arrayOf(
 			Pair("Yes", true),
 			Pair("No", false)
 	)
 
-	private val BUTTON_POSITIONS = arrayOf(
+	private val buttonPositionOptions = arrayOf(
 			Pair("Bottom, end", FloatingActionButton.POSITION_BOTTOM.or(FloatingActionButton.POSITION_END)),
 			Pair("Bottom, start", FloatingActionButton.POSITION_BOTTOM.or(FloatingActionButton.POSITION_START)),
 			Pair("Top, start", FloatingActionButton.POSITION_TOP.or(FloatingActionButton.POSITION_START)),
 			Pair("Top, end", FloatingActionButton.POSITION_TOP.or(FloatingActionButton.POSITION_END))
 	)
 
-	private val BUTTON_BG_COLOURS = arrayOf(
+	private val buttonBgColourOptions = arrayOf(
 			Pair("Blue", 0xff0099ff.toInt()),
 			Pair("Purple", 0xff9900ff.toInt()),
 			Pair("Teal", 0xff00ff99.toInt()),
@@ -31,7 +31,7 @@ class DemoActivity: AppCompatActivity() {
 			Pair("Orange", 0xffff9900.toInt())
 	)
 
-	private val BUTTON_ICONS = arrayOf(
+	private val buttonIconOptions = arrayOf(
 			Pair("Add", R.drawable.ic_add),
 			Pair("Cloud", R.drawable.ic_cloud),
 			Pair("Done", R.drawable.ic_done),
@@ -39,7 +39,7 @@ class DemoActivity: AppCompatActivity() {
 			Pair("Swap V", R.drawable.ic_swap_vert)
 	)
 
-	private val SPEED_DIAL_SIZES = arrayOf(
+	private val speedDialSizeOptions = arrayOf(
 			Pair("None", 0),
 			Pair("1 item", 1),
 			Pair("2 items", 2),
@@ -57,7 +57,7 @@ class DemoActivity: AppCompatActivity() {
 	private var clickCounter = 0
 
 	private val speedDialMenuAdapter = object: SpeedDialMenuAdapter() {
-		override fun getCount(): Int = SPEED_DIAL_SIZES[speedDialSize].second
+		override fun getCount(): Int = speedDialSizeOptions[speedDialSize].second
 
 		override fun getMenuItem(context: Context, position: Int): SpeedDialMenuItem = when (position) {
 			0 -> SpeedDialMenuItem(context, R.drawable.ic_swap_horiz, "Item One")
@@ -116,47 +116,47 @@ class DemoActivity: AppCompatActivity() {
 
 	private fun initControls() {
 		set_button_shown_next.setOnClickListener {
-			buttonShown = (buttonShown + 1).rem(BUTTON_SHOWN.size)
+			buttonShown = (buttonShown + 1).rem(buttonShownOptions.size)
 			updateButtonShown()
 		}
 		set_button_shown_prev.setOnClickListener {
-			buttonShown = (buttonShown + BUTTON_SHOWN.size - 1).rem(BUTTON_SHOWN.size)
+			buttonShown = (buttonShown + buttonShownOptions.size - 1).rem(buttonShownOptions.size)
 			updateButtonShown()
 		}
 
 		set_button_position_next.setOnClickListener {
-			buttonPosition = (buttonPosition + 1).rem(BUTTON_POSITIONS.size)
+			buttonPosition = (buttonPosition + 1).rem(buttonPositionOptions.size)
 			updateButtonPosition()
 		}
 		set_button_position_prev.setOnClickListener {
-			buttonPosition = (buttonPosition + BUTTON_POSITIONS.size - 1).rem(BUTTON_POSITIONS.size)
+			buttonPosition = (buttonPosition + buttonPositionOptions.size - 1).rem(buttonPositionOptions.size)
 			updateButtonPosition()
 		}
 
 		set_button_background_colour_next.setOnClickListener {
-			buttonBackgroundColour = (buttonBackgroundColour + 1).rem(BUTTON_BG_COLOURS.size)
+			buttonBackgroundColour = (buttonBackgroundColour + 1).rem(buttonBgColourOptions.size)
 			updateButtonBackgroundColour()
 		}
 		set_button_background_colour_prev.setOnClickListener {
-			buttonBackgroundColour = (buttonBackgroundColour + BUTTON_BG_COLOURS.size - 1).rem(BUTTON_BG_COLOURS.size)
+			buttonBackgroundColour = (buttonBackgroundColour + buttonBgColourOptions.size - 1).rem(buttonBgColourOptions.size)
 			updateButtonBackgroundColour()
 		}
 
 		set_button_icon_next.setOnClickListener {
-			buttonIcon = (buttonIcon + 1).rem(BUTTON_ICONS.size)
+			buttonIcon = (buttonIcon + 1).rem(buttonIconOptions.size)
 			updateButtonIcon()
 		}
 		set_button_icon_prev.setOnClickListener {
-			buttonIcon = (buttonIcon + BUTTON_ICONS.size - 1).rem(BUTTON_ICONS.size)
+			buttonIcon = (buttonIcon + buttonIconOptions.size - 1).rem(buttonIconOptions.size)
 			updateButtonIcon()
 		}
 
 		set_speed_dial_size_next.setOnClickListener {
-			speedDialSize = (speedDialSize + 1).rem(SPEED_DIAL_SIZES.size)
+			speedDialSize = (speedDialSize + 1).rem(speedDialSizeOptions.size)
 			updateSpeedDialSize()
 		}
 		set_speed_dial_size_prev.setOnClickListener {
-			speedDialSize = (speedDialSize + SPEED_DIAL_SIZES.size - 1).rem(SPEED_DIAL_SIZES.size)
+			speedDialSize = (speedDialSize + speedDialSizeOptions.size - 1).rem(speedDialSizeOptions.size)
 			updateSpeedDialSize()
 		}
 	}
@@ -168,8 +168,8 @@ class DemoActivity: AppCompatActivity() {
 	}
 
 	private fun updateButtonShown() {
-		button_shown.text = BUTTON_SHOWN[buttonShown].first
-		if (BUTTON_SHOWN[buttonShown].second) {
+		button_shown.text = buttonShownOptions[buttonShown].first
+		if (buttonShownOptions[buttonShown].second) {
 			fab.showButton()
 		} else {
 			fab.hideButton()
@@ -177,22 +177,22 @@ class DemoActivity: AppCompatActivity() {
 	}
 
 	private fun updateButtonPosition() {
-		button_position.text = BUTTON_POSITIONS[buttonPosition].first
-		fab.setButtonPosition(BUTTON_POSITIONS[buttonPosition].second)
+		button_position.text = buttonPositionOptions[buttonPosition].first
+		fab.setButtonPosition(buttonPositionOptions[buttonPosition].second)
 	}
 
 	private fun updateButtonBackgroundColour() {
-		button_background_colour.text = BUTTON_BG_COLOURS[buttonBackgroundColour].first
-		fab.setButtonBackgroundColour(BUTTON_BG_COLOURS[buttonBackgroundColour].second)
+		button_background_colour.text = buttonBgColourOptions[buttonBackgroundColour].first
+		fab.setButtonBackgroundColour(buttonBgColourOptions[buttonBackgroundColour].second)
 	}
 
 	private fun updateButtonIcon() {
-		button_icon.text = BUTTON_ICONS[buttonIcon].first
-		fab.setButtonIconResource(BUTTON_ICONS[buttonIcon].second)
+		button_icon.text = buttonIconOptions[buttonIcon].first
+		fab.setButtonIconResource(buttonIconOptions[buttonIcon].second)
 	}
 
 	private fun updateSpeedDialSize() {
-		speed_dial_size.text = SPEED_DIAL_SIZES[speedDialSize].first
+		speed_dial_size.text = speedDialSizeOptions[speedDialSize].first
 		fab.rebuildSpeedDialMenu()
 	}
 }

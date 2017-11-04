@@ -20,9 +20,6 @@ import kotlinx.android.synthetic.main.menu_item_icon.view.*
 import uk.co.markormesher.android_fab.extensions.clearParentAlignmentRules
 import uk.co.markormesher.android_fab.fab.R
 
-
-
-
 class FloatingActionButton: RelativeLayout {
 
 	private val SPEED_DIAL_ANIMATION_DURATION = 200L

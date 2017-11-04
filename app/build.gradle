@@ -27,8 +27,6 @@ android {
 
 		versionCode properties['version_code']
 		versionName properties['version_name']
-
-		testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 	}
 
 	sourceSets {
@@ -84,9 +82,4 @@ dependencies {
 	compile 'com.android.support:appcompat-v7:26.0.1'
 	compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 	compile project(':fab')
-
-	androidTestCompile 'junit:junit:4.12'
-	androidTestCompile('com.android.support.test:testing-support-lib:0.1') {
-		exclude group: 'junit'
-	}
 }
