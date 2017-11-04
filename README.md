@@ -66,7 +66,7 @@ A click listener can be added to the FAB in the same way as any other button. Th
 
 :warning: See the note below on [click action priority](#note-click-action-priority).
 
-### Speed-Dial Menus
+### Speed-Dial Menu
 
 The speed-dial menu can be enabled by creating a class that extends `SpeedDialMenuAdapter` and then calling `setSpeedDialMenuAdapter(...)` on the FAB.
 
@@ -74,15 +74,17 @@ The adapter class methods are [fab/src/main/java/uk/co/markormesher/android_fab/
 
 :warning: See the note below on [click action priority](#note-click-action-priority).
 
-### Speed-Dial Content Cover Colour
+### Speed-Dial Menu Content Cover
 
 The colour to be used for the layer that obscures content when the speed-dial menu is opened should be set with `fab.setContentCoverColour(...)`, passing in an aRGB colour value (e.g. `0x99ff9900` for a semi-transparent dark orange). Note that this method does **not** take a colour resource ID, so passing in `R.color.some_colour_name` will not work.
 
-### Speed-Dial State Change Listeners
+The cover can be enabled/disabled entirely using `fab.setContentCoverEnabled(...)`. It is enabled by default.
+
+### Speed-Dial Menu State Change Listeners
 
 Two state change listeners are provided to monitor when the speed-dial menu opens or closes, which can be specified with `fab.setOnSpeedDialMenuOpenListener` and `fab.setOnSpeedDialMenuCloseListener`.
 
-### Controls
+### Show/Hide Controls
 
 The FAB can be hidden and shown with the `fab.hide()` and `fab.show()` methods, and the method `fab.isShown()` will return a boolean indicating the current state. These methods animate the FAB in and out of visibility. If the speed-dial menu is open when `.hide()` is called it will be closed.  
 

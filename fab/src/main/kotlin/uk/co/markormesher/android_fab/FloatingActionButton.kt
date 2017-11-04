@@ -34,6 +34,9 @@ class FloatingActionButton: RelativeLayout {
 	private var speedDialMenuOpenListener: SpeedDialMenuOpenListener? = null
 	private var speedDialMenuCloseListener: SpeedDialMenuCloseListener? = null
 	private var contentCoverColour = 0xccffffff.toInt()
+	var contentCoverEnabled = true
+	private var isShown: Boolean = true
+	override fun isShown() = isShown
 
 	private var speedDialMenuOpen = false
 	private val speedDialMenuViews = ArrayList<ViewGroup>()
@@ -42,10 +45,6 @@ class FloatingActionButton: RelativeLayout {
 			field = value
 			rebuildSpeedDialMenu()
 		}
-
-	var contentCoverEnabled = true
-	private var isShown: Boolean = true
-	override fun isShown() = isShown
 
 	private var busyAnimatingFabIconRotation = false
 	private var busyAnimatingContentCover = false
@@ -356,7 +355,7 @@ class FloatingActionButton: RelativeLayout {
 
 	private fun animateContentCover() {
 		if (speedDialMenuOpen && !contentCoverEnabled) {
-			// speedDialMenuOpen is checked to make sure the cover is closed if it is disabled whist open
+			// speedDialMenuOpen is checked to make sure the cover is closed if it is disabled whilst open
 			return
 		}
 

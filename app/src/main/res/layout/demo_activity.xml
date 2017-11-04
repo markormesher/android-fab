@@ -1,297 +1,316 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
 		xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:tools="http://schemas.android.com/tools"
 		android:id="@+id/root_view"
-		android:orientation="vertical"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		>
 
-	<TableLayout
-			android:id="@+id/table_layout"
+	<ScrollView
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_margin="18dp"
-			android:layout_centerInParent="true"
+			android:layout_height="match_parent"
+			android:fillViewport="true"
 			>
 
-		<TableRow
-				android:gravity="center_vertical"
+		<!-- Wrapper to deal with the ScrollView > TableLayout bug that prevents scrolling. -->
+		<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
 				>
 
-			<Button
-					android:id="@+id/set_button_shown_prev"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/btn_prev"
-					style="@style/Widget.AppCompat.Button.Small"
-					/>
-
-			<LinearLayout
+			<TableLayout
+					android:id="@+id/table_layout"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:orientation="vertical"
+					android:layout_marginTop="18dp"
+					android:layout_marginLeft="18dp"
+					android:layout_marginRight="18dp"
+					android:layout_marginBottom="80dp"
+					tools:ignore="UselessParent"
 					>
 
-				<TextView
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:text="@string/option_button_shown"
-						android:gravity="center"
-						style="@style/TextAppearance.AppCompat.Body1"
-						/>
+				<TableRow
+						android:gravity="center_vertical"
+						>
 
-				<TextView
-						android:id="@+id/button_shown"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:gravity="center"
-						style="@style/TextAppearance.AppCompat.Small"
-						/>
+					<Button
+							android:id="@+id/set_button_shown_prev"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="@string/btn_prev"
+							style="@style/Widget.AppCompat.Button.Small"
+							/>
 
-			</LinearLayout>
+					<LinearLayout
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:orientation="vertical"
+							>
 
-			<Button
-					android:id="@+id/set_button_shown_next"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/btn_next"
-					style="@style/Widget.AppCompat.Button.Small"
-					/>
+						<TextView
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:text="@string/option_button_shown"
+								android:gravity="center"
+								style="@style/TextAppearance.AppCompat.Body1"
+								/>
 
-		</TableRow>
+						<TextView
+								android:id="@+id/button_shown"
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:gravity="center"
+								style="@style/TextAppearance.AppCompat.Small"
+								/>
 
-		<TableRow
-				android:gravity="center_vertical"
-				>
+					</LinearLayout>
 
-			<Button
-					android:id="@+id/set_button_position_prev"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/btn_prev"
-					style="@style/Widget.AppCompat.Button.Small"
-					/>
+					<Button
+							android:id="@+id/set_button_shown_next"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="@string/btn_next"
+							style="@style/Widget.AppCompat.Button.Small"
+							/>
 
-			<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:orientation="vertical"
-					>
+				</TableRow>
 
-				<TextView
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:text="@string/option_button_position"
-						android:gravity="center"
-						style="@style/TextAppearance.AppCompat.Body1"
-						/>
+				<TableRow
+						android:gravity="center_vertical"
+						>
 
-				<TextView
-						android:id="@+id/button_position"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:gravity="center"
-						style="@style/TextAppearance.AppCompat.Small"
-						/>
+					<Button
+							android:id="@+id/set_button_position_prev"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="@string/btn_prev"
+							style="@style/Widget.AppCompat.Button.Small"
+							/>
 
-			</LinearLayout>
+					<LinearLayout
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:orientation="vertical"
+							>
 
-			<Button
-					android:id="@+id/set_button_position_next"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/btn_next"
-					style="@style/Widget.AppCompat.Button.Small"
-					/>
+						<TextView
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:text="@string/option_button_position"
+								android:gravity="center"
+								style="@style/TextAppearance.AppCompat.Body1"
+								/>
 
-		</TableRow>
+						<TextView
+								android:id="@+id/button_position"
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:gravity="center"
+								style="@style/TextAppearance.AppCompat.Small"
+								/>
 
-		<TableRow
-				android:gravity="center_vertical"
-				>
+					</LinearLayout>
 
-			<Button
-					android:id="@+id/set_button_background_colour_prev"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/btn_prev"
-					style="@style/Widget.AppCompat.Button.Small"
-					/>
+					<Button
+							android:id="@+id/set_button_position_next"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="@string/btn_next"
+							style="@style/Widget.AppCompat.Button.Small"
+							/>
 
-			<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:orientation="vertical"
-					>
+				</TableRow>
 
-				<TextView
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:text="@string/option_button_background_colour"
-						android:gravity="center"
-						style="@style/TextAppearance.AppCompat.Body1"
-						/>
+				<TableRow
+						android:gravity="center_vertical"
+						>
 
-				<TextView
-						android:id="@+id/button_background_colour"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:gravity="center"
-						style="@style/TextAppearance.AppCompat.Small"
-						/>
+					<Button
+							android:id="@+id/set_button_background_colour_prev"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="@string/btn_prev"
+							style="@style/Widget.AppCompat.Button.Small"
+							/>
 
-			</LinearLayout>
+					<LinearLayout
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:orientation="vertical"
+							>
 
-			<Button
-					android:id="@+id/set_button_background_colour_next"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/btn_next"
-					style="@style/Widget.AppCompat.Button.Small"
-					/>
+						<TextView
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:text="@string/option_button_background_colour"
+								android:gravity="center"
+								style="@style/TextAppearance.AppCompat.Body1"
+								/>
 
-		</TableRow>
+						<TextView
+								android:id="@+id/button_background_colour"
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:gravity="center"
+								style="@style/TextAppearance.AppCompat.Small"
+								/>
 
-		<TableRow
-				android:gravity="center_vertical"
-				>
+					</LinearLayout>
 
-			<Button
-					android:id="@+id/set_button_icon_prev"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/btn_prev"
-					style="@style/Widget.AppCompat.Button.Small"
-					/>
+					<Button
+							android:id="@+id/set_button_background_colour_next"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="@string/btn_next"
+							style="@style/Widget.AppCompat.Button.Small"
+							/>
 
-			<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:orientation="vertical"
-					>
+				</TableRow>
 
-				<TextView
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:text="@string/option_button_icon"
-						android:gravity="center"
-						style="@style/TextAppearance.AppCompat.Body1"
-						/>
+				<TableRow
+						android:gravity="center_vertical"
+						>
 
-				<TextView
-						android:id="@+id/button_icon"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:gravity="center"
-						style="@style/TextAppearance.AppCompat.Small"
-						/>
+					<Button
+							android:id="@+id/set_button_icon_prev"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="@string/btn_prev"
+							style="@style/Widget.AppCompat.Button.Small"
+							/>
 
-			</LinearLayout>
+					<LinearLayout
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:orientation="vertical"
+							>
 
-			<Button
-					android:id="@+id/set_button_icon_next"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/btn_next"
-					style="@style/Widget.AppCompat.Button.Small"
-					/>
+						<TextView
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:text="@string/option_button_icon"
+								android:gravity="center"
+								style="@style/TextAppearance.AppCompat.Body1"
+								/>
 
-		</TableRow>
+						<TextView
+								android:id="@+id/button_icon"
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:gravity="center"
+								style="@style/TextAppearance.AppCompat.Small"
+								/>
 
-		<TableRow
-				android:gravity="center_vertical"
-				>
+					</LinearLayout>
 
-			<Button
-					android:id="@+id/set_speed_dial_size_prev"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/btn_prev"
-					style="@style/Widget.AppCompat.Button.Small"
-					/>
+					<Button
+							android:id="@+id/set_button_icon_next"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="@string/btn_next"
+							style="@style/Widget.AppCompat.Button.Small"
+							/>
 
-			<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:orientation="vertical"
-					>
+				</TableRow>
 
-				<TextView
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:text="@string/option_speed_dial_size"
-						android:gravity="center"
-						style="@style/TextAppearance.AppCompat.Body1"
-						/>
+				<TableRow
+						android:gravity="center_vertical"
+						>
 
-				<TextView
-						android:id="@+id/speed_dial_size"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:gravity="center"
-						style="@style/TextAppearance.AppCompat.Small"
-						/>
+					<Button
+							android:id="@+id/set_speed_dial_size_prev"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="@string/btn_prev"
+							style="@style/Widget.AppCompat.Button.Small"
+							/>
 
-			</LinearLayout>
+					<LinearLayout
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:orientation="vertical"
+							>
 
-			<Button
-					android:id="@+id/set_speed_dial_size_next"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/btn_next"
-					style="@style/Widget.AppCompat.Button.Small"
-					/>
+						<TextView
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:text="@string/option_speed_dial_size"
+								android:gravity="center"
+								style="@style/TextAppearance.AppCompat.Body1"
+								/>
 
-		</TableRow>
+						<TextView
+								android:id="@+id/speed_dial_size"
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:gravity="center"
+								style="@style/TextAppearance.AppCompat.Small"
+								/>
 
-		<TableRow
-				android:gravity="center_vertical"
-				>
+					</LinearLayout>
 
-			<Button
-					android:id="@+id/set_content_cover_colour_prev"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/btn_prev"
-					style="@style/Widget.AppCompat.Button.Small"
-					/>
+					<Button
+							android:id="@+id/set_speed_dial_size_next"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="@string/btn_next"
+							style="@style/Widget.AppCompat.Button.Small"
+							/>
 
-			<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:orientation="vertical"
-					>
+				</TableRow>
 
-				<TextView
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:text="@string/option_content_cover_colour"
-						android:gravity="center"
-						style="@style/TextAppearance.AppCompat.Body1"
-						/>
+				<TableRow
+						android:gravity="center_vertical"
+						>
 
-				<TextView
-						android:id="@+id/content_cover_colour"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:gravity="center"
-						style="@style/TextAppearance.AppCompat.Small"
-						/>
+					<Button
+							android:id="@+id/set_content_cover_colour_prev"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="@string/btn_prev"
+							style="@style/Widget.AppCompat.Button.Small"
+							/>
 
-			</LinearLayout>
+					<LinearLayout
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:orientation="vertical"
+							>
 
-			<Button
-					android:id="@+id/set_content_cover_colour_next"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/btn_next"
-					style="@style/Widget.AppCompat.Button.Small"
-					/>
+						<TextView
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:text="@string/option_content_cover_colour"
+								android:gravity="center"
+								style="@style/TextAppearance.AppCompat.Body1"
+								/>
 
-		</TableRow>
+						<TextView
+								android:id="@+id/content_cover_colour"
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:gravity="center"
+								style="@style/TextAppearance.AppCompat.Small"
+								/>
 
-	</TableLayout>
+					</LinearLayout>
+
+					<Button
+							android:id="@+id/set_content_cover_colour_next"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="@string/btn_next"
+							style="@style/Widget.AppCompat.Button.Small"
+							/>
+
+				</TableRow>
+
+			</TableLayout>
+
+		</LinearLayout>
+
+	</ScrollView>
 
 	<uk.co.markormesher.android_fab.FloatingActionButton
 			android:id="@+id/fab"
