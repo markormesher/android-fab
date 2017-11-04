@@ -8,7 +8,7 @@ This library provides a clickable floating action button (FAB) with an optional 
 
 ![Demonstration of the speed-dial menu](misc/demo.gif)
 
-You can try the demo yourself in one of two ways:
+You can try the demo in one of two ways:
 
 1. Clone this repository and install the demo app from the `app/` folder (you can do this with Gradle, using `gradle clean installDebug`).
 
@@ -41,7 +41,11 @@ See [app/proguard-rules.pro](app/proguard-rules.pro) for an example.
 
 **Note:** all of the instructions below assume that the Floating Action Button is referenced by the variable `fab`, i.e.
 
+	// Java
     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+    
+    // Kotlin (without Android extensions)
+    val fab = findViewById(R.id.fab) as FloatingActionButton
 
 ### Placing the FAB in Your Layout
 
@@ -50,15 +54,37 @@ The `FloatingActionButton` view must be placed at the **root** of your layout, *
     <uk.co.markormesher.android_fab.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        />
+
+### FAB Position
+
+The FAB can be positioned in any of the four corners of the activity. The default is the bottom-end corner.
+
+	// Java
+	fab.setButtonPosition(POSITION_BOTTOM | POSITION_END);
+	
+	// Kotlin
+	fab.setButtonPosition(POSITION_BOTTOM.or(POSITION_END))
+	
+	// XML
+	<uk.co.markormesher.android_fab.FloatingActionButton
+		xmlns:app="http://schemas.android.com/apk/res-auto"
+		...
+		app:buttonPosition="bottom|end"
+		/>
+		
+Note: the FAB is aware of text-direction (right-to-left or left-to-right) and adjusts the meaning of "start" and "end" positions accordingly. This functionality can be overridden using the named constants for left and right.
+
+:x: DOCS UP TO DATE UP TO THIS POINT.
 
 ### FAB Icon
 
-The icon displayed in the centre of the FAB should be set with `fab.setIcon(...)`, passing in the `Drawable` resource ID to use. This `View` will be centred in a 24dp x 24dp view group, as per the Android Material Design specs.
+The icon displayed in the centre of the FAB should be set with `fab.setButtonIconResource(...)`, passing in the `Drawable` resource ID to use. This `View` will be centred in a 24dp x 24dp view group, as per the Android Material Design specs.
 
 ### FAB Background Colour
 
-The background colour to be used for the FAB should be set with `fab.setBackgroundColor(...)`, passing in an aRGB colour value (e.g. `0xffff9900` for dark orange). Note that this method does **not** take a colour resource ID, so passing in `R.color.some_colour_name` will not work.
+The background colour to be used for the FAB should be set with `fab.setButtonBackgroundColour(...)`, passing in an aRGB colour value (e.g. `0xffff9900` for dark orange). Note that this method does **not** take a colour resource ID, so passing in `R.color.some_colour_name` will not work.
 
 ### FAB Click Listener
 

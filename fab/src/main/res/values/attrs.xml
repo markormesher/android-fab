@@ -7,6 +7,8 @@
 			<flag name="bottom" value="2"/>
 			<flag name="start" value="4"/>
 			<flag name="end" value="8"/>
+			<flag name="left" value="16"/>
+			<flag name="right" value="32"/>
 		</attr>
 
 		<attr name="buttonIcon" format="reference"/>
