@@ -147,15 +147,30 @@ The cover can be enabled/disabled programmatically with `fab.setContentCoverEnab
 
 	// Java
 	fab.setContentCoverEnabled(true);
+	fab.setContentCoverEnabled(false);
 	
 	// Kotlin
 	fab.setContentCoverEnabled(true)
-
-:x: DOCS UP TO DATE UP TO THIS POINT.
+	fab.setContentCoverEnabled(false)
 
 ### Speed-Dial Menu State Change Listeners
 
-Two state change listeners are provided to monitor when the speed-dial menu opens or closes, which can be specified with `fab.setOnSpeedDialMenuOpenListener` and `fab.setOnSpeedDialMenuCloseListener`.
+State change events are fired when the speed-dial menu opens or closes, which can be received with `fab.setOnSpeedDialMenuOpenListener(...)` and `fab.setOnSpeedDialMenuCloseListener(...)`.
+
+	// Java
+	fab.setOnSpeedDialMenuOpenListener(new SpeedDialMenuOpenListener() {
+		@Override
+		public void onOpen(FloatingActionButton floatingActionButton) {
+			// ...
+		}
+	});
+	
+	// Kotlin
+	fab.setOnSpeedDialMenuOpenListener { floatingActionButton ->
+		// ...
+	}
+
+:x: DOCS UP TO DATE UP TO THIS POINT.
 
 ### Show/Hide Controls
 
