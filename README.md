@@ -188,4 +188,17 @@ To receive state change updates when the speed-dial menu is opened or closed, us
 
 ### Note: State Preservation
 
-TODO
+The following properties are preserved when a configuration change (like a screen orientation change) happens:
+
+- FAB hidden/shown
+- FAB position
+- FAB background colour
+- FAB icon
+- Speed-dial menu content cover colour
+- Speed-dial menu content cover enabled/disabled
+
+The following properties are **not** preserved and will need to be restored by the parent activity/fragment:
+
+- FAB click listener
+- Speed-dial menu adapter
+- Speed-dial menu open/close listeners
