@@ -1,47 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!--
-    Strings
-    -->
+	<!-- Strings -->
 
-    <string name="app_name">Floating Action Button Demo</string>
+	<string name="app_name">Floating Action Button Demo</string>
 
-	<string name="yes">Yes</string>
-	<string name="no">No</string>
+	<string name="toast_click">Click %d</string>
 
-	<string name="hide_fab">Hide FAB</string>
-	<string name="show_fab">Show FAB</string>
-	<string name="switch_mode_to_speed_dial">Switch to Speed-Dial Mode</string>
-	<string name="switch_mode_to_click">Switch to Click Mode</string>
-	<string name="change_icon">Change FAB Icon</string>
-	<string name="change_button_colour">Change FAB Colour</string>
-	<string name="change_cover_colour">Change Content Cover Colour</string>
-	<string name="toggle_colours_on">Enable Speed-Dial Colours</string>
-	<string name="toggle_colours_off">Disable Speed-Dial Colours</string>
-	<string name="toggle_optional_close_on">Enable Optional Speed-Dial Close</string>
-	<string name="toggle_optional_close_off">Disable Optional Speed-Dial Close</string>
-	<string name="open_speed_dial">Open Speed Dial</string>
+	<string name="option_button_shown">Show Button:</string>
+	<string name="option_button_position">Button Position:</string>
+	<string name="option_button_background_colour">Button BG Colour:</string>
+	<string name="option_button_icon">Button Icon:</string>
+	<string name="option_speed_dial_size">Speed-Dial Size:</string>
+	<string name="option_content_cover_colour">Content Cover Colour:</string>
 
-	<string name="speed_dial_label">Option #%d</string>
+	<string name="btn_prev">Prev</string>
+	<string name="btn_next">Next</string>
 
-	<string name="label_optional_close">Optional Close</string>
-	<string name="menu_close_dialog_title">Hi there!</string>
-	<string name="menu_close_dialog_text">Do you want to close the speed-dial menu?</string>
+	<string name="stress_test_menu_option">Stress test</string>
+	<string name="stress_test_exit_msg">Press volume down to end test</string>
+	<string name="stress_test_version_error">Stress testing supported on SDK 24+</string>
 
-	<string name="click_simple">You clicked on the FAB!</string>
-	<string name="click_with_item">You clicked on item #%d!</string>
+	<!-- Styles -->
 
-	<string name="disabled_when_hidden">Disabled when the FAB is hidden</string>
-
-    <!--
-    Styles
-    -->
-
-    <style name="global_theme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">#3f51b5</item>
-        <item name="colorPrimaryDark">#303f9f</item>
-        <item name="colorAccent">#ff4081</item>
-    </style>
+	<style name="global_theme" parent="Theme.AppCompat.Light.DarkActionBar">
+		<item name="colorPrimary">#3f51b5</item>
+		<item name="colorPrimaryDark">#303f9f</item>
+		<item name="colorAccent">#ff4081</item>
+	</style>
 
 </resources>

@@ -5,42 +5,32 @@ buildscript {
 
 	dependencies {
 		classpath 'com.android.tools.build:gradle:2.3.0'
-		classpath 'me.tatarka:gradle-retrolambda:3.2.3'
-		classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
 	}
-
-	configurations.classpath.exclude group: 'com.android.tools.external.lombok'
 }
 
-def version = new Properties()
-version['code'] = 14
-version['name'] = '1.3.4'
-
+def properties = getProps()
 def secrets = getSecrets()
 
-apply plugin: 'me.tatarka.retrolambda'
-
 apply plugin: 'com.android.application'
-android {
-	// required by retrolambda
-	compileOptions {
-		sourceCompatibility JavaVersion.VERSION_1_8
-		targetCompatibility JavaVersion.VERSION_1_8
-	}
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
+android {
 	compileSdkVersion 26
 	buildToolsVersion "26.0.1"
 
 	defaultConfig {
 		applicationId "uk.co.markormesher.android_fab.app"
 
-		minSdkVersion 12
+		minSdkVersion 14
 		targetSdkVersion 26
 
-		versionCode version['code']
-		versionName version['name']
+		versionCode properties['version_code']
+		versionName properties['version_name']
+	}
 
-		testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+	sourceSets {
+		main.java.srcDirs += "src/main/kotlin"
 	}
 
 	signingConfigs {
@@ -88,19 +78,8 @@ repositories {
 
 dependencies {
 	compile fileTree(include: ['*.jar'], dir: 'libs')
-	compile 'com.android.support:support-v4:25.3.1'
-	compile 'com.android.support:appcompat-v7:25.3.1'
+	compile 'com.android.support:support-v4:26.0.1'
+	compile 'com.android.support:appcompat-v7:26.0.1'
+	compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 	compile project(':fab')
-	androidTestCompile 'junit:junit:4.12'
-	androidTestCompile('com.android.support.test:testing-support-lib:0.1') {
-		exclude group: 'junit'
-	}
-}
-
-/*==============*
- * Custom Tasks *
- *==============*/
-
-task start(type: Exec) {
-	commandLine 'adb', 'shell', 'am', 'start', '-n', 'uk.co.markormesher.android_fab.app/.DemoActivity'
 }

@@ -2,11 +2,11 @@
 <resources>
 
 	<style name="fab_card">
-		<item name="android:background">@drawable/circle_background</item>
+		<item name="android:background">@drawable/fab_background</item>
 	</style>
 
 	<style name="speed_dial_item_card">
-		<item name="android:background">@drawable/circle_background</item>
+		<item name="android:background">@drawable/menu_item_card_background</item>
 	</style>
 
 </resources>

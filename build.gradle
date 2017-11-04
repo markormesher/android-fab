@@ -1,18 +1,30 @@
 buildscript {
-    repositories {
-        jcenter()
-    }
+	ext.kotlin_version = '1.1.51'
+
+	repositories {
+		jcenter()
+	}
 
 	dependencies {
 		classpath 'com.android.tools.build:gradle:2.3.0'
-    }
+		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+	}
+}
+
+allprojects {
+	repositories {
+		jcenter()
+		maven {
+			url "https://maven.google.com"
+		}
+	}
 }
 
 @SuppressWarnings("GroovyUnusedDeclaration")
-def getSecrets() {
+static def getSecrets() {
 	try {
 		// load in default file
-		def Properties secrets = new Properties()
+		Properties secrets = new Properties()
 		secrets.load(new FileInputStream(new File('secrets.properties')))
 
 		// fix keystore path
@@ -21,6 +33,14 @@ def getSecrets() {
 		return secrets
 	} catch (Exception ignored) {
 		System.out.println("Warning: secrets file not loaded")
-		return new Properties();
+		return new Properties()
 	}
+}
+
+@SuppressWarnings("GroovyUnusedDeclaration")
+static def getProps() {
+	Properties properties = new Properties()
+	properties['version_code'] = 14
+	properties['version_name'] = '2.0.0'
+	return properties
 }
