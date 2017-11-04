@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
+import android.os.Bundle
+import android.os.Parcelable
 import android.support.annotation.ColorInt
 import android.support.annotation.DrawableRes
 import android.support.v7.widget.CardView
@@ -27,16 +29,17 @@ class FloatingActionButton: RelativeLayout {
 
 	private val layoutInflater by lazy { LayoutInflater.from(context) }
 
+	private var isShown: Boolean = true
+	override fun isShown() = isShown
 	private var buttonPosition = POSITION_BOTTOM.or(POSITION_END)
 	private var buttonBackgroundColour = 0xff0099ff.toInt()
 	private var buttonIconResource = 0
+	private var contentCoverColour = 0xccffffff.toInt()
+	var contentCoverEnabled = true
+
 	private var onClickListener: OnClickListener? = null
 	private var speedDialMenuOpenListener: SpeedDialMenuOpenListener? = null
 	private var speedDialMenuCloseListener: SpeedDialMenuCloseListener? = null
-	private var contentCoverColour = 0xccffffff.toInt()
-	var contentCoverEnabled = true
-	private var isShown: Boolean = true
-	override fun isShown() = isShown
 
 	private var speedDialMenuOpen = false
 	private val speedDialMenuViews = ArrayList<ViewGroup>()
@@ -74,6 +77,49 @@ class FloatingActionButton: RelativeLayout {
 	constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int):
 			super(context, attrs, defStyleAttr) {
 		initView(attrs)
+	}
+
+	override fun onSaveInstanceState(): Parcelable {
+		val state = Bundle()
+		state.putParcelable("_super", super.onSaveInstanceState())
+
+		state.putBoolean("isShown", isShown)
+		state.putInt("buttonPosition", buttonPosition)
+		state.putInt("buttonBackgroundColour", buttonBackgroundColour)
+		state.putInt("buttonIconResource", buttonIconResource)
+		state.putInt("contentCoverColour", contentCoverColour)
+		state.putBoolean("contentCoverEnabled", contentCoverEnabled)
+
+		return state
+	}
+
+	override fun onRestoreInstanceState(state: Parcelable?) {
+		if (state is Bundle) {
+			isShown = state.getBoolean("isShown", isShown)
+			if (isShown) {
+				show()
+			} else {
+				hide(true)
+			}
+
+			buttonPosition = state.getInt("buttonPosition", buttonPosition)
+			setButtonPosition(buttonPosition)
+
+			buttonBackgroundColour = state.getInt("buttonBackgroundColour", buttonBackgroundColour)
+			setButtonBackgroundColour(buttonBackgroundColour)
+
+			buttonIconResource = state.getInt("buttonIconResource", buttonIconResource)
+			setButtonIconResource(buttonIconResource)
+
+			contentCoverColour = state.getInt("contentCoverColour", contentCoverColour)
+			setContentCoverColour(contentCoverColour)
+
+			contentCoverEnabled = state.getBoolean("contentCoverEnabled", contentCoverEnabled)
+
+			super.onRestoreInstanceState(state.getParcelable("_super"))
+		} else {
+			super.onRestoreInstanceState(state)
+		}
 	}
 
 	private fun initView(attrs: AttributeSet?) {
@@ -245,8 +291,8 @@ class FloatingActionButton: RelativeLayout {
 				})
 	}
 
-	fun hide() {
-		if (!isShown) {
+	fun hide(immediate: Boolean = false) {
+		if (!isShown && !immediate) {
 			return
 		}
 
@@ -254,7 +300,7 @@ class FloatingActionButton: RelativeLayout {
 		fab_card.animate()
 				.scaleX(0f)
 				.scaleY(0f)
-				.setDuration(HIDE_SHOW_ANIMATION_DURATION)
+				.setDuration(if (immediate) 0L else HIDE_SHOW_ANIMATION_DURATION)
 				.setListener(object: AnimatorListenerAdapter() {
 					override fun onAnimationEnd(animation: Animator) {
 						fab_card.visibility = View.GONE
