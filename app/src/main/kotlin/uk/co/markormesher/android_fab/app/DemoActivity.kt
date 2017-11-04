@@ -1,13 +1,19 @@
 package uk.co.markormesher.android_fab.app
 
 import android.content.Context
-import android.os.Bundle
+import android.os.*
+import android.support.annotation.StringRes
 import android.support.v7.app.AppCompatActivity
+import android.view.KeyEvent
+import android.view.Menu
+import android.view.MenuItem
+import android.view.MotionEvent
 import android.widget.Toast
 import kotlinx.android.synthetic.main.demo_activity.*
 import uk.co.markormesher.android_fab.FloatingActionButton
 import uk.co.markormesher.android_fab.SpeedDialMenuAdapter
 import uk.co.markormesher.android_fab.SpeedDialMenuItem
+import java.util.concurrent.ThreadLocalRandom
 
 class DemoActivity: AppCompatActivity() {
 
@@ -56,6 +62,16 @@ class DemoActivity: AppCompatActivity() {
 	private var activeToast: Toast? = null
 	private var clickCounter = 0
 
+	private var stressTestActive = false
+	private val stressTestHandler = Handler(Looper.getMainLooper())
+	private val random by lazy {
+		if (Build.VERSION.SDK_INT >= 21) {
+			ThreadLocalRandom.current()
+		} else {
+			throw UninitializedPropertyAccessException()
+		}
+	}
+
 	private val speedDialMenuAdapter = object: SpeedDialMenuAdapter() {
 		override fun getCount(): Int = speedDialSizeOptions[speedDialSize].second
 
@@ -93,6 +109,10 @@ class DemoActivity: AppCompatActivity() {
 		updateButtonBackgroundColour()
 		updateButtonIcon()
 		updateSpeedDialSize()
+
+		if (stressTestActive) {
+			startStressTest()
+		}
 	}
 
 	override fun onSaveInstanceState(outState: Bundle) {
@@ -102,6 +122,7 @@ class DemoActivity: AppCompatActivity() {
 		outState.putInt("buttonBackgroundColour", buttonBackgroundColour)
 		outState.putInt("buttonIcon", buttonIcon)
 		outState.putInt("speedDialSize", speedDialSize)
+		outState.putBoolean("stressTestActive", stressTestActive)
 	}
 
 	private fun restoreSavedInstanceState(savedInstanceState: Bundle?) {
@@ -111,7 +132,31 @@ class DemoActivity: AppCompatActivity() {
 			buttonBackgroundColour = savedInstanceState.getInt("buttonBackgroundColour")
 			buttonIcon = savedInstanceState.getInt("buttonIcon")
 			speedDialSize = savedInstanceState.getInt("speedDialSize")
+			stressTestActive = savedInstanceState.getBoolean("stressTestActive")
 		}
+	}
+
+	override fun onCreateOptionsMenu(menu: Menu): Boolean {
+		menuInflater.inflate(R.menu.demo_activity, menu)
+		return true
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+		if (item?.itemId == R.id.stress_test) {
+			startStressTest()
+			return true
+		}
+
+		return false
+	}
+
+	override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+		if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+			stressTestActive = false
+			return true
+		}
+
+		return super.onKeyDown(keyCode, event)
 	}
 
 	private fun initControls() {
@@ -161,6 +206,10 @@ class DemoActivity: AppCompatActivity() {
 		}
 	}
 
+	private fun toast(@StringRes str: Int) {
+		toast(getString(str))
+	}
+
 	private fun toast(str: String) {
 		activeToast?.cancel()
 		activeToast = Toast.makeText(this, str, Toast.LENGTH_SHORT)
@@ -194,5 +243,35 @@ class DemoActivity: AppCompatActivity() {
 	private fun updateSpeedDialSize() {
 		speed_dial_size.text = speedDialSizeOptions[speedDialSize].first
 		fab.rebuildSpeedDialMenu()
+	}
+
+	private fun startStressTest() {
+		stressTestActive = true
+		if (Build.VERSION.SDK_INT < 24) {
+			toast(R.string.stress_test_version_error)
+			return
+		}
+		toast(R.string.stress_test_exit_msg)
+		stressTestHandler.postDelayed({ doStressTestEvent() }, 1000)
+	}
+
+	private fun doStressTestEvent() {
+		if (!stressTestActive) return
+
+		if (Build.VERSION.SDK_INT >= 24) {
+			val x = random.nextInt(root_view.width).toFloat()
+			val y = random.nextInt(root_view.height).toFloat()
+			val now = SystemClock.uptimeMillis()
+
+			val downTouch = MotionEvent.obtain(now, now, MotionEvent.ACTION_DOWN, x, y, 0)
+			root_view.dispatchTouchEvent(downTouch)
+			downTouch.recycle()
+
+			val upTouch = MotionEvent.obtain(now, now, MotionEvent.ACTION_UP, x, y, 0)
+			root_view.dispatchTouchEvent(upTouch)
+			upTouch.recycle()
+
+			stressTestHandler.postDelayed({ doStressTestEvent() }, 25)
+		}
 	}
 }

@@ -16,6 +16,10 @@
     <string name="btn_prev">Prev</string>
     <string name="btn_next">Next</string>
 
+	<string name="stress_test_menu_option">Stress test</string>
+	<string name="stress_test_exit_msg">Press volume down to end test</string>
+	<string name="stress_test_version_error">Stress testing supported on SDK 24+</string>
+
     <!-- Styles -->
 
     <style name="global_theme" parent="Theme.AppCompat.Light.DarkActionBar">
