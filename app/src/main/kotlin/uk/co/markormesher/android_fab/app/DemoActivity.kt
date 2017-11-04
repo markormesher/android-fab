@@ -244,9 +244,9 @@ class DemoActivity: AppCompatActivity() {
 	private fun updateButtonShown() {
 		button_shown.text = buttonShownOptions[buttonShown].first
 		if (buttonShownOptions[buttonShown].second) {
-			fab.showButton()
+			fab.show()
 		} else {
-			fab.hideButton()
+			fab.hide()
 		}
 	}
 

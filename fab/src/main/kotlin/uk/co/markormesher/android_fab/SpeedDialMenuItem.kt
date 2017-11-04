@@ -6,6 +6,11 @@ import android.os.Build
 import android.support.annotation.DrawableRes
 import android.support.annotation.StringRes
 
+/**
+ * Represents an item to display in the speed-dial menu.
+ * Each menu item is a pairing of an icon and a label.
+ * This class contains constructors to create this pairing using `Drawable`s, `String`s and corresponding resource IDs.
+ */
 class SpeedDialMenuItem(private val context: Context) {
 
 	private var icon: Drawable? = null

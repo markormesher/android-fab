@@ -27,11 +27,12 @@ class FloatingActionButton: RelativeLayout {
 
 	private val layoutInflater by lazy { LayoutInflater.from(context) }
 
-	private var buttonShown = true
 	private var buttonPosition = POSITION_BOTTOM.or(POSITION_END)
 	private var buttonBackgroundColour = 0xff0099ff.toInt()
 	private var buttonIconResource = 0
 	private var onClickListener: OnClickListener? = null
+	private var speedDialMenuOpenListener: SpeedDialMenuOpenListener? = null
+	private var speedDialMenuCloseListener: SpeedDialMenuCloseListener? = null
 	private var contentCoverColour = 0xccffffff.toInt()
 
 	private var speedDialMenuOpen = false
@@ -43,6 +44,8 @@ class FloatingActionButton: RelativeLayout {
 		}
 
 	var contentCoverEnabled = true
+	private var isShown: Boolean = true
+	override fun isShown() = isShown
 
 	private var busyAnimatingFabIconRotation = false
 	private var busyAnimatingContentCover = false
@@ -75,7 +78,6 @@ class FloatingActionButton: RelativeLayout {
 	}
 
 	private fun initView(attrs: AttributeSet?) {
-		isSaveEnabled = true
 		inflate(context, R.layout.fab_container, this)
 		applyAttributes(attrs)
 		applyListeners()
@@ -103,15 +105,6 @@ class FloatingActionButton: RelativeLayout {
 				onClickListener?.onClick(this)
 			}
 		}
-	}
-
-	fun setButtonPosition(position: Int) {
-		this.buttonPosition = position
-
-		setViewLayoutParams(fab_card)
-		setViewLayoutParams(content_cover)
-		speedDialMenuViews.forEach { setViewLayoutParams(it) }
-		speedDialMenuViews.forEach { setSpeedDialMenuItemViewOrder(it) }
 	}
 
 	private fun setViewLayoutParams(view: View) {
@@ -178,6 +171,15 @@ class FloatingActionButton: RelativeLayout {
 		}
 	}
 
+	fun setButtonPosition(position: Int) {
+		this.buttonPosition = position
+
+		setViewLayoutParams(fab_card)
+		setViewLayoutParams(content_cover)
+		speedDialMenuViews.forEach { setViewLayoutParams(it) }
+		speedDialMenuViews.forEach { setSpeedDialMenuItemViewOrder(it) }
+	}
+
 	fun setButtonBackgroundColour(@ColorInt colour: Int) {
 		this.buttonBackgroundColour = colour
 		if (Build.VERSION.SDK_INT >= 21) {
@@ -198,6 +200,68 @@ class FloatingActionButton: RelativeLayout {
 
 	override fun setOnClickListener(listener: OnClickListener?) {
 		onClickListener = listener
+	}
+
+	fun openSpeedDialMenu() {
+		if (!speedDialMenuOpen) {
+			toggleSpeedDialMenu()
+		}
+	}
+
+	fun closeSpeedDialMenu() {
+		if (speedDialMenuOpen) {
+			toggleSpeedDialMenu()
+		}
+	}
+
+	fun setOnSpeedMenuDialOpenListener(listener: SpeedDialMenuOpenListener) {
+		speedDialMenuOpenListener = listener
+	}
+
+	fun setOnSpeedDialMenuCloseListener(listener: SpeedDialMenuCloseListener) {
+		speedDialMenuCloseListener = listener
+	}
+
+	fun setContentCoverColour(@ColorInt colour: Int) {
+		contentCoverColour = colour
+		(content_cover.background as GradientDrawable).setColor(colour)
+	}
+
+	fun show() {
+		if (isShown) {
+			return
+		}
+
+		closeSpeedDialMenu()
+		fab_card.visibility = View.VISIBLE
+		fab_card.clearAnimation()
+		fab_card.animate()
+				.scaleX(1f)
+				.scaleY(1f)
+				.setDuration(HIDE_SHOW_ANIMATION_DURATION)
+				.setListener(object: AnimatorListenerAdapter() {
+					override fun onAnimationEnd(animation: Animator) {
+						isShown = true
+					}
+				})
+	}
+
+	fun hide() {
+		if (!isShown) {
+			return
+		}
+
+		fab_card.clearAnimation()
+		fab_card.animate()
+				.scaleX(0f)
+				.scaleY(0f)
+				.setDuration(HIDE_SHOW_ANIMATION_DURATION)
+				.setListener(object: AnimatorListenerAdapter() {
+					override fun onAnimationEnd(animation: Animator) {
+						fab_card.visibility = View.GONE
+						isShown = false
+					}
+				})
 	}
 
 	fun rebuildSpeedDialMenu() {
@@ -248,60 +312,6 @@ class FloatingActionButton: RelativeLayout {
 		}
 	}
 
-	fun showButton() {
-		if (buttonShown) {
-			return
-		}
-
-		closeSpeedDialMenu()
-		fab_card.visibility = View.VISIBLE
-		fab_card.clearAnimation()
-		fab_card.animate()
-				.scaleX(1f)
-				.scaleY(1f)
-				.setDuration(HIDE_SHOW_ANIMATION_DURATION)
-				.setListener(object: AnimatorListenerAdapter() {
-					override fun onAnimationEnd(animation: Animator) {
-						buttonShown = true
-					}
-				})
-	}
-
-	fun hideButton() {
-		if (!buttonShown) {
-			return
-		}
-
-		fab_card.clearAnimation()
-		fab_card.animate()
-				.scaleX(0f)
-				.scaleY(0f)
-				.setDuration(HIDE_SHOW_ANIMATION_DURATION)
-				.setListener(object: AnimatorListenerAdapter() {
-					override fun onAnimationEnd(animation: Animator) {
-						fab_card.visibility = View.GONE
-						buttonShown = false
-					}
-				})
-	}
-
-	fun openSpeedDialMenu() {
-		if (!speedDialMenuOpen) {
-			toggleSpeedDialMenu()
-		}
-	}
-
-	fun closeSpeedDialMenu() {
-		if (speedDialMenuOpen) {
-			toggleSpeedDialMenu()
-		}
-	}
-
-	fun setContentCoverColour(@ColorInt colour: Int) {
-		contentCoverColour = colour
-		(content_cover.background as GradientDrawable).setColor(colour)
-	}
-
 	private fun toggleSpeedDialMenu() {
 		if (isBusyAnimating) {
 			return
@@ -309,7 +319,11 @@ class FloatingActionButton: RelativeLayout {
 
 		speedDialMenuOpen = !speedDialMenuOpen
 
-		// TODO: speed-dial listener
+		if (speedDialMenuOpen) {
+			speedDialMenuOpenListener?.onOpen(this)
+		} else {
+			speedDialMenuCloseListener?.onClose(this)
+		}
 
 		animateFabIconRotation()
 		animateContentCover()
