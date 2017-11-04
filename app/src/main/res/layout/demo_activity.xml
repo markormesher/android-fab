@@ -245,6 +245,52 @@
 
 		</TableRow>
 
+		<TableRow
+				android:gravity="center_vertical"
+				>
+
+			<Button
+					android:id="@+id/set_content_cover_colour_prev"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/btn_prev"
+					style="@style/Widget.AppCompat.Button.Small"
+					/>
+
+			<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					>
+
+				<TextView
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:text="@string/option_content_cover_colour"
+						android:gravity="center"
+						style="@style/TextAppearance.AppCompat.Body1"
+						/>
+
+				<TextView
+						android:id="@+id/content_cover_colour"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:gravity="center"
+						style="@style/TextAppearance.AppCompat.Small"
+						/>
+
+			</LinearLayout>
+
+			<Button
+					android:id="@+id/set_content_cover_colour_next"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/btn_next"
+					style="@style/Widget.AppCompat.Button.Small"
+					/>
+
+		</TableRow>
+
 	</TableLayout>
 
 	<uk.co.markormesher.android_fab.FloatingActionButton

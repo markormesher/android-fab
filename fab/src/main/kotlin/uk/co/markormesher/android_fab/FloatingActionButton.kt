@@ -32,6 +32,7 @@ class FloatingActionButton: RelativeLayout {
 	private var buttonBackgroundColour = 0xff0099ff.toInt()
 	private var buttonIconResource = 0
 	private var onClickListener: OnClickListener? = null
+	private var contentCoverColour = 0xccffffff.toInt()
 
 	private var speedDialMenuOpen = false
 	private val speedDialMenuViews = ArrayList<ViewGroup>()
@@ -294,6 +295,11 @@ class FloatingActionButton: RelativeLayout {
 		if (speedDialMenuOpen) {
 			toggleSpeedDialMenu()
 		}
+	}
+
+	fun setContentCoverColour(@ColorInt colour: Int) {
+		contentCoverColour = colour
+		(content_cover.background as GradientDrawable).setColor(colour)
 	}
 
 	private fun toggleSpeedDialMenu() {

@@ -10,6 +10,7 @@
 	<string name="option_button_shown">Show Button:</string>
 	<string name="option_button_position">Button Position:</string>
 	<string name="option_button_background_colour">Button BG Colour:</string>
+	<string name="option_content_cover_colour">Content Cover Colour:</string>
 	<string name="option_button_icon">Button Icon:</string>
 	<string name="option_speed_dial_size">Speed-Dial Size:</string>
 

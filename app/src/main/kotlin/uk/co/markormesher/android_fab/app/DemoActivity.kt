@@ -53,11 +53,22 @@ class DemoActivity: AppCompatActivity() {
 			Pair("4 items", 4)
 	)
 
+	private val contentCoverColourOptions = arrayOf(
+			Pair("Faint White", 0xccffffff.toInt()),
+			Pair("Full White", 0xffffffff.toInt()),
+			Pair("Faint Blue", 0xcc0099ff.toInt()),
+			Pair("Faint Purple", 0xcc9900ff.toInt()),
+			Pair("Faint Teal", 0xcc00ff99.toInt()),
+			Pair("Faint Pink", 0xccff0099.toInt()),
+			Pair("Faint Orange", 0xccff9900.toInt())
+	)
+
 	private var buttonShown = 0
 	private var buttonPosition = 0
 	private var buttonBackgroundColour = 0
 	private var buttonIcon = 0
 	private var speedDialSize = 0
+	private var contentCoverColour = 0
 
 	private var activeToast: Toast? = null
 	private var clickCounter = 0
@@ -89,7 +100,7 @@ class DemoActivity: AppCompatActivity() {
 		}
 
 		// rotate the "+" icon only
-		override fun fabRotationDegrees(): Float = if (buttonIcon == 0) 45F else 0F
+		override fun fabRotationDegrees(): Float = if (buttonIcon == 0) 135F else 0F
 	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,6 +120,7 @@ class DemoActivity: AppCompatActivity() {
 		updateButtonBackgroundColour()
 		updateButtonIcon()
 		updateSpeedDialSize()
+		updateContentCoverColour()
 
 		if (stressTestActive) {
 			startStressTest()
@@ -122,6 +134,8 @@ class DemoActivity: AppCompatActivity() {
 		outState.putInt("buttonBackgroundColour", buttonBackgroundColour)
 		outState.putInt("buttonIcon", buttonIcon)
 		outState.putInt("speedDialSize", speedDialSize)
+		outState.putInt("contentCoverColour", contentCoverColour)
+
 		outState.putBoolean("stressTestActive", stressTestActive)
 	}
 
@@ -132,6 +146,8 @@ class DemoActivity: AppCompatActivity() {
 			buttonBackgroundColour = savedInstanceState.getInt("buttonBackgroundColour")
 			buttonIcon = savedInstanceState.getInt("buttonIcon")
 			speedDialSize = savedInstanceState.getInt("speedDialSize")
+			contentCoverColour = savedInstanceState.getInt("contentCoverColour")
+
 			stressTestActive = savedInstanceState.getBoolean("stressTestActive")
 		}
 	}
@@ -204,6 +220,15 @@ class DemoActivity: AppCompatActivity() {
 			speedDialSize = (speedDialSize + speedDialSizeOptions.size - 1).rem(speedDialSizeOptions.size)
 			updateSpeedDialSize()
 		}
+
+		set_content_cover_colour_next.setOnClickListener {
+			contentCoverColour = (contentCoverColour + 1).rem(contentCoverColourOptions.size)
+			updateContentCoverColour()
+		}
+		set_content_cover_colour_prev.setOnClickListener {
+			contentCoverColour = (contentCoverColour + contentCoverColourOptions.size - 1).rem(contentCoverColourOptions.size)
+			updateContentCoverColour()
+		}
 	}
 
 	private fun toast(@StringRes str: Int) {
@@ -243,6 +268,11 @@ class DemoActivity: AppCompatActivity() {
 	private fun updateSpeedDialSize() {
 		speed_dial_size.text = speedDialSizeOptions[speedDialSize].first
 		fab.rebuildSpeedDialMenu()
+	}
+
+	private fun updateContentCoverColour() {
+		content_cover_colour.text = contentCoverColourOptions[contentCoverColour].first
+		fab.setContentCoverColour(contentCoverColourOptions[contentCoverColour].second)
 	}
 
 	private fun startStressTest() {
