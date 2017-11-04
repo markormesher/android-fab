@@ -127,21 +127,31 @@ A click listener can be added to the FAB in the same way as any other button. Th
 		// ...
 	}
 
-:warning: See the note below on [click action priority](#note-click-action-priority).
-
-:x: DOCS UP TO DATE UP TO THIS POINT.
-
 ### Speed-Dial Menu
 
 The speed-dial menu is enabled by creating a class that extends `SpeedDialMenuAdapter` and passing it to `fab.setSpeedDialMenuAdapter(...)`. The adapter class methods are [documented in-situ](fab/src/main/java/uk/co/markormesher/android_fab/SpeedDialMenuAdapter.kt).
 
-:warning: See the note below on [click action priority](#note-click-action-priority).
-
 ### Speed-Dial Menu Content Cover
 
-The colour to be used for the layer that obscures content when the speed-dial menu is opened should be set with `fab.setContentCoverColour(...)`, passing in an aRGB colour value (e.g. `0x99ff9900` for a semi-transparent dark orange). Note that this method does **not** take a colour resource ID, so passing in `R.color.some_colour_name` will not work.
+The content cover expands from the FAB when the speed-dial menu is opened to obscure the rest of the app content and emphasise the menu. It also prevents controls in the rest of the app from being clicked on while the speed-dial menu is open; tapping outside the menu while it is open and the cover is displayed will cause the menu to close.
 
-The cover can be enabled/disabled entirely using `fab.setContentCoverEnabled(...)`. It is enabled by default.
+The colour of the content cover can be set programmatically with `fab.setContentCoverColour(...)` using an aRGB colour value (e.g. `0x99ff9900` for a semi-transparent dark orange). Note that this method does **not** take a colour resource ID, so passing in `R.color.some_colour_name` will not work.
+
+	// Java
+	fab.setContentCoverColour(0xffff9900);
+	
+	// Kotlin
+	fab.setContentCoverColour(0xffff9900.toInt())
+
+The cover can be enabled/disabled programmatically with `fab.setContentCoverEnabled(...)`.
+
+	// Java
+	fab.setContentCoverEnabled(true);
+	
+	// Kotlin
+	fab.setContentCoverEnabled(true)
+
+:x: DOCS UP TO DATE UP TO THIS POINT.
 
 ### Speed-Dial Menu State Change Listeners
 
