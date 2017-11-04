@@ -129,7 +129,7 @@ A click listener can be added to the FAB in the same way as any other button. Th
 
 ### Speed-Dial Menu
 
-The speed-dial menu is enabled by creating a class that extends `SpeedDialMenuAdapter` and passing it to `fab.setSpeedDialMenuAdapter(...)`. The adapter class methods are [documented in-situ](fab/src/main/java/uk/co/markormesher/android_fab/SpeedDialMenuAdapter.kt).
+The speed-dial menu is enabled by creating a class that extends `SpeedDialMenuAdapter` and passing it to `fab.setSpeedDialMenuAdapter(...)`. The adapter class methods are [documented in-situ](fab/src/main/kotlin/uk/co/markormesher/android_fab/SpeedDialMenuAdapter.kt).
 
 ### Speed-Dial Menu Content Cover
 
