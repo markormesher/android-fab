@@ -170,8 +170,6 @@ State change events are fired when the speed-dial menu opens or closes, which ca
 		// ...
 	}
 
-:x: DOCS UP TO DATE UP TO THIS POINT.
-
 ### Show/Hide Controls
 
 The FAB can be hidden and shown with the `fab.hide()` and `fab.show()` methods, and the method `fab.isShown()` will return a boolean indicating the current state. These methods animate the FAB in and out of visibility. If the speed-dial menu is open when `.hide()` is called it will be closed.  
