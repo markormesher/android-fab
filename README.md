@@ -39,7 +39,7 @@ See [app/proguard-rules.pro](app/proguard-rules.pro) for an example.
 
 ## Usage & Customisation
 
-**Note:** all of the instructions below assume that the Floating Action Button is referenced by the variable `fab`, i.e.
+**Note:** all of the instructions below assume that the FAB is referenced by the variable `fab`, i.e.
 
 	// Java
     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -95,7 +95,7 @@ The icon displayed in the centre of the FAB can be set via XML using a `Drawable
 
 ### FAB Background Colour
 
-The background colour of the FAB can be set via XML using a colour reference or programmatically with `fab.setButtonBackgroundColour(...)` using an aRGB colour value (e.g. `0xffff9900` for dark orange). Note that this method does **not** take a colour resource ID, so passing in `R.color.some_colour_name` will not work.
+The background colour of the FAB can be set via XML using a colour reference or programmatically with `fab.setButtonBackgroundColour(...)` using an aRGB colour value (e.g. `0xffff9900` for dark orange). Note that the second method does **not** take a colour resource ID, so passing in `R.color.some_colour_name` will not work.
 
 	// Java
 	fab.setButtonBackgroundColour(0xffff9900);
@@ -133,9 +133,7 @@ A click listener can be added to the FAB in the same way as any other button. Th
 
 ### Speed-Dial Menu
 
-The speed-dial menu can be enabled by creating a class that extends `SpeedDialMenuAdapter` and then calling `setSpeedDialMenuAdapter(...)` on the FAB.
-
-The adapter class methods are [fab/src/main/java/uk/co/markormesher/android_fab/SpeedDialMenuAdapter.kt](documented in-situ).
+The speed-dial menu is enabled by creating a class that extends `SpeedDialMenuAdapter` and passing it to `fab.setSpeedDialMenuAdapter(...)`. The adapter class methods are [documented in-situ](fab/src/main/java/uk/co/markormesher/android_fab/SpeedDialMenuAdapter.kt).
 
 :warning: See the note below on [click action priority](#note-click-action-priority).
 
