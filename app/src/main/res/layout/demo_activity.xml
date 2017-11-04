@@ -315,9 +315,11 @@
 
 	<uk.co.markormesher.android_fab.FloatingActionButton
 			android:id="@+id/fab"
-			app:buttonPosition="bottom|end"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
+			app:buttonPosition="bottom|end"
+			app:buttonIcon="@drawable/ic_add"
+			app:buttonBackgroundColour="@color/cardview_dark_background"
 			/>
 
 </RelativeLayout>

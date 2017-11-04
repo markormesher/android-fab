@@ -59,7 +59,7 @@ The `FloatingActionButton` view must be placed at the **root** of your layout, *
 
 ### FAB Position
 
-The FAB can be positioned in any of the four corners of the activity. The default is the bottom-end corner.
+The FAB can be positioned in any of the four corners of the activity via XML or with `fab.setButtonPosition(...)`. The default position is the bottom-end corner.
 
 	// Java
 	fab.setButtonPosition(POSITION_BOTTOM | POSITION_END);
@@ -74,23 +74,62 @@ The FAB can be positioned in any of the four corners of the activity. The defaul
 		app:buttonPosition="bottom|end"
 		/>
 		
-Note: the FAB is aware of text-direction (right-to-left or left-to-right) and adjusts the meaning of "start" and "end" positions accordingly. This functionality can be overridden using the named constants for left and right.
-
-:x: DOCS UP TO DATE UP TO THIS POINT.
+The FAB is aware of text-direction (right-to-left or left-to-right) and adjusts the meaning of "start" and "end" positions accordingly. This functionality can be overridden using the named constants for left and right.
 
 ### FAB Icon
 
-The icon displayed in the centre of the FAB should be set with `fab.setButtonIconResource(...)`, passing in the `Drawable` resource ID to use. This `View` will be centred in a 24dp x 24dp view group, as per the Android Material Design specs.
+The icon displayed in the centre of the FAB can be set via XML using a `Drawable` reference or with `fab.setButtonIconResource(...)` using a `Drawable` resource ID. The icon will be centred in a 24dp x 24dp view group, as per the Android Material Design specs.
+
+	// Java
+	fab.setButtonIconResource(R.drawable.ic_add);
+	
+	// Kotlin
+	fab.setButtonIconResource(R.drawable.ic_add)
+	
+	// XML
+	<uk.co.markormesher.android_fab.FloatingActionButton
+		xmlns:app="http://schemas.android.com/apk/res-auto"
+		...
+		app:buttonIcon="@drawable/ic_add"
+		/>
 
 ### FAB Background Colour
 
-The background colour to be used for the FAB should be set with `fab.setButtonBackgroundColour(...)`, passing in an aRGB colour value (e.g. `0xffff9900` for dark orange). Note that this method does **not** take a colour resource ID, so passing in `R.color.some_colour_name` will not work.
+The background colour of the FAB can be set via XML using a colour reference or programmatically with `fab.setButtonBackgroundColour(...)` using an aRGB colour value (e.g. `0xffff9900` for dark orange). Note that this method does **not** take a colour resource ID, so passing in `R.color.some_colour_name` will not work.
+
+	// Java
+	fab.setButtonBackgroundColour(0xffff9900);
+	
+	// Kotlin
+	fab.setButtonBackgroundColour(0xffff9900.toInt())
+	
+	// XML
+	<uk.co.markormesher.android_fab.FloatingActionButton
+		xmlns:app="http://schemas.android.com/apk/res-auto"
+		...
+		app:buttonBackgroundColour="@color/fab_colour"
+		/>
 
 ### FAB Click Listener
 
-A click listener can be added to the FAB in the same way as any other button. The view passed in the callback can be safely cast to `FloatingActionButton`.
+A click listener can be added to the FAB in the same way as any other button. The view passed to the listener can be safely cast to a `FloatingActionButton`.
+
+	// Java
+	fab.setOnClickListener(new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			// ...
+		}
+	});
+	
+	// Kotlin
+	fab.setOnClickListener { v ->
+		// ...
+	}
 
 :warning: See the note below on [click action priority](#note-click-action-priority).
+
+:x: DOCS UP TO DATE UP TO THIS POINT.
 
 ### Speed-Dial Menu
 
