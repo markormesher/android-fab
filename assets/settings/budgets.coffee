@@ -1,7 +1,7 @@
 getActionsHtml = (id) ->
 	rawHtml = """
 		<div class="btn-group">
-			<button class="btn btn-mini btn-default edit-btn" data-id="__ID__"><i class="fa fa-fw fa-pencil"></i></button>
+			<a href="/settings/budgets/edit/__ID__" class="btn btn-mini btn-default edit-btn" data-id="__ID__"><i class="fa fa-fw fa-pencil"></i></a>
 			<button class="btn btn-mini btn-default delete-btn" data-id="__ID__"><i class="fa fa-fw fa-trash"></i></button>
 		</div>
 	"""
