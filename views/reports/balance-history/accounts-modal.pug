@@ -18,10 +18,12 @@ div#accounts-modal.modal.fade(tabindex = -1)
 						if (groups[group].length > 0)
 							p(class = firstGroup ? 'no-margin' : 'top-margin'): strong= groupTitles[group]
 							for a in groups[group]
-								div.checkbox(style = 'width: 49%; display: inline-block;'): label
+								div.checkbox(style = 'width: 49%; display: inline-block;', class = !a.active ? 'text-muted' : ''): label
 									input(type = 'checkbox', value = a.id, checked = true)
-									=a.account_name
 									|  #{a.name}
+									if (!a.active)
+										|  (inactive)
+
 						- firstGroup = false
 
 			div.modal-footer

@@ -10,7 +10,7 @@ router = express.Router()
 router.get('/', auth.checkAndRefuse, (req, res, next) ->
 	async.parallel(
 		{
-			'accounts': (callback) -> AccountManager.getAccounts(res.locals.user, true, (err, result) -> callback(err, result))
+			'accounts': (callback) -> AccountManager.getAccounts(res.locals.user, false, false, (err, result) -> callback(err, result))
 			'categories': (callback) -> CategoryManager.getCategories(res.locals.user, true, (err, result) -> callback(err, result))
 			'payees': (callback) -> TransactionManager.getUniquePayees(res.locals.user, (err, result) -> callback(err, result))
 		},

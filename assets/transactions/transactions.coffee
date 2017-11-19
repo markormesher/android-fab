@@ -1,5 +1,5 @@
-getActionsHtml = (id, active) ->
-	disabled = if (active) then '' else ' disabled'
+getActionsHtml = (id, deleted) ->
+	disabled = if (deleted) then 'disabled' else ''
 	out = '<div class="text-center">'
 	out += '<div class="btn-group">'
 	out += '<button class="btn btn-mini btn-default delete-btn" data-id="' + id + '" ' + disabled + '><i class="fa fa-fw fa-trash"></i></button>'
@@ -66,7 +66,7 @@ initDataTable = () ->
 						d['payee'] + (if (d.memo != null && d.memo != '') then " <i class=\"fa fa-fw fa-info-circle text-muted\" title=\"#{d.memo}\"></i>" else '')
 						window.formatters.formatCurrency(d['amount'])
 						d['category_name']
-						getActionsHtml(d['id'], d['account_active'])
+						getActionsHtml(d['id'], d['account_deleted'])
 					])
 				return displayData
 		}

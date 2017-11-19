@@ -6,12 +6,12 @@ BudgetManager = rfr('./managers/budgets')
 
 manager = {
 
-	getActiveAccountBalances: (user, callback) ->
+	getAccountBalances: (user, callback) ->
 		mysql.getConnection((conn) -> conn.query(
 			"""
 			SELECT account.id AS account_id, account.name AS account_name, account.type AS account_type, SUM(transaction.amount) AS balance
 			FROM transaction LEFT JOIN account ON transaction.account_id = account.id
-			WHERE account.active = 1 AND account.owner = ?
+			WHERE account.deleted = false AND account.owner = ?
 			GROUP BY transaction.account_id ORDER BY account.display_order ASC;
 			"""
 			user.id,
@@ -33,7 +33,7 @@ manager = {
 				AND transaction.effective_date >= budget.start_date AND transaction.effective_date <= budget.end_date
 			), 0) * -1 AS spend
 			FROM budget JOIN category ON category.id = budget.category_id
-			WHERE budget.owner = ? AND budget.active = true AND budget.start_date <= DATE(NOW()) AND budget.end_date >= DATE(NOW())
+			WHERE budget.owner = ? AND budget.deleted = false AND budget.start_date <= DATE(NOW()) AND budget.end_date >= DATE(NOW())
 			ORDER BY budget.start_date DESC, category.name ASC;
 			"""
 			user.id,
@@ -252,7 +252,7 @@ manager = {
 				AND transaction.effective_date >= budget.start_date AND transaction.effective_date <= budget.end_date
 			), 0) * -1 AS spend
 			FROM budget JOIN category ON category.id = budget.category_id
-			WHERE budget.owner = ? AND budget.active = true AND (NOT budget.end_date < ? AND NOT budget.start_date > ?)
+			WHERE budget.owner = ? AND budget.deleted = false AND (NOT budget.end_date < ? AND NOT budget.start_date > ?)
 			GROUP BY budget.id
 			ORDER BY category.name ASC, budget.start_date ASC;
 			""",

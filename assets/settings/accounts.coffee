@@ -1,16 +1,22 @@
-actionsHtml = """
-<div class="btn-group">
-	<button class="btn btn-mini btn-default delete-btn" data-id="__ID__"><i class="fa fa-fw fa-trash"></i></button>
-	<button class="btn btn-mini btn-default edit-btn" data-id="__ID__"><i class="fa fa-fw fa-pencil"></i></button>
-</div>
-"""
+getActionsHtml = (id, active) ->
+	toggleIcon = if (active) then 'fa-toggle-on' else 'fa-toggle-off'
+	rawHtml = """
+		<div class="btn-group">
+			<button class="btn btn-mini btn-default edit-btn" data-id="__ID__"><i class="fa fa-fw fa-pencil"></i></button>
+			<button class="btn btn-mini btn-default active-toggle-btn" data-id="__ID__"><i class="fa fa-fw __TOGGLE_ICON__"></i></button>
+			<button class="btn btn-mini btn-default delete-btn" data-id="__ID__"><i class="fa fa-fw fa-trash"></i></button>
+		</div>
+	"""
+	return rawHtml.replace(///__ID__///g, id).replace(///__TOGGLE_ICON__///g, toggleIcon)
 
-orderingHtml = """
-<div class="btn-group">
-	<button class="btn btn-mini btn-default move-up-btn" data-id="__ID__"><i class="fa fa-fw fa-angle-up"></i></button>
-	<button class="btn btn-mini btn-default move-down-btn" data-id="__ID__"><i class="fa fa-fw fa-angle-down"></i></button>
-</div>
-"""
+getOrderingHtml = (id) ->
+	rawHtml = """
+		<div class="btn-group">
+			<button class="btn btn-mini btn-default move-up-btn" data-id="__ID__"><i class="fa fa-fw fa-angle-up"></i></button>
+			<button class="btn btn-mini btn-default move-down-btn" data-id="__ID__"><i class="fa fa-fw fa-angle-down"></i></button>
+		</div>
+	"""
+	return rawHtml.replace(///__ID__///g, id)
 
 typeNames = {
 	'current': 'Current Account'
@@ -49,8 +55,8 @@ initDataTable = () ->
 					displayData.push([
 						d['name']
 						typeNames[d['type']]
-						actionsHtml.replace(///__ID__///g, d['id'])
-						orderingHtml.replace(///__ID__///g, d['id'])
+						getActionsHtml(d['id'], d['active'])
+						getOrderingHtml(d['id'])
 					])
 				return displayData
 		}
@@ -60,6 +66,7 @@ initDataTable = () ->
 
 onTableReload = () ->
 	$('.delete-btn').click(() -> deleteAccount($(this), $(this).data('id')))
+	$('.active-toggle-btn').click(() -> toggleAccountActive($(this), $(this).data('id')))
 	$('.edit-btn').click(() -> startEditAccount($(this).data('id')))
 	rows = $('#accounts tbody tr')
 	rows.first().find('.move-up-btn').prop('disabled', true)
@@ -115,6 +122,23 @@ setEditorModalLock = (locked) ->
 	else
 		editorModal['save-btn'].find('i').addClass('fa-save').removeClass('fa-circle-o-notch').removeClass('fa-spin')
 
+toggleAccountActive = (btn, id) ->
+	if (btn.hasClass('btn-danger'))
+		btn.find('i').removeClass('fa-toggle-on').removeClass('fa-toggle-off').addClass('fa-circle-o-notch').addClass('fa-spin')
+		$.post(
+			"/settings/accounts/toggleactive/#{id}"
+		).done(() ->
+			dataTable.ajax.reload()
+		).fail(() ->
+			toastr.error('Sorry, that account couldn\'t be activated/deactivated!')
+			dataTable.ajax.reload()
+		)
+	else
+		btn.removeClass('btn-default').addClass('btn-danger')
+		setTimeout((() ->
+			btn.addClass('btn-default').removeClass('btn-danger')
+		), 2000)
+
 deleteAccount = (btn, id) ->
 	if (btn.hasClass('btn-danger'))
 		btn.find('i').removeClass('fa-trash').addClass('fa-circle-o-notch').addClass('fa-spin')
@@ -124,6 +148,7 @@ deleteAccount = (btn, id) ->
 			dataTable.ajax.reload()
 		).fail(() ->
 			toastr.error('Sorry, that account couldn\'t be deleted!')
+			dataTable.ajax.reload()
 		)
 	else
 		btn.removeClass('btn-default').addClass('btn-danger')

@@ -13,11 +13,10 @@ manager = {
 		))
 
 
-	getAccounts: (user, currentOnly, callback) ->
-		query = if (currentOnly)
-			'SELECT * FROM account WHERE active = 1 AND owner = ? ORDER BY display_order ASC;'
-		else
-			'SELECT * FROM account WHERE owner = ? ORDER BY display_order ASC;'
+	getAccounts: (user, includeDeleted, includeInactive, callback) ->
+		deletedCondition = if (includeDeleted) then '' else ' AND deleted = 0'
+		inactiveCondition = if (includeInactive) then '' else ' AND active = 1'
+		query = 'SELECT * FROM account WHERE owner = ? ' + deletedCondition + inactiveCondition + ' ORDER BY display_order ASC;'
 		mysql.getConnection((conn) -> conn.query(query, user.id, (err, results) ->
 			conn.release()
 			if (err) then return callback(err)
@@ -27,7 +26,7 @@ manager = {
 
 
 	getAccountsCount: (user, callback) ->
-		mysql.getConnection((conn) -> conn.query('SELECT COUNT(*) AS result FROM account WHERE owner = ? AND active = true;', user.id, (err, result) ->
+		mysql.getConnection((conn) -> conn.query('SELECT COUNT(*) AS result FROM account WHERE owner = ? AND deleted = false;', user.id, (err, result) ->
 			conn.release()
 			if (err) then return callback(err)
 			if (result) then return callback(null, result[0]['result'])
@@ -40,7 +39,7 @@ manager = {
 			"""
 			SELECT COUNT(*) AS result
 			FROM account
-			WHERE owner = ? AND LOWER(CONCAT(name, description)) LIKE ? AND active = true;
+			WHERE owner = ? AND LOWER(CONCAT(name, description)) LIKE ? AND deleted = false;
 			""",
 			[user.id, "%#{query.toLowerCase()}%"],
 			(err, result) ->
@@ -56,7 +55,7 @@ manager = {
 			"""
 			SELECT *
 			FROM account
-			WHERE owner = ? AND LOWER(CONCAT(name, description)) LIKE ? AND active = true
+			WHERE owner = ? AND LOWER(CONCAT(name, description)) LIKE ? AND deleted = false
 			ORDER BY display_order ASC;
 			""",
 			[user.id, "%#{query.toLowerCase()}%"],
@@ -125,8 +124,15 @@ manager = {
 		)
 
 
+	toggleAccountActive: (user, id, callback) ->
+		mysql.getConnection((conn) -> conn.query('UPDATE account SET active = !active WHERE id = ? AND owner = ?;', [id, user.id], (err) ->
+			conn.release()
+			callback(err)
+		))
+
+
 	deleteAccount: (user, id, callback) ->
-		mysql.getConnection((conn) -> conn.query('UPDATE account SET active = false WHERE id = ? AND owner = ?;', [id, user.id], (err) ->
+		mysql.getConnection((conn) -> conn.query('UPDATE account SET deleted = true WHERE id = ? AND owner = ?;', [id, user.id], (err) ->
 			conn.release()
 			callback(err)
 		))
