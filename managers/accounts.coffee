@@ -13,11 +13,10 @@ manager = {
 		))
 
 
-	getAccounts: (user, currentOnly, callback) ->
-		query = if (currentOnly)
-			'SELECT * FROM account WHERE deleted = 0 AND owner = ? ORDER BY display_order ASC;'
-		else
-			'SELECT * FROM account WHERE owner = ? ORDER BY display_order ASC;'
+	getAccounts: (user, includeDeleted, includeInactive, callback) ->
+		deletedCondition = if (includeDeleted) then '' else ' AND deleted = 0'
+		inactiveCondition = if (includeInactive) then '' else ' AND active = 1'
+		query = 'SELECT * FROM account WHERE owner = ? ' + deletedCondition + inactiveCondition + ' ORDER BY display_order ASC;'
 		mysql.getConnection((conn) -> conn.query(query, user.id, (err, results) ->
 			conn.release()
 			if (err) then return callback(err)

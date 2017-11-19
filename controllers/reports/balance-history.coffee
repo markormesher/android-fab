@@ -6,7 +6,7 @@ StatisticsManager = rfr('./managers/statistics')
 router = express.Router()
 
 router.get('/', auth.checkAndRefuse, (req, res, next) ->
-	AccountManager.getAccounts(req.user, true, (err, accounts) ->
+	AccountManager.getAccounts(req.user, false, true, (err, accounts) ->
 		if (err) then return next(err)
 		res.render('reports/balance-history/index', {
 			_: {
