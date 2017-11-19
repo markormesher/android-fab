@@ -2,11 +2,11 @@ getActionsHtml = (id, active) ->
 	toggleIcon = if (active) then 'fa-toggle-on' else 'fa-toggle-off'
 	rawHtml = """
 		<div class="btn-group">
-			<button class="btn btn-mini btn-default delete-btn" data-id="__ID__"><i class="fa fa-fw fa-trash"></i></button>
 			<button class="btn btn-mini btn-default edit-btn" data-id="__ID__"><i class="fa fa-fw fa-pencil"></i></button>
 			<button class="btn btn-mini btn-default active-toggle-btn" data-id="__ID__"><i class="fa fa-fw __TOGGLE_ICON__"></i></button>
+			<button class="btn btn-mini btn-default delete-btn" data-id="__ID__"><i class="fa fa-fw fa-trash"></i></button>
 		</div>
-		"""
+	"""
 	return rawHtml.replace(///__ID__///g, id).replace(///__TOGGLE_ICON__///g, toggleIcon)
 
 getOrderingHtml = (id) ->
@@ -15,7 +15,7 @@ getOrderingHtml = (id) ->
 			<button class="btn btn-mini btn-default move-up-btn" data-id="__ID__"><i class="fa fa-fw fa-angle-up"></i></button>
 			<button class="btn btn-mini btn-default move-down-btn" data-id="__ID__"><i class="fa fa-fw fa-angle-down"></i></button>
 		</div>
-		"""
+	"""
 	return rawHtml.replace(///__ID__///g, id)
 
 typeNames = {

@@ -1,15 +1,19 @@
-actionsHtml = """
-<div class="btn-group">
-	<button class="btn btn-mini btn-default delete-btn" data-id="__ID__"><i class="fa fa-fw fa-trash"></i></button>
-	<a href="/settings/budgets/edit/__ID__" class="btn btn-mini btn-default edit-btn" data-id="__ID__"><i class="fa fa-fw fa-pencil"></i></a>
-</div>
-"""
+getActionsHtml = (id) ->
+	rawHtml = """
+		<div class="btn-group">
+			<button class="btn btn-mini btn-default edit-btn" data-id="__ID__"><i class="fa fa-fw fa-pencil"></i></button>
+			<button class="btn btn-mini btn-default delete-btn" data-id="__ID__"><i class="fa fa-fw fa-trash"></i></button>
+		</div>
+	"""
+	return rawHtml.replace(///__ID__///g, id)
 
-categoryHtml = """
-<input type="checkbox" data-id="__ID__" class="clone-checkbox" />
-&nbsp;
-__CATEGORY__
-"""
+getCategoryHtml = (id, category) ->
+	rawHtml = """
+		<input type="checkbox" data-id="__ID__" class="clone-checkbox" />
+		&nbsp;
+		__CATEGORY__
+	"""
+	return rawHtml.replace(///__ID__///g, id).replace(///__CATEGORY__///g, category)
 
 cloneModal = {}
 currentOnlyCheckbox = $('#current-only')
@@ -53,10 +57,10 @@ initDataTable = () ->
 				for d in raw.data
 					category = d['category'] + (if (d['type'] == 'bill') then ' (Bill)' else '')
 					displayData.push([
-						categoryHtml.replace(///__ID__///g, d['id']).replace(///__CATEGORY__///g, category)
+						getCategoryHtml(d['id'], category)
 						window.formatters.formatBudgetSpan(d['start_date'], d['end_date'])
 						window.formatters.formatCurrency(d['amount'])
-						actionsHtml.replace(///__ID__///g, d['id'])
+						getActionsHtml(d['id'])
 					])
 				return displayData
 		}
