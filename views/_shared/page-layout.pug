@@ -5,6 +5,8 @@ block head
 
 block body
 
+	- user = locals.user
+
 	div.container.body
 		div.main_container
 
@@ -29,14 +31,26 @@ block body
 				ul.nav.navbar-nav.navbar-right
 					li.dropdown
 						a.user-profile.dropdown-toggle(data-toggle = 'dropdown', href = 'javascript:;')
-							img(src = '//www.gravatar.com/avatar/' + locals.user.emailHash + '?r=pg&d=identicon')
-							span.hidden-xs= locals.user.first_name + ' ' + locals.user.last_name
+							span.hidden-xs= user.activeProfile.name
+							i.fa.fa-fw.fa-caret-down.text-muted
+
+						ul.dropdown-menu.pull-right
+							for profile in user.profiles
+								- iconClass = profile.id == user.activeProfile.id ? 'fa-check-square-o' : 'fa-square-o'
+								li: a(href ='/profiles/select/' + profile.id)
+									i(class = 'fa fa-fw title-icon ' + iconClass)
+									| #{profile.name}
+
+					li.dropdown
+						a.user-profile.dropdown-toggle(data-toggle = 'dropdown', href = 'javascript:;')
+							img(src = '//www.gravatar.com/avatar/' + user.emailHash + '?r=pg&d=identicon')
+							span.hidden-xs= user.first_name + ' ' + user.last_name
 							i.fa.fa-fw.fa-caret-down.text-muted
 
 						ul.dropdown-menu.pull-right
 							li: a(href = '/users/profile')
 								i.fa.fa-fw.fa-user.title-icon
-								| Your Profile
+								| Account Details
 							li: a(href = '/auth/logout')
 								i.fa.fa-fw.fa-sign-out.title-icon
 								| Logout

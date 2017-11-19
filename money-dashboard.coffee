@@ -69,6 +69,7 @@ app.locals.constants = constants
 routes = {
 	'': rfr('./controllers/dashboard')
 	'auth': rfr('./controllers/auth')
+	'profiles': rfr('./controllers/profiles')
 	'transactions': rfr('./controllers/transactions')
 	'users': rfr('./controllers/users')
 	'reports/balance-history': rfr('./controllers/reports/balance-history')
