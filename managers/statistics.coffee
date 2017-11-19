@@ -133,18 +133,6 @@ manager = {
 						if (err || results.length != 1) then return c(err)
 						c(null, results[0]['balance'])
 				))
-				'movedToSavings': (c) -> mysql.getConnection((conn) -> conn.query(
-					"""
-					SELECT COALESCE(SUM(transaction.amount), 0) AS balance
-					FROM (transaction JOIN account ON transaction.account_id = account.id) JOIN category ON transaction.category_id = category.id
-					WHERE transaction.owner = ? AND account.type = 'savings' AND category.type = 'memo' AND transaction.effective_date >= ? AND transaction.effective_date <= ?;
-					"""
-					[user.id, startDate, endDate],
-					(err, results) ->
-						conn.release()
-						if (err || results.length != 1) then return c(err)
-						c(null, results[0]['balance'])
-				))
 			},
 			(err, results) ->
 				if (err) then return callback(err)
@@ -155,7 +143,6 @@ manager = {
 				output.totalFlow = results['totalFlow']
 				output.otherIn = results['otherIn']
 				output.otherOut = results['otherOut']
-				output.movedToSavings = results['movedToSavings']
 
 				# category balances
 				output.income = []

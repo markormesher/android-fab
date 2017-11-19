@@ -43,14 +43,3 @@ div.x_panel
 
 		div.hr: hr
 		+row('Total', summaryData['totalFlow'], true)
-
-
-		// designed for more 'other' summary items to be added
-		- hasOther = false
-		- if (summaryData['movedToSavings'] != 0) hasOther = true
-
-		if (hasOther)
-			div.hr: hr
-			h4 Other
-			if (summaryData['movedToSavings'] != 0)
-				+row('Moved to savings', summaryData['movedToSavings'])
