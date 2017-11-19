@@ -12,12 +12,11 @@ router.get('/select/:profileId', auth.checkAndRefuse, (req, res, next) ->
 		user.activeProfile = newProfile[0]
 		req.login(user, (err) ->
 			if (err) then return next(err)
-			req.flash('success', "Switched to #{user.activeProfile.name}.")
-			res.redirect('/')
+			res.redirect(req.get('Referrer') || '/')
 		)
 	else
 		req.flash('error', 'Sorry, that profile couldn\'t be selected.')
-		res.redirect('/')
+		res.redirect(req.get('Referrer') || '/')
 )
 
 module.exports = router
