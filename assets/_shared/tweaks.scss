@@ -51,6 +51,18 @@ i.title-icon {
 	border-color: #66afe9;
 }
 
+p {
+	margin: 0 0 10px !important;
+}
+
+p.no-margin {
+	margin: 0 !important;
+}
+
+p.top-margin {
+	margin: 10px 0 0 !important;
+}
+
 .text-muted {
 	color: inherit !important;
 	opacity: 0.6;
@@ -60,6 +72,11 @@ h4 {
 	margin-top: 0 !important;
 	border-bottom: 1px solid #dddddd;
 	padding-bottom: 1px;
+}
+
+.modal-header h4 {
+	border-bottom: none;
+	padding-bottom: 0;
 }
 
 h4.gap {

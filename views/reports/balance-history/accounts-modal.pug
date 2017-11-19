@@ -7,10 +7,22 @@ div#accounts-modal.modal.fade(tabindex = -1)
 
 			div.modal-body
 				div.checkbox-set
+					- var groups = { 'current': [], 'savings': [], 'asset': [] }
+					- var groupTitles = { 'current': 'Current Accounts', 'savings': 'Savings Accounts', 'asset': 'Assets' }
+
 					for a in accounts
-						div.checkbox(style = 'width: 49%; display: inline-block;'): label
-							input(type = 'checkbox', value = a.id, checked = true)
-							|  #{a.name}
+						- groups[a.type].push(a)
+
+					- firstGroup = true
+					for group in ['current', 'savings', 'asset']
+						if (groups[group].length > 0)
+							p(class = firstGroup ? 'no-margin' : 'top-margin'): strong= groupTitles[group]
+							for a in groups[group]
+								div.checkbox(style = 'width: 49%; display: inline-block;'): label
+									input(type = 'checkbox', value = a.id, checked = true)
+									=a.account_name
+									|  #{a.name}
+						- firstGroup = false
 
 			div.modal-footer
 				button#update-btn.btn.btn-primary
