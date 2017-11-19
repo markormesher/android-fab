@@ -13,7 +13,7 @@ manager = {
 				SELECT budget.*, category.name AS category
 				FROM budget JOIN category ON category.id = budget.category_id
 				WHERE budget.id = ? AND budget.owner = ? AND budget.deleted = false LIMIT 1;
-				""", [id, user.id], (err, results) ->
+				""", [id, user.activeProfile.id], (err, results) ->
 					if (err)
 						conn.release()
 						return callback(err)
@@ -42,7 +42,7 @@ manager = {
 			ORDER BY start_date DESC, category ASC;
 			"""
 
-		mysql.getConnection((conn) -> conn.query(query, user.id, (err, results) ->
+		mysql.getConnection((conn) -> conn.query(query, user.activeProfile.id, (err, results) ->
 			conn.release()
 			if (err) then return callback(err)
 			if (results) then return callback(null, results)
@@ -64,7 +64,7 @@ manager = {
 			GROUP BY budget.id
 			ORDER BY budget.start_date ASC;
 			""",
-			[user.id, categoryId]
+			[user.activeProfile.id, categoryId]
 			(err, results) ->
 				conn.release()
 				if (err) then return callback(err)
@@ -78,7 +78,7 @@ manager = {
 			query = 'SELECT COUNT(*) AS result FROM budget WHERE owner = ? AND deleted = false AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW());'
 		else
 			query = 'SELECT COUNT(*) AS result FROM budget WHERE owner = ? AND deleted = false;'
-		mysql.getConnection((conn) -> conn.query(query, user.id, (err, result) ->
+		mysql.getConnection((conn) -> conn.query(query, user.activeProfile.id, (err, result) ->
 			conn.release()
 			if (err) then return callback(err)
 			if (result) then return callback(null, result[0]['result'])
@@ -99,7 +99,7 @@ manager = {
 			FROM budget JOIN category ON category.id = budget.category_id
 			WHERE budget.owner = ? AND budget.deleted = false AND LOWER(category.name) LIKE ?;
 			"""
-		mysql.getConnection((conn) -> conn.query(query, [user.id, "%#{search.toLowerCase()}%"], (err, result) ->
+		mysql.getConnection((conn) -> conn.query(query, [user.activeProfile.id, "%#{search.toLowerCase()}%"], (err, result) ->
 			conn.release()
 			if (err) then return callback(err)
 			if (result) then return callback(null, result[0]['result'])
@@ -122,7 +122,7 @@ manager = {
 			WHERE budget.owner = ? AND budget.deleted = false AND LOWER(category.name) LIKE ?
 			ORDER BY start_date #{order}, category ASC LIMIT ? OFFSET ?;
 			"""
-		mysql.getConnection((conn) -> conn.query(query, [user.id, "%#{search.toLowerCase()}%", count, start], (err, result) ->
+		mysql.getConnection((conn) -> conn.query(query, [user.activeProfile.id, "%#{search.toLowerCase()}%", count, start], (err, result) ->
 			conn.release()
 			if (err) then return callback(err)
 			if (result) then return callback(null, result)
@@ -140,7 +140,7 @@ manager = {
 			id = uuid.v1()
 
 		budget['id'] = id
-		budget['owner'] = user.id
+		budget['owner'] = user.activeProfile.id
 		budget['deleted'] = false
 
 		if (insert)
@@ -148,7 +148,7 @@ manager = {
 			data = [budget]
 		else
 			query = 'UPDATE budget SET ? WHERE id = ? AND owner = ?;'
-			data = [budget, id, user.id]
+			data = [budget, id, user.activeProfile.id]
 
 		if (conn)
 			conn.query(query, data, (err) -> callback(err))
@@ -163,7 +163,7 @@ manager = {
 		if (!Array.isArray(originalIds))
 			originalIds = [originalIds]
 
-		mysql.getConnection((conn) -> conn.query('SELECT * FROM budget WHERE owner = ? AND id IN (?);', [user.id, originalIds], (err, originalBudgets) ->
+		mysql.getConnection((conn) -> conn.query('SELECT * FROM budget WHERE owner = ? AND id IN (?);', [user.activeProfile.id, originalIds], (err, originalBudgets) ->
 			conn.release()
 			if (err) then return callback(err)
 			if (originalBudgets.length != originalIds.length) then return callback('Invalid ID')
@@ -202,7 +202,7 @@ manager = {
 
 
 	deleteBudget: (user, id, callback) ->
-		mysql.getConnection((conn) -> conn.query('UPDATE budget SET deleted = true WHERE id = ? AND owner = ?;', [id, user.id], (err) ->
+		mysql.getConnection((conn) -> conn.query('UPDATE budget SET deleted = true WHERE id = ? AND owner = ?;', [id, user.activeProfile.id], (err) ->
 			conn.release()
 			callback(err)
 		))

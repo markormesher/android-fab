@@ -14,7 +14,7 @@ manager = {
 			WHERE account.deleted = false AND account.owner = ?
 			GROUP BY transaction.account_id ORDER BY account.display_order ASC;
 			"""
-			user.id,
+			user.activeProfile.id,
 			(err, results) ->
 				conn.release()
 				if (err) then return callback(err)
@@ -36,7 +36,7 @@ manager = {
 			WHERE budget.owner = ? AND budget.deleted = false AND budget.start_date <= DATE(NOW()) AND budget.end_date >= DATE(NOW())
 			ORDER BY budget.start_date DESC, category.name ASC;
 			"""
-			user.id,
+			user.activeProfile.id,
 			(err, results) ->
 				conn.release()
 				if (err) then return callback(err)
@@ -64,7 +64,7 @@ manager = {
 						WHERE transaction.owner = ? AND category.type = 'memo'
 						GROUP BY category.name;
 						"""
-						[user.id],
+						user.activeProfile.id,
 						(err, results) ->
 							conn.release()
 							if (err) then return c(err)
@@ -95,7 +95,7 @@ manager = {
 					WHERE transaction.owner = ? AND category.summary_visibility IS NOT NULL AND transaction.effective_date >= ? AND transaction.effective_date <= ?
 					GROUP BY category.id;
 					"""
-					[user.id, startDate, endDate],
+					[user.activeProfile.id, startDate, endDate],
 					(err, results) ->
 						conn.release()
 						if (err) then return c(err)
@@ -103,7 +103,7 @@ manager = {
 				))
 				'totalFlow': (c) -> mysql.getConnection((conn) -> conn.query(
 					'SELECT COALESCE(SUM(amount), 0) AS balance FROM transaction WHERE transaction.owner = ? AND effective_date >= ? AND effective_date <= ?;',
-					[user.id, startDate, endDate],
+					[user.activeProfile.id, startDate, endDate],
 					(err, results) ->
 						conn.release()
 						if (err || results.length != 1) then return c(err)
@@ -115,7 +115,7 @@ manager = {
 					FROM transaction JOIN category ON transaction.category_id = category.id
 					WHERE transaction.owner = ? AND amount > 0 AND category.summary_visibility IS NULL AND transaction.effective_date >= ? AND transaction.effective_date <= ?;
 					"""
-					[user.id, startDate, endDate],
+					[user.activeProfile.id, startDate, endDate],
 					(err, results) ->
 						conn.release()
 						if (err || results.length != 1) then return c(err)
@@ -127,7 +127,7 @@ manager = {
 					FROM transaction JOIN category ON transaction.category_id = category.id
 					WHERE transaction.owner = ? AND amount < 0 AND category.summary_visibility IS NULL AND transaction.effective_date >= ? AND transaction.effective_date <= ?;
 					"""
-					[user.id, startDate, endDate],
+					[user.activeProfile.id, startDate, endDate],
 					(err, results) ->
 						conn.release()
 						if (err || results.length != 1) then return c(err)
@@ -178,7 +178,7 @@ manager = {
 					FROM transaction
 					WHERE #{dateField} <= GREATEST(?, (SELECT MIN(#{dateField}) FROM transaction WHERE owner = ?)) AND owner = ? AND account_id IN (?);
 					"""
-					[start, user.id, start, user.id, user.id, accounts]
+					[start, user.activeProfile.id, start, user.activeProfile.id, user.activeProfile.id, accounts]
 					(err, results) ->
 						conn.release()
 						if (err) then return c(err)
@@ -193,7 +193,7 @@ manager = {
 					WHERE #{dateField} > ? AND #{dateField} <= ? AND owner = ? AND account_id IN (?)
 					GROUP BY #{dateField} ORDER BY #{dateField} ASC;
 					"""
-					[initial['initial_date'], end, user.id, accounts]
+					[initial['initial_date'], end, user.activeProfile.id, accounts]
 					(err, results) ->
 						conn.release()
 						if (err) then return c(err)
@@ -256,7 +256,7 @@ manager = {
 			GROUP BY budget.id
 			ORDER BY category.name ASC, budget.start_date ASC;
 			""",
-			[user['id'], start, end]
+			[user.activeProfile.id, start, end]
 			(err, results) ->
 				conn.release()
 				if (err) then return c(err)

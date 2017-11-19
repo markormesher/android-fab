@@ -7,7 +7,7 @@ auth = rfr('./helpers/auth')
 manager = {
 
 	getTransactionsCount: (user, callback) ->
-		mysql.getConnection((conn) -> conn.query('SELECT COUNT(*) AS result FROM transaction WHERE owner = ?;', user.id, (err, result) ->
+		mysql.getConnection((conn) -> conn.query('SELECT COUNT(*) AS result FROM transaction WHERE owner = ?;', user.activeProfile.id, (err, result) ->
 			conn.release()
 			if (err) then return callback(err)
 			if (result) then return callback(null, result[0]['result'])
@@ -28,7 +28,7 @@ manager = {
 
 		querySql += ';'
 
-		mysql.getConnection((conn) -> conn.query(querySql, [user.id, "%#{query.toLowerCase()}%"], (err, result) ->
+		mysql.getConnection((conn) -> conn.query(querySql, [user.activeProfile.id, "%#{query.toLowerCase()}%"], (err, result) ->
 			conn.release()
 			if (err) then return callback(err)
 			if (result) then return callback(null, result[0]['result'])
@@ -49,7 +49,7 @@ manager = {
 
 		querySql += ' ORDER BY effective_date ' + order + ', record_date DESC LIMIT ? OFFSET ?;'
 
-		mysql.getConnection((conn) -> conn.query(querySql, [user.id, "%#{query.toLowerCase()}%", count, start], (err, result) ->
+		mysql.getConnection((conn) -> conn.query(querySql, [user.activeProfile.id, "%#{query.toLowerCase()}%", count, start], (err, result) ->
 			conn.release()
 			if (err) then return callback(err)
 			if (result) then return callback(null, result)
@@ -58,7 +58,7 @@ manager = {
 
 
 	getUniquePayees: (user, callback) ->
-		mysql.getConnection((conn) -> conn.query('SELECT DISTINCT(payee) FROM transaction WHERE owner = ? ORDER BY payee ASC;', user.id, (err, result) ->
+		mysql.getConnection((conn) -> conn.query('SELECT DISTINCT(payee) FROM transaction WHERE owner = ? ORDER BY payee ASC;', user.activeProfile.id, (err, result) ->
 			conn.release()
 			if (err) then return callback(err)
 			if (result) then return callback(null, (r['payee'] for r in result))
@@ -72,7 +72,7 @@ manager = {
 			mysql.getConnection((conn) -> conn.query(
 				'INSERT INTO transaction (id, owner, transaction_date, effective_date, record_date, account_id, category_id, amount, payee, memo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);',
 				[
-					id, user.id, transaction.transaction_date, transaction.effective_date,
+					id, user.activeProfile.id, transaction.transaction_date, transaction.effective_date,
 					(new Date()).toISOString().slice(0, 19).replace('T', ' '),
 					transaction.account, transaction.category, transaction.amount,
 					transaction.payee, transaction.memo || null
@@ -87,7 +87,7 @@ manager = {
 				[
 					transaction.transaction_date, transaction.effective_date, transaction.account,
 					transaction.category, transaction.amount, transaction.payee,
-					transaction.memo || null, id, user.id
+					transaction.memo || null, id, user.activeProfile.id
 				],
 				(err) ->
 					conn.release()
@@ -96,7 +96,7 @@ manager = {
 
 
 	deleteTransaction: (user, id, callback) ->
-		mysql.getConnection((conn) -> conn.query('DELETE FROM transaction WHERE id = ? AND owner = ?;', [id, user.id], (err) ->
+		mysql.getConnection((conn) -> conn.query('DELETE FROM transaction WHERE id = ? AND owner = ?;', [id, user.activeProfile.id], (err) ->
 			conn.release()
 			callback(err)
 		))

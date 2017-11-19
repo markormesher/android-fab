@@ -7,14 +7,14 @@ ProfileManager = rfr('./managers/profiles')
 exports = {
 
 	userHasSettings: (user) -> user['settings'] && user['settings']['__version'] == constants['settingsVersion']
-	userHasProfiles: (user) -> user['profiles'] && user['activeProfile']
+	userHasProfiles: (user) -> user['profiles'] && user['activeProfile'] && false
 
 	shouldReloadUser: (user) -> !exports.userHasSettings(user) || !exports.userHasProfiles(user)
 
 	checkOnly: (req, res, next) ->
 		user = req.user
 		res.locals.user = user || null
-		currentActiveProfile = user['activeProfile'] || null
+		currentActiveProfile = if (user) then user['activeProfile'] || null else null
 		if (user && exports.shouldReloadUser(user))
 			async.parallel(
 				{

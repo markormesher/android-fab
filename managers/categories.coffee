@@ -1,12 +1,11 @@
 uuid = require('uuid')
 rfr = require('rfr')
 mysql = rfr('./helpers/mysql')
-constants = rfr('./constants.json')
 
 manager = {
 
 	getCategory: (user, id, callback) ->
-		mysql.getConnection((conn) -> conn.query('SELECT * FROM category WHERE id = ? AND owner = ? LIMIT 1;', [id, user.id], (err, results) ->
+		mysql.getConnection((conn) -> conn.query('SELECT * FROM category WHERE id = ? AND owner = ? LIMIT 1;', [id, user.activeProfile.id], (err, results) ->
 			conn.release()
 			if (err) then return callback(err)
 			if (results && results.length == 1) then return callback(null, results[0])
@@ -19,7 +18,7 @@ manager = {
 			query = 'SELECT * FROM category WHERE owner = ? AND deleted = false ORDER BY name ASC;'
 		else
 			query = 'SELECT * FROM category WHERE owner = ? AND deleted = false AND type != \'memo\' ORDER BY name ASC;'
-		mysql.getConnection((conn) -> conn.query(query, user.id, (err, results) ->
+		mysql.getConnection((conn) -> conn.query(query, user.activeProfile.id, (err, results) ->
 			conn.release()
 			if (err) then return callback(err)
 			if (results) then return callback(null, results)
@@ -28,7 +27,7 @@ manager = {
 
 
 	getCategoriesCount: (user, callback) ->
-		mysql.getConnection((conn) -> conn.query('SELECT COUNT(*) AS result FROM category WHERE owner = ? AND deleted = false;', user.id, (err, result) ->
+		mysql.getConnection((conn) -> conn.query('SELECT COUNT(*) AS result FROM category WHERE owner = ? AND deleted = false;', user.activeProfile.id, (err, result) ->
 			conn.release()
 			if (err) then return callback(err)
 			if (result) then return callback(null, result[0]['result'])
@@ -43,7 +42,7 @@ manager = {
 			FROM category
 			WHERE owner = ? AND LOWER(name) LIKE ? AND deleted = false;
 			""",
-			[user.id, "%#{query.toLowerCase()}%"],
+			[user.activeProfile.id, "%#{query.toLowerCase()}%"],
 			(err, result) ->
 				conn.release()
 				if (err) then return callback(err)
@@ -60,7 +59,7 @@ manager = {
 			WHERE owner = ? AND LOWER(name) LIKE ? AND deleted = false
 			ORDER BY name #{order} LIMIT ? OFFSET ?;
 			"""
-			[user.id, "%#{query.toLowerCase()}%", count, start],
+			[user.activeProfile.id, "%#{query.toLowerCase()}%", count, start],
 			(err, result) ->
 				conn.release()
 				if (err) then return callback(err)
@@ -74,7 +73,7 @@ manager = {
 			id = uuid.v1()
 			mysql.getConnection((conn) -> conn.query(
 				'INSERT INTO category (id, owner, name, type, deleted) VALUES (?, ?, ?, ?, 0);',
-				[id, user.id, category.name, category.type],
+				[id, user.activeProfile.id, category.name, category.type],
 				(err) ->
 					conn.release()
 					callback(err)
@@ -82,7 +81,7 @@ manager = {
 		else
 			mysql.getConnection((conn) -> conn.query(
 				'UPDATE category SET name = ? WHERE id = ? AND owner = ?;',
-				[category.name, id, user.id],
+				[category.name, id, user.activeProfile.id],
 				(err) ->
 					conn.release()
 					callback(err)
@@ -91,7 +90,7 @@ manager = {
 
 	setSummaryVisibility: (user, id, value, callback) ->
 		if (['in', 'out', 'both'].indexOf(value) < 0) then value = null
-		mysql.getConnection((conn) -> conn.query('UPDATE category SET summary_visibility = ? WHERE id = ? AND owner = ?;', [value, id, user.id],
+		mysql.getConnection((conn) -> conn.query('UPDATE category SET summary_visibility = ? WHERE id = ? AND owner = ?;', [value, id, user.activeProfile.id],
 			(err) ->
 				conn.release()
 				callback(err)
@@ -99,7 +98,7 @@ manager = {
 
 
 	deleteCategory: (user, id, callback) ->
-		mysql.getConnection((conn) -> conn.query('UPDATE category SET deleted = true WHERE id = ? AND owner = ?;', [id, user.id], (err) ->
+		mysql.getConnection((conn) -> conn.query('UPDATE category SET deleted = true WHERE id = ? AND owner = ?;', [id, user.activeProfile.id], (err) ->
 			conn.release()
 			callback(err)
 		))
