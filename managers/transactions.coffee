@@ -38,7 +38,7 @@ manager = {
 
 	getFilteredTransactions: (user, query, start, count, order, callback) ->
 		querySql = """
-			SELECT transaction.*, account_id, account.name AS account_name, account.active AS account_active, category_id, category.name AS category_name FROM
+			SELECT transaction.*, account_id, account.name AS account_name, account.deleted AS account_deleted, category_id, category.name AS category_name FROM
 			(transaction LEFT JOIN account ON transaction.account_id = account.id)
 			LEFT JOIN category ON transaction.category_id = category.id
 			WHERE transaction.owner = ? AND LOWER(CONCAT(transaction.payee, COALESCE(transaction.memo, ''), account.name, category.name)) LIKE ?

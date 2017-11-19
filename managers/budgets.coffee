@@ -12,7 +12,7 @@ manager = {
 				"""
 				SELECT budget.*, category.name AS category
 				FROM budget JOIN category ON category.id = budget.category_id
-				WHERE budget.id = ? AND budget.owner = ? AND budget.active = true LIMIT 1;
+				WHERE budget.id = ? AND budget.owner = ? AND budget.deleted = false LIMIT 1;
 				""", [id, user.id], (err, results) ->
 					if (err)
 						conn.release()
@@ -31,14 +31,14 @@ manager = {
 			query = """
 			SELECT budget.*, category.name AS category
 			FROM budget JOIN category ON category.id = budget.category_id
-			WHERE budget.owner = ? AND budget.active = true AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW())
+			WHERE budget.owner = ? AND budget.deleted = false AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW())
 			ORDER BY start_date DESC, category ASC;
 			"""
 		else
 			query = """
 			SELECT budget.*, category.name AS category
 			FROM budget JOIN category ON category.id = budget.category_id
-			WHERE budget.owner = ? AND budget.active = true
+			WHERE budget.owner = ? AND budget.deleted = false
 			ORDER BY start_date DESC, category ASC;
 			"""
 
@@ -60,7 +60,7 @@ manager = {
 				AND transaction.effective_date >= budget.start_date AND transaction.effective_date <= budget.end_date
 			), 0) * -1 AS spend
 			FROM budget
-			WHERE owner = ? AND active = true AND category_id = ?
+			WHERE owner = ? AND deleted = false AND category_id = ?
 			GROUP BY budget.id
 			ORDER BY budget.start_date ASC;
 			""",
@@ -75,9 +75,9 @@ manager = {
 
 	getBudgetCount: (user, currentOnly, callback) ->
 		if (currentOnly)
-			query = 'SELECT COUNT(*) AS result FROM budget WHERE owner = ? AND active = true AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW());'
+			query = 'SELECT COUNT(*) AS result FROM budget WHERE owner = ? AND deleted = false AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW());'
 		else
-			query = 'SELECT COUNT(*) AS result FROM budget WHERE owner = ? AND active = true;'
+			query = 'SELECT COUNT(*) AS result FROM budget WHERE owner = ? AND deleted = false;'
 		mysql.getConnection((conn) -> conn.query(query, user.id, (err, result) ->
 			conn.release()
 			if (err) then return callback(err)
@@ -91,13 +91,13 @@ manager = {
 			query = """
 			SELECT COUNT(*) AS result
 			FROM budget JOIN category ON category.id = budget.category_id
-			WHERE budget.owner = ? AND budget.active = true AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW()) AND LOWER(category.name) LIKE ?;
+			WHERE budget.owner = ? AND budget.deleted = false AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW()) AND LOWER(category.name) LIKE ?;
 			"""
 		else
 			query = """
 			SELECT COUNT(*) AS result
 			FROM budget JOIN category ON category.id = budget.category_id
-			WHERE budget.owner = ? AND budget.active = true AND LOWER(category.name) LIKE ?;
+			WHERE budget.owner = ? AND budget.deleted = false AND LOWER(category.name) LIKE ?;
 			"""
 		mysql.getConnection((conn) -> conn.query(query, [user.id, "%#{search.toLowerCase()}%"], (err, result) ->
 			conn.release()
@@ -112,14 +112,14 @@ manager = {
 			query = """
 			SELECT budget.*, category.name AS category
 			FROM budget JOIN category ON category.id = budget.category_id
-			WHERE budget.owner = ? AND budget.active = true AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW()) AND LOWER(category.name) LIKE ?
+			WHERE budget.owner = ? AND budget.deleted = false AND start_date <= DATE(NOW()) AND end_date >= DATE(NOW()) AND LOWER(category.name) LIKE ?
 			ORDER BY start_date #{order}, category ASC LIMIT ? OFFSET ?;
 			"""
 		else
 			query = """
 			SELECT budget.*, category.name AS category
 			FROM budget JOIN category ON category.id = budget.category_id
-			WHERE budget.owner = ? AND budget.active = true AND LOWER(category.name) LIKE ?
+			WHERE budget.owner = ? AND budget.deleted = false AND LOWER(category.name) LIKE ?
 			ORDER BY start_date #{order}, category ASC LIMIT ? OFFSET ?;
 			"""
 		mysql.getConnection((conn) -> conn.query(query, [user.id, "%#{search.toLowerCase()}%", count, start], (err, result) ->
@@ -141,7 +141,7 @@ manager = {
 
 		budget['id'] = id
 		budget['owner'] = user.id
-		budget['active'] = true
+		budget['deleted'] = false
 
 		if (insert)
 			query = 'INSERT INTO budget SET ?;'
@@ -202,7 +202,7 @@ manager = {
 
 
 	deleteBudget: (user, id, callback) ->
-		mysql.getConnection((conn) -> conn.query('UPDATE budget SET active = false WHERE id = ? AND owner = ?;', [id, user.id], (err) ->
+		mysql.getConnection((conn) -> conn.query('UPDATE budget SET deleted = true WHERE id = ? AND owner = ?;', [id, user.id], (err) ->
 			conn.release()
 			callback(err)
 		))
