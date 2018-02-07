@@ -178,9 +178,21 @@ The speed-dial menu can be manually opened and closed with `fab.openSpeedDialMen
 
 ### Access to Underlying Views
 
-The FAB's key underlying views can be accessed using the three methods detailed below:
+The FAB's key underlying views can be accessed using the three properties/methods detailed below:
 
+	// Java
+	fab.getCardView() // the card behind the button itself
+	fab.getContentCoverView() // the view that obscures content behind the speed-dial menu
+	fab.getIconWrapper() // the wrapper used to place icons in the button
 
+	// Kotlin
+	fab.cardView
+	fab.contentCoverView
+	fab.iconWrapper
+
+The card view is implemented as a `CardView` on SDK 21+ and a `LinearLayout` on SDK 20 and below.
+
+The content cover view and icon wrapper are implemented as a `View` and `LinearLayout` respectively on all SDKs.
 
 ### Note: Click Action Priority
 
