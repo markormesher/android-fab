@@ -14,6 +14,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import kotlinx.android.synthetic.main.fab_container.view.*
 import kotlinx.android.synthetic.main.floating_action_button.view.*
@@ -466,4 +467,14 @@ class FloatingActionButton: RelativeLayout {
 					})
 		}
 	}
+
+	val cardView: View
+		get() = fab_card
+
+	val contentCoverView: View
+		get() = content_cover
+
+	val iconWrapper: LinearLayout
+		get() = fab_icon_wrapper
+
 }
