@@ -259,7 +259,16 @@ class FloatingActionButton: RelativeLayout {
 		}
 	}
 
+	@Deprecated(
+			"This method name is incorrect and is kept only for backwards compatibility",
+			ReplaceWith("setOnSpeedDialMenuOpenListener"),
+			DeprecationLevel.WARNING
+	)
 	fun setOnSpeedMenuDialOpenListener(listener: SpeedDialMenuOpenListener) {
+		setOnSpeedDialMenuOpenListener(listener)
+	}
+
+	fun setOnSpeedDialMenuOpenListener(listener: SpeedDialMenuOpenListener) {
 		speedDialMenuOpenListener = listener
 	}
 
