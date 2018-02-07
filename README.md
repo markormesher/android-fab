@@ -43,7 +43,7 @@ See [app/proguard-rules.pro](app/proguard-rules.pro) for an example.
 
 	// Java
     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-    
+
     // Kotlin (without Android extensions)
     val fab = findViewById(R.id.fab) as FloatingActionButton
 
@@ -63,17 +63,17 @@ The FAB can be positioned in any of the four corners of the activity via XML or 
 
 	// Java
 	fab.setButtonPosition(POSITION_BOTTOM | POSITION_END);
-	
+
 	// Kotlin
 	fab.setButtonPosition(POSITION_BOTTOM.or(POSITION_END))
-	
+
 	// XML
 	<uk.co.markormesher.android_fab.FloatingActionButton
 		xmlns:app="http://schemas.android.com/apk/res-auto"
 		...
 		app:buttonPosition="bottom|end"
 		/>
-		
+
 The FAB is aware of text-direction (right-to-left or left-to-right) and adjusts the meaning of "start" and "end" positions accordingly. This functionality can be overridden using the named constants for left and right.
 
 ### FAB Icon
@@ -82,10 +82,10 @@ The icon displayed in the centre of the FAB can be set via XML using a `Drawable
 
 	// Java
 	fab.setButtonIconResource(R.drawable.ic_add);
-	
+
 	// Kotlin
 	fab.setButtonIconResource(R.drawable.ic_add)
-	
+
 	// XML
 	<uk.co.markormesher.android_fab.FloatingActionButton
 		xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -99,10 +99,10 @@ The background colour of the FAB can be set via XML using a colour reference or 
 
 	// Java
 	fab.setButtonBackgroundColour(0xffff9900);
-	
+
 	// Kotlin
 	fab.setButtonBackgroundColour(0xffff9900.toInt())
-	
+
 	// XML
 	<uk.co.markormesher.android_fab.FloatingActionButton
 		xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -121,7 +121,7 @@ A click listener can be added to the FAB in the same way as any other button. Th
 			// ...
 		}
 	});
-	
+
 	// Kotlin
 	fab.setOnClickListener { v ->
 		// ...
@@ -139,7 +139,7 @@ The colour of the content cover can be set programmatically with `fab.setContent
 
 	// Java
 	fab.setContentCoverColour(0xffff9900);
-	
+
 	// Kotlin
 	fab.setContentCoverColour(0xffff9900.toInt())
 
@@ -148,7 +148,7 @@ The cover can be enabled/disabled programmatically with `fab.setContentCoverEnab
 	// Java
 	fab.setContentCoverEnabled(true);
 	fab.setContentCoverEnabled(false);
-	
+
 	// Kotlin
 	fab.setContentCoverEnabled(true)
 	fab.setContentCoverEnabled(false)
@@ -164,7 +164,7 @@ State change events are fired when the speed-dial menu opens or closes, which ca
 			// ...
 		}
 	});
-	
+
 	// Kotlin
 	fab.setOnSpeedDialMenuOpenListener { floatingActionButton ->
 		// ...
@@ -172,9 +172,15 @@ State change events are fired when the speed-dial menu opens or closes, which ca
 
 ### Show/Hide Controls
 
-The FAB can be hidden and shown with the `fab.hide()` and `fab.show()` methods, and the method `fab.isShown()` will return a boolean indicating the current state. These methods animate the FAB in and out of visibility. If the speed-dial menu is open when `.hide()` is called it will be closed.  
+The FAB can be hidden and shown with the `fab.hide()` and `fab.show()` methods, and the method `fab.isShown()` will return a boolean indicating the current state. These methods animate the FAB in and out of visibility. If the speed-dial menu is open when `.hide()` is called it will be closed.
 
 The speed-dial menu can be manually opened and closed with `fab.openSpeedDialMenu()` and `fab.closeSpeedDialMenu()`. These methods will do nothing if no speed-dial menu adapter is set, if an adapter is set but disabled, if the FAB is hidden, or if they are called when the menu is already in the indicated state (i.e. `fab.openSpeedDialMenu()` will do nothing if the menu is already open).
+
+### Access to Underlying Views
+
+The FAB's key underlying views can be accessed using the three methods detailed below:
+
+
 
 ### Note: Click Action Priority
 
@@ -183,7 +189,7 @@ As per Material Design specs, the FAB functions as a regular button **or** a tri
 The speed-dial menu is given priority: when the FAB is clicked the speed-dial menu will be shown if the speed-dial menu adapter is non-null, the adapter's `isEnabled()` function returns `true` and the adapter's `getCount()` returns a number greater than zero. Otherwise, the FAB's click listener will be called (if it has been set).
 
 Setting a speed-dial menu adapter does not remove the click listener, and setting a click listener does not remove the speed-dial menu adapter. For an example of how the two operation modes interact, check the demo app's source code.
- 
+
 To receive state change updates when the speed-dial menu is opened or closed, use the open/close listeners described above.
 
 ### Note: State Preservation

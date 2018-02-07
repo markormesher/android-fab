@@ -459,9 +459,13 @@ class FloatingActionButton: RelativeLayout {
 		}
 	}
 
-	fun getCardView(): View = fab_card
+	val cardView: View
+		get() = fab_card
 
-	fun getContentCoverView(): View = content_cover
+	val contentCoverView: View
+		get() = content_cover
 
-	fun getIconWrapper(): LinearLayout = fab_icon_wrapper
+	val iconWrapper: LinearLayout
+		get() = fab_icon_wrapper
+
 }
