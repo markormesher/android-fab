@@ -340,12 +340,14 @@ class FloatingActionButton: RelativeLayout {
 			setSpeedDialMenuItemViewOrder(view)
 
 			view.menu_item_label.text = menuItem.getLabel()
+			speedDialMenuAdapter?.onFormatItemLabel(context, i, view.menu_item_label)
 
 			if (Build.VERSION.SDK_INT >= 21) {
 				(view.menu_item_card as CardView).setCardBackgroundColor(adapter.getBackgroundColour(i))
 			} else {
 				((view.menu_item_card as ViewGroup).background as GradientDrawable).setColor(adapter.getBackgroundColour(i))
 			}
+			speedDialMenuAdapter?.onFormatItemCard(context, i, view.menu_item_card)
 
 			if (Build.VERSION.SDK_INT >= 16) {
 				view.menu_item_icon_wrapper.background = menuItem.getIcon()
@@ -353,6 +355,7 @@ class FloatingActionButton: RelativeLayout {
 				@Suppress("DEPRECATION")
 				view.menu_item_icon_wrapper.setBackgroundDrawable(menuItem.getIcon())
 			}
+			speedDialMenuAdapter?.onFormatItemIconWrapper(context, i, view.menu_item_icon_wrapper)
 
 			view.alpha = 0F
 			view.visibility = GONE
