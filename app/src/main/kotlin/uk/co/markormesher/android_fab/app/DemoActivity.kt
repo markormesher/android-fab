@@ -101,7 +101,7 @@ class DemoActivity: AppCompatActivity() {
 			return true
 		}
 
-		override fun onFormatItemLabel(context: Context, position: Int, label: TextView) {
+		override fun onPrepareItemLabel(context: Context, position: Int, label: TextView) {
 			// make the first item bold if there are multiple items
 			// (this isn't a design pattern, it's just to demo the functionality)
 			if (position == 0 && speedDialSize > 1) {

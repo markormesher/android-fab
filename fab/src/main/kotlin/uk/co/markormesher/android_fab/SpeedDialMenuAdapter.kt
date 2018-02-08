@@ -43,21 +43,21 @@ abstract class SpeedDialMenuAdapter {
 	 * Apply formatting to the `TextView` used for the label of the menu item at the given position.
 	 * Note: positions start at zero closest to the FAB and increase for items further away.
 	 */
-	open fun onFormatItemLabel(context: Context, position: Int, label: TextView) {}
+	open fun onPrepareItemLabel(context: Context, position: Int, label: TextView) {}
 
 	/**
 	 * Apply formatting to the view used for the card behind the icon at the given position.
 	 * Note: the view will be a `CardView` on SDK 21+ and a `LinearLayout` on SDK 20 and below.
 	 * Note: positions start at zero closest to the FAB and increase for items further away.
 	 */
-	open fun onFormatItemCard(context: Context, position: Int, card: View) {}
+	open fun onPrepareItemCard(context: Context, position: Int, card: View) {}
 
 	/**
 	 * Apply formatting to the `LinearLayout` that wraps the icon of the menu item at the given position.
 	 * This is called after the icon is set as the background of the given wrapper.
 	 * Note: positions start at zero closest to the FAB and increase for items further away.
 	 */
-	open fun onFormatItemIconWrapper(context: Context, position: Int, label: LinearLayout) {}
+	open fun onPrepareItemIconWrapper(context: Context, position: Int, label: LinearLayout) {}
 
 	/**
 	 * Gets the number of degrees to rotate the FAB's icon when the speed-dial menu opens.
