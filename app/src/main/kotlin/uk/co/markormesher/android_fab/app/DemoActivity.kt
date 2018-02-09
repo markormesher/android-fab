@@ -1,6 +1,7 @@
 package uk.co.markormesher.android_fab.app
 
 import android.content.Context
+import android.graphics.Typeface
 import android.os.*
 import android.support.annotation.StringRes
 import android.support.v7.app.AppCompatActivity
@@ -8,6 +9,7 @@ import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
+import android.widget.TextView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.demo_activity.*
 import uk.co.markormesher.android_fab.FloatingActionButton
@@ -97,6 +99,14 @@ class DemoActivity: AppCompatActivity() {
 		override fun onMenuItemClick(position: Int): Boolean {
 			toast(getString(R.string.toast_click, ++clickCounter))
 			return true
+		}
+
+		override fun onPrepareItemLabel(context: Context, position: Int, label: TextView) {
+			// make the first item bold if there are multiple items
+			// (this isn't a design pattern, it's just to demo the functionality)
+			if (position == 0 && speedDialSize > 1) {
+				label.setTypeface(label.typeface, Typeface.BOLD)
+			}
 		}
 
 		// rotate the "+" icon only
