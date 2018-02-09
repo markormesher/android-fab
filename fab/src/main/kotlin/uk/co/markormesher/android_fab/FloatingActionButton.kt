@@ -365,6 +365,10 @@ class FloatingActionButton: RelativeLayout {
 				}
 			}
 		}
+
+		if (speedDialMenuOpen) {
+			animateSpeedDialMenuItems(true)
+		}
 	}
 
 	private fun toggleSpeedDialMenu() {
@@ -436,11 +440,17 @@ class FloatingActionButton: RelativeLayout {
 				})
 	}
 
-	private fun animateSpeedDialMenuItems() {
+	private fun animateSpeedDialMenuItems(immediate: Boolean = false) {
 		if (busyAnimatingSpeedDialMenuItems) {
 			return
 		}
 		busyAnimatingSpeedDialMenuItems = true
+
+		val duration = if (immediate) {
+			0L
+		} else {
+			SPEED_DIAL_ANIMATION_DURATION
+		}
 
 		val distance = fab_card.height.toFloat()
 		speedDialMenuViews.forEachIndexed { i, v ->
@@ -456,7 +466,7 @@ class FloatingActionButton: RelativeLayout {
 			v.animate()
 					.translationY(translation)
 					.alpha(if (speedDialMenuOpen) 1f else 0f)
-					.setDuration(SPEED_DIAL_ANIMATION_DURATION)
+					.setDuration(duration)
 					.setListener(object: AnimatorListenerAdapter() {
 						override fun onAnimationEnd(animation: Animator) {
 							busyAnimatingSpeedDialMenuItems = false
