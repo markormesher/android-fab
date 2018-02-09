@@ -340,12 +340,14 @@ class FloatingActionButton: RelativeLayout {
 			setSpeedDialMenuItemViewOrder(view)
 
 			view.menu_item_label.text = menuItem.getLabel()
+			speedDialMenuAdapter?.onPrepareItemLabel(context, i, view.menu_item_label)
 
 			if (Build.VERSION.SDK_INT >= 21) {
 				(view.menu_item_card as CardView).setCardBackgroundColor(adapter.getBackgroundColour(i))
 			} else {
 				((view.menu_item_card as ViewGroup).background as GradientDrawable).setColor(adapter.getBackgroundColour(i))
 			}
+			speedDialMenuAdapter?.onPrepareItemCard(context, i, view.menu_item_card)
 
 			if (Build.VERSION.SDK_INT >= 16) {
 				view.menu_item_icon_wrapper.background = menuItem.getIcon()
@@ -353,6 +355,7 @@ class FloatingActionButton: RelativeLayout {
 				@Suppress("DEPRECATION")
 				view.menu_item_icon_wrapper.setBackgroundDrawable(menuItem.getIcon())
 			}
+			speedDialMenuAdapter?.onPrepareItemIconWrapper(context, i, view.menu_item_icon_wrapper)
 
 			view.alpha = 0F
 			view.visibility = GONE
@@ -364,6 +367,10 @@ class FloatingActionButton: RelativeLayout {
 					toggleSpeedDialMenu()
 				}
 			}
+		}
+
+		if (speedDialMenuOpen) {
+			animateSpeedDialMenuItems(true)
 		}
 	}
 
@@ -436,11 +443,17 @@ class FloatingActionButton: RelativeLayout {
 				})
 	}
 
-	private fun animateSpeedDialMenuItems() {
+	private fun animateSpeedDialMenuItems(immediate: Boolean = false) {
 		if (busyAnimatingSpeedDialMenuItems) {
 			return
 		}
 		busyAnimatingSpeedDialMenuItems = true
+
+		val duration = if (immediate) {
+			0L
+		} else {
+			SPEED_DIAL_ANIMATION_DURATION
+		}
 
 		val distance = fab_card.height.toFloat()
 		speedDialMenuViews.forEachIndexed { i, v ->
@@ -456,7 +469,7 @@ class FloatingActionButton: RelativeLayout {
 			v.animate()
 					.translationY(translation)
 					.alpha(if (speedDialMenuOpen) 1f else 0f)
-					.setDuration(SPEED_DIAL_ANIMATION_DURATION)
+					.setDuration(duration)
 					.setListener(object: AnimatorListenerAdapter() {
 						override fun onAnimationEnd(animation: Animator) {
 							busyAnimatingSpeedDialMenuItems = false
