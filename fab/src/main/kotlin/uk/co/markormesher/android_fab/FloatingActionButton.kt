@@ -265,15 +265,15 @@ class FloatingActionButton: RelativeLayout {
 			ReplaceWith("setOnSpeedDialMenuOpenListener"),
 			DeprecationLevel.WARNING
 	)
-	fun setOnSpeedMenuDialOpenListener(listener: SpeedDialMenuOpenListener) {
+	fun setOnSpeedMenuDialOpenListener(listener: SpeedDialMenuOpenListener?) {
 		setOnSpeedDialMenuOpenListener(listener)
 	}
 
-	fun setOnSpeedDialMenuOpenListener(listener: SpeedDialMenuOpenListener) {
+	fun setOnSpeedDialMenuOpenListener(listener: SpeedDialMenuOpenListener?) {
 		speedDialMenuOpenListener = listener
 	}
 
-	fun setOnSpeedDialMenuCloseListener(listener: SpeedDialMenuCloseListener) {
+	fun setOnSpeedDialMenuCloseListener(listener: SpeedDialMenuCloseListener?) {
 		speedDialMenuCloseListener = listener
 	}
 
