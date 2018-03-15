@@ -18,14 +18,14 @@ You can try the demo in one of two ways:
 
 ### Gradle
 
-    compile 'uk.co.markormesher:android-fab:2.2.1'
+    compile 'uk.co.markormesher:android-fab:2.2.2'
 
 ### Maven
 
     <dependency>
       <groupId>uk.co.markormesher</groupId>
       <artifactId>android-fab</artifactId>
-      <version>2.2.1</version>
+      <version>2.2.2</version>
       <type>pom</type>
     </dependency>
 
