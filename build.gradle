@@ -40,7 +40,7 @@ static def getSecrets() {
 @SuppressWarnings("GroovyUnusedDeclaration")
 static def getProps() {
 	Properties properties = new Properties()
-	properties['version_code'] = 17
-	properties['version_name'] = '2.2.1'
+	properties['version_code'] = 18
+	properties['version_name'] = '2.2.2'
 	return properties
 }
