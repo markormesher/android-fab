@@ -42,7 +42,8 @@ class FloatingActionButton: RelativeLayout {
 	private var speedDialMenuOpenListener: SpeedDialMenuOpenListener? = null
 	private var speedDialMenuCloseListener: SpeedDialMenuCloseListener? = null
 
-	private var speedDialMenuOpen = false
+	var isSpeedDialMenuOpen = false
+		private set
 	private val speedDialMenuViews = ArrayList<ViewGroup>()
 	var speedDialMenuAdapter: SpeedDialMenuAdapter? = null
 		set(value) {
@@ -249,13 +250,13 @@ class FloatingActionButton: RelativeLayout {
 	}
 
 	fun openSpeedDialMenu() {
-		if (!speedDialMenuOpen) {
+		if (!isSpeedDialMenuOpen) {
 			toggleSpeedDialMenu()
 		}
 	}
 
 	fun closeSpeedDialMenu() {
-		if (speedDialMenuOpen) {
+		if (isSpeedDialMenuOpen) {
 			toggleSpeedDialMenu()
 		}
 	}
@@ -369,7 +370,7 @@ class FloatingActionButton: RelativeLayout {
 			}
 		}
 
-		if (speedDialMenuOpen) {
+		if (isSpeedDialMenuOpen) {
 			animateSpeedDialMenuItems(true)
 		}
 	}
@@ -379,9 +380,9 @@ class FloatingActionButton: RelativeLayout {
 			return
 		}
 
-		speedDialMenuOpen = !speedDialMenuOpen
+		isSpeedDialMenuOpen = !isSpeedDialMenuOpen
 
-		if (speedDialMenuOpen) {
+		if (isSpeedDialMenuOpen) {
 			speedDialMenuOpenListener?.onOpen(this)
 		} else {
 			speedDialMenuCloseListener?.onClose(this)
@@ -391,9 +392,9 @@ class FloatingActionButton: RelativeLayout {
 		animateContentCover()
 		animateSpeedDialMenuItems()
 
-		content_cover.isClickable = speedDialMenuOpen
-		content_cover.isFocusable = speedDialMenuOpen
-		if (speedDialMenuOpen) {
+		content_cover.isClickable = isSpeedDialMenuOpen
+		content_cover.isFocusable = isSpeedDialMenuOpen
+		if (isSpeedDialMenuOpen) {
 			content_cover.setOnClickListener({ toggleSpeedDialMenu() })
 		} else {
 			content_cover.setOnClickListener(null)
@@ -407,7 +408,7 @@ class FloatingActionButton: RelativeLayout {
 		busyAnimatingFabIconRotation = true
 
 		fab_icon_wrapper.animate()
-				.rotation(if (speedDialMenuOpen) speedDialMenuAdapter?.fabRotationDegrees() ?: 0F else 0F)
+				.rotation(if (isSpeedDialMenuOpen) speedDialMenuAdapter?.fabRotationDegrees() ?: 0F else 0F)
 				.setDuration(SPEED_DIAL_ANIMATION_DURATION)
 				.setListener(object: AnimatorListenerAdapter() {
 					override fun onAnimationEnd(animation: Animator?) {
@@ -417,8 +418,8 @@ class FloatingActionButton: RelativeLayout {
 	}
 
 	private fun animateContentCover() {
-		if (speedDialMenuOpen && !contentCoverEnabled) {
-			// speedDialMenuOpen is checked to make sure the cover is closed if it is disabled whilst open
+		if (isSpeedDialMenuOpen && !contentCoverEnabled) {
+			// isSpeedDialMenuOpen is checked to make sure the cover is closed if it is disabled whilst open
 			return
 		}
 
@@ -429,14 +430,14 @@ class FloatingActionButton: RelativeLayout {
 
 		content_cover.visibility = View.VISIBLE
 		content_cover.animate()
-				.scaleX(if (speedDialMenuOpen) 50f else 0f)
-				.scaleY(if (speedDialMenuOpen) 50f else 0f)
-				.alpha(if (speedDialMenuOpen) 1f else 0f)
+				.scaleX(if (isSpeedDialMenuOpen) 50f else 0f)
+				.scaleY(if (isSpeedDialMenuOpen) 50f else 0f)
+				.alpha(if (isSpeedDialMenuOpen) 1f else 0f)
 				.setDuration(SPEED_DIAL_ANIMATION_DURATION)
 				.setListener(object: AnimatorListenerAdapter() {
 					override fun onAnimationEnd(animation: Animator) {
 						busyAnimatingContentCover = false
-						if (!speedDialMenuOpen) {
+						if (!isSpeedDialMenuOpen) {
 							content_cover.visibility = View.GONE
 						}
 					}
@@ -457,10 +458,10 @@ class FloatingActionButton: RelativeLayout {
 
 		val distance = fab_card.height.toFloat()
 		speedDialMenuViews.forEachIndexed { i, v ->
-			if (speedDialMenuOpen) {
+			if (isSpeedDialMenuOpen) {
 				v.visibility = View.VISIBLE
 			}
-			val translation = if (speedDialMenuOpen) {
+			val translation = if (isSpeedDialMenuOpen) {
 				val direction = if (buttonPosition.and(POSITION_TOP) > 0) 1 else -1
 				(i + 1.125F) * distance * direction
 			} else {
@@ -468,12 +469,12 @@ class FloatingActionButton: RelativeLayout {
 			}
 			v.animate()
 					.translationY(translation)
-					.alpha(if (speedDialMenuOpen) 1f else 0f)
+					.alpha(if (isSpeedDialMenuOpen) 1f else 0f)
 					.setDuration(duration)
 					.setListener(object: AnimatorListenerAdapter() {
 						override fun onAnimationEnd(animation: Animator) {
 							busyAnimatingSpeedDialMenuItems = false
-							if (!speedDialMenuOpen) {
+							if (!isSpeedDialMenuOpen) {
 								v.visibility = View.GONE
 							}
 						}
