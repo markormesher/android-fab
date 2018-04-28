@@ -9,6 +9,9 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.support.annotation.ColorInt
 import android.support.annotation.DrawableRes
+import android.support.design.widget.CoordinatorLayout
+import android.support.design.widget.Snackbar
+import android.support.v4.view.ViewCompat
 import android.support.v7.widget.CardView
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -131,6 +134,14 @@ class FloatingActionButton: RelativeLayout {
 		rebuildSpeedDialMenu()
 
 		content_cover.alpha = 0f
+
+		addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+			if (layoutParams is CoordinatorLayout.LayoutParams) {
+				val lp = (layoutParams as CoordinatorLayout.LayoutParams)
+				lp.behavior = MoveUpwardBehavior()
+				layoutParams = lp
+			}
+		}
 	}
 
 	private fun applyAttributes(rawAttrs: AttributeSet?) {
@@ -490,5 +501,22 @@ class FloatingActionButton: RelativeLayout {
 
 	val iconWrapper: LinearLayout
 		get() = fab_icon_wrapper
+
+
+	inner class MoveUpwardBehavior: CoordinatorLayout.Behavior<View>() {
+
+		override fun layoutDependsOn(parent: CoordinatorLayout, child: View, dependency: View): Boolean {
+			return buttonPosition.and(POSITION_BOTTOM) > 0 && dependency is Snackbar.SnackbarLayout
+		}
+
+		override fun onDependentViewChanged(parent: CoordinatorLayout, child: View, dependency: View): Boolean {
+			child.translationY = Math.min(0f, dependency.translationY - dependency.height)
+			return true
+		}
+
+		override fun onDependentViewRemoved(parent: CoordinatorLayout, child: View, dependency: View) {
+			ViewCompat.animate(child).translationY(0f).start()
+		}
+	}
 
 }
