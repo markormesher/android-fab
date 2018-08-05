@@ -39,12 +39,12 @@ repositories {
 }
 
 dependencies {
-	compile fileTree(include: ['*.jar'], dir: 'libs')
-	compile 'com.android.support:support-annotations:27.1.1'
-	compile 'com.android.support:support-v4:27.1.1'
-	compile 'com.android.support:design:27.1.1'
-	compile 'com.android.support:cardview-v7:27.1.1'
-	compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+	implementation fileTree(include: ['*.jar'], dir: 'libs')
+	implementation 'com.android.support:support-annotations:27.1.1'
+	implementation 'com.android.support:support-v4:27.1.1'
+	implementation 'com.android.support:design:27.1.1'
+	implementation 'com.android.support:cardview-v7:27.1.1'
+	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 /*========================*
