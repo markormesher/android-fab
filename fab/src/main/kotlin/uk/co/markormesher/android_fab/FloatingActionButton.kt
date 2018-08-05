@@ -3,17 +3,22 @@ package uk.co.markormesher.android_fab
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.annotation.ColorInt
 import android.support.annotation.DrawableRes
+import android.support.design.widget.CoordinatorLayout
+import android.support.design.widget.Snackbar
+import android.support.v4.view.ViewCompat
 import android.support.v7.widget.CardView
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import kotlinx.android.synthetic.main.fab_container.view.*
 import kotlinx.android.synthetic.main.floating_action_button.view.*
@@ -21,6 +26,8 @@ import kotlinx.android.synthetic.main.menu_item.view.*
 import kotlinx.android.synthetic.main.menu_item_icon.view.*
 import uk.co.markormesher.android_fab.extensions.clearParentAlignmentRules
 import uk.co.markormesher.android_fab.fab.R
+
+
 
 class FloatingActionButton: RelativeLayout {
 
@@ -41,7 +48,8 @@ class FloatingActionButton: RelativeLayout {
 	private var speedDialMenuOpenListener: SpeedDialMenuOpenListener? = null
 	private var speedDialMenuCloseListener: SpeedDialMenuCloseListener? = null
 
-	private var speedDialMenuOpen = false
+	var isSpeedDialMenuOpen = false
+		private set
 	private val speedDialMenuViews = ArrayList<ViewGroup>()
 	var speedDialMenuAdapter: SpeedDialMenuAdapter? = null
 		set(value) {
@@ -129,6 +137,14 @@ class FloatingActionButton: RelativeLayout {
 		rebuildSpeedDialMenu()
 
 		content_cover.alpha = 0f
+
+		addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+			if (layoutParams is CoordinatorLayout.LayoutParams) {
+				val lp = (layoutParams as CoordinatorLayout.LayoutParams)
+				lp.behavior = MoveUpwardBehavior()
+				layoutParams = lp
+			}
+		}
 	}
 
 	private fun applyAttributes(rawAttrs: AttributeSet?) {
@@ -248,22 +264,31 @@ class FloatingActionButton: RelativeLayout {
 	}
 
 	fun openSpeedDialMenu() {
-		if (!speedDialMenuOpen) {
+		if (!isSpeedDialMenuOpen) {
 			toggleSpeedDialMenu()
 		}
 	}
 
 	fun closeSpeedDialMenu() {
-		if (speedDialMenuOpen) {
+		if (isSpeedDialMenuOpen) {
 			toggleSpeedDialMenu()
 		}
 	}
 
-	fun setOnSpeedMenuDialOpenListener(listener: SpeedDialMenuOpenListener) {
+	@Deprecated(
+			"This method name is incorrect and is kept only for backwards compatibility",
+			ReplaceWith("setOnSpeedDialMenuOpenListener"),
+			DeprecationLevel.WARNING
+	)
+	fun setOnSpeedMenuDialOpenListener(listener: SpeedDialMenuOpenListener?) {
+		setOnSpeedDialMenuOpenListener(listener)
+	}
+
+	fun setOnSpeedDialMenuOpenListener(listener: SpeedDialMenuOpenListener?) {
 		speedDialMenuOpenListener = listener
 	}
 
-	fun setOnSpeedDialMenuCloseListener(listener: SpeedDialMenuCloseListener) {
+	fun setOnSpeedDialMenuCloseListener(listener: SpeedDialMenuCloseListener?) {
 		speedDialMenuCloseListener = listener
 	}
 
@@ -330,12 +355,14 @@ class FloatingActionButton: RelativeLayout {
 			setSpeedDialMenuItemViewOrder(view)
 
 			view.menu_item_label.text = menuItem.getLabel()
+			speedDialMenuAdapter?.onPrepareItemLabel(context, i, view.menu_item_label)
 
 			if (Build.VERSION.SDK_INT >= 21) {
 				(view.menu_item_card as CardView).setCardBackgroundColor(adapter.getBackgroundColour(i))
 			} else {
 				((view.menu_item_card as ViewGroup).background as GradientDrawable).setColor(adapter.getBackgroundColour(i))
 			}
+			speedDialMenuAdapter?.onPrepareItemCard(context, i, view.menu_item_card)
 
 			if (Build.VERSION.SDK_INT >= 16) {
 				view.menu_item_icon_wrapper.background = menuItem.getIcon()
@@ -343,6 +370,7 @@ class FloatingActionButton: RelativeLayout {
 				@Suppress("DEPRECATION")
 				view.menu_item_icon_wrapper.setBackgroundDrawable(menuItem.getIcon())
 			}
+			speedDialMenuAdapter?.onPrepareItemIconWrapper(context, i, view.menu_item_icon_wrapper)
 
 			view.alpha = 0F
 			view.visibility = GONE
@@ -355,6 +383,10 @@ class FloatingActionButton: RelativeLayout {
 				}
 			}
 		}
+
+		if (isSpeedDialMenuOpen) {
+			animateSpeedDialMenuItems(true)
+		}
 	}
 
 	private fun toggleSpeedDialMenu() {
@@ -362,9 +394,9 @@ class FloatingActionButton: RelativeLayout {
 			return
 		}
 
-		speedDialMenuOpen = !speedDialMenuOpen
+		isSpeedDialMenuOpen = !isSpeedDialMenuOpen
 
-		if (speedDialMenuOpen) {
+		if (isSpeedDialMenuOpen) {
 			speedDialMenuOpenListener?.onOpen(this)
 		} else {
 			speedDialMenuCloseListener?.onClose(this)
@@ -374,9 +406,9 @@ class FloatingActionButton: RelativeLayout {
 		animateContentCover()
 		animateSpeedDialMenuItems()
 
-		content_cover.isClickable = speedDialMenuOpen
-		content_cover.isFocusable = speedDialMenuOpen
-		if (speedDialMenuOpen) {
+		content_cover.isClickable = isSpeedDialMenuOpen
+		content_cover.isFocusable = isSpeedDialMenuOpen
+		if (isSpeedDialMenuOpen) {
 			content_cover.setOnClickListener({ toggleSpeedDialMenu() })
 		} else {
 			content_cover.setOnClickListener(null)
@@ -390,7 +422,7 @@ class FloatingActionButton: RelativeLayout {
 		busyAnimatingFabIconRotation = true
 
 		fab_icon_wrapper.animate()
-				.rotation(if (speedDialMenuOpen) speedDialMenuAdapter?.fabRotationDegrees() ?: 0F else 0F)
+				.rotation(if (isSpeedDialMenuOpen) speedDialMenuAdapter?.fabRotationDegrees() ?: 0F else 0F)
 				.setDuration(SPEED_DIAL_ANIMATION_DURATION)
 				.setListener(object: AnimatorListenerAdapter() {
 					override fun onAnimationEnd(animation: Animator?) {
@@ -400,8 +432,8 @@ class FloatingActionButton: RelativeLayout {
 	}
 
 	private fun animateContentCover() {
-		if (speedDialMenuOpen && !contentCoverEnabled) {
-			// speedDialMenuOpen is checked to make sure the cover is closed if it is disabled whilst open
+		if (isSpeedDialMenuOpen && !contentCoverEnabled) {
+			// isSpeedDialMenuOpen is checked to make sure the cover is closed if it is disabled whilst open
 			return
 		}
 
@@ -410,34 +442,55 @@ class FloatingActionButton: RelativeLayout {
 		}
 		busyAnimatingContentCover = true
 
+		// calculate the cover scale only if we're going to need it
+		var coverScale = 0f
+		if (isSpeedDialMenuOpen) {
+			// get the diagonal size of the screen to determine the proper scale factor
+			val displayMetrics = Resources.getSystem().displayMetrics
+			val windowHeight = displayMetrics.heightPixels.toDouble()
+			val windowWidth = displayMetrics.widthPixels.toDouble()
+			val windowDiagonal = Math.sqrt(Math.pow(windowHeight, 2.0) + Math.pow(windowWidth, 2.0))
+
+			// the cover is the same size as the fab_card, so we use a ratio of that size
+			// using the width is fine: both shapes are circles so their diameter is the same at any angle
+			// we * 2 because only half of the cover will be on screen
+			coverScale = 2 * windowDiagonal.toFloat() / fab_card.width
+		}
+
 		content_cover.visibility = View.VISIBLE
 		content_cover.animate()
-				.scaleX(if (speedDialMenuOpen) 50f else 0f)
-				.scaleY(if (speedDialMenuOpen) 50f else 0f)
-				.alpha(if (speedDialMenuOpen) 1f else 0f)
+				.scaleX(coverScale)
+				.scaleY(coverScale)
+				.alpha(if (isSpeedDialMenuOpen) 1f else 0f)
 				.setDuration(SPEED_DIAL_ANIMATION_DURATION)
 				.setListener(object: AnimatorListenerAdapter() {
 					override fun onAnimationEnd(animation: Animator) {
 						busyAnimatingContentCover = false
-						if (!speedDialMenuOpen) {
+						if (!isSpeedDialMenuOpen) {
 							content_cover.visibility = View.GONE
 						}
 					}
 				})
 	}
 
-	private fun animateSpeedDialMenuItems() {
+	private fun animateSpeedDialMenuItems(immediate: Boolean = false) {
 		if (busyAnimatingSpeedDialMenuItems) {
 			return
 		}
 		busyAnimatingSpeedDialMenuItems = true
 
+		val duration = if (immediate) {
+			0L
+		} else {
+			SPEED_DIAL_ANIMATION_DURATION
+		}
+
 		val distance = fab_card.height.toFloat()
 		speedDialMenuViews.forEachIndexed { i, v ->
-			if (speedDialMenuOpen) {
+			if (isSpeedDialMenuOpen) {
 				v.visibility = View.VISIBLE
 			}
-			val translation = if (speedDialMenuOpen) {
+			val translation = if (isSpeedDialMenuOpen) {
 				val direction = if (buttonPosition.and(POSITION_TOP) > 0) 1 else -1
 				(i + 1.125F) * distance * direction
 			} else {
@@ -445,16 +498,43 @@ class FloatingActionButton: RelativeLayout {
 			}
 			v.animate()
 					.translationY(translation)
-					.alpha(if (speedDialMenuOpen) 1f else 0f)
-					.setDuration(SPEED_DIAL_ANIMATION_DURATION)
+					.alpha(if (isSpeedDialMenuOpen) 1f else 0f)
+					.setDuration(duration)
 					.setListener(object: AnimatorListenerAdapter() {
 						override fun onAnimationEnd(animation: Animator) {
 							busyAnimatingSpeedDialMenuItems = false
-							if (!speedDialMenuOpen) {
+							if (!isSpeedDialMenuOpen) {
 								v.visibility = View.GONE
 							}
 						}
 					})
 		}
 	}
+
+	val cardView: View
+		get() = fab_card
+
+	val contentCoverView: View
+		get() = content_cover
+
+	val iconWrapper: LinearLayout
+		get() = fab_icon_wrapper
+
+
+	inner class MoveUpwardBehavior: CoordinatorLayout.Behavior<View>() {
+
+		override fun layoutDependsOn(parent: CoordinatorLayout, child: View, dependency: View): Boolean {
+			return buttonPosition.and(POSITION_BOTTOM) > 0 && dependency is Snackbar.SnackbarLayout
+		}
+
+		override fun onDependentViewChanged(parent: CoordinatorLayout, child: View, dependency: View): Boolean {
+			child.translationY = Math.min(0f, dependency.translationY - dependency.height)
+			return true
+		}
+
+		override fun onDependentViewRemoved(parent: CoordinatorLayout, child: View, dependency: View) {
+			ViewCompat.animate(child).translationY(0f).start()
+		}
+	}
+
 }
