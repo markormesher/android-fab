@@ -8,7 +8,7 @@ buildscript {
 	}
 
 	dependencies {
-		classpath 'com.android.tools.build:gradle:3.1.2'
+		classpath 'com.android.tools.build:gradle:3.1.3'
 	}
 }
 
@@ -81,10 +81,10 @@ repositories {
 }
 
 dependencies {
-	compile fileTree(include: ['*.jar'], dir: 'libs')
-	compile 'com.android.support:support-v4:27.1.1'
-	compile 'com.android.support:design:27.1.1'
-	compile 'com.android.support:appcompat-v7:27.1.1'
-	compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-	compile project(':fab')
+	implementation fileTree(include: ['*.jar'], dir: 'libs')
+	implementation 'com.android.support:support-v4:27.1.1'
+	implementation 'com.android.support:design:27.1.1'
+	implementation 'com.android.support:appcompat-v7:27.1.1'
+	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+	implementation project(':fab')
 }
