@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.design.widget.CoordinatorLayout
 		xmlns:android="http://schemas.android.com/apk/res/android"
 		xmlns:tools="http://schemas.android.com/tools"
 		android:id="@+id/root_view"
@@ -306,6 +306,52 @@
 
 				</TableRow>
 
+				<TableRow
+						android:gravity="center_vertical"
+						>
+
+					<Button
+							android:id="@+id/set_snackbar_enabled_prev"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="@string/btn_prev"
+							style="@style/Widget.AppCompat.Button.Small"
+							/>
+
+					<LinearLayout
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:orientation="vertical"
+							>
+
+						<TextView
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:text="@string/option_snackbar_enabled"
+								android:gravity="center"
+								style="@style/TextAppearance.AppCompat.Body1"
+								/>
+
+						<TextView
+								android:id="@+id/snackbar_enabled"
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:gravity="center"
+								style="@style/TextAppearance.AppCompat.Small"
+								/>
+
+					</LinearLayout>
+
+					<Button
+							android:id="@+id/set_snackbar_enabled_next"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="@string/btn_next"
+							style="@style/Widget.AppCompat.Button.Small"
+							/>
+
+				</TableRow>
+
 			</TableLayout>
 
 		</LinearLayout>
@@ -318,4 +364,4 @@
 			android:layout_height="match_parent"
 			/>
 
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>
