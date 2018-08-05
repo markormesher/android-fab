@@ -1,13 +1,16 @@
 package uk.co.markormesher.android_fab.app
 
 import android.content.Context
+import android.graphics.Typeface
 import android.os.*
 import android.support.annotation.StringRes
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
+import android.widget.TextView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.demo_activity.*
 import uk.co.markormesher.android_fab.FloatingActionButton
@@ -63,14 +66,21 @@ class DemoActivity: AppCompatActivity() {
 			Pair("Faint Orange", 0xccff9900.toInt())
 	)
 
+	private val snackbarEnabledOptions = arrayOf(
+			Pair("Off", 0),
+			Pair("On", 1)
+	)
+
 	private var buttonShown = 0
 	private var buttonPosition = 0
 	private var buttonBackgroundColour = 0
 	private var buttonIcon = 0
 	private var speedDialSize = 0
 	private var contentCoverColour = 0
+	private var snackbarEnabled = 0
 
 	private var activeToast: Toast? = null
+	private var snackbar: Snackbar? = null
 	private var clickCounter = 0
 
 	private var stressTestActive = false
@@ -99,6 +109,14 @@ class DemoActivity: AppCompatActivity() {
 			return true
 		}
 
+		override fun onPrepareItemLabel(context: Context, position: Int, label: TextView) {
+			// make the first item bold if there are multiple items
+			// (this isn't a design pattern, it's just to demo the functionality)
+			if (position == 0 && speedDialSize > 1) {
+				label.setTypeface(label.typeface, Typeface.BOLD)
+			}
+		}
+
 		// rotate the "+" icon only
 		override fun fabRotationDegrees(): Float = if (buttonIcon == 0) 135F else 0F
 	}
@@ -121,6 +139,7 @@ class DemoActivity: AppCompatActivity() {
 		updateButtonIcon()
 		updateSpeedDialSize()
 		updateContentCoverColour()
+		updateSnackbarEnabled()
 
 		if (stressTestActive) {
 			startStressTest()
@@ -135,6 +154,7 @@ class DemoActivity: AppCompatActivity() {
 		outState.putInt("buttonIcon", buttonIcon)
 		outState.putInt("speedDialSize", speedDialSize)
 		outState.putInt("contentCoverColour", contentCoverColour)
+		outState.putInt("snackbarEnabled", snackbarEnabled)
 
 		outState.putBoolean("stressTestActive", stressTestActive)
 	}
@@ -147,6 +167,7 @@ class DemoActivity: AppCompatActivity() {
 			buttonIcon = savedInstanceState.getInt("buttonIcon")
 			speedDialSize = savedInstanceState.getInt("speedDialSize")
 			contentCoverColour = savedInstanceState.getInt("contentCoverColour")
+			snackbarEnabled = savedInstanceState.getInt("snackbarEnabled")
 
 			stressTestActive = savedInstanceState.getBoolean("stressTestActive")
 		}
@@ -229,6 +250,15 @@ class DemoActivity: AppCompatActivity() {
 			contentCoverColour = (contentCoverColour + contentCoverColourOptions.size - 1).rem(contentCoverColourOptions.size)
 			updateContentCoverColour()
 		}
+
+		set_snackbar_enabled_next.setOnClickListener {
+			snackbarEnabled = (snackbarEnabled + 1).rem(snackbarEnabledOptions.size)
+			updateSnackbarEnabled()
+		}
+		set_snackbar_enabled_prev.setOnClickListener {
+			snackbarEnabled = (snackbarEnabled + snackbarEnabledOptions.size - 1).rem(snackbarEnabledOptions.size)
+			updateSnackbarEnabled()
+		}
 	}
 
 	private fun toast(@StringRes str: Int) {
@@ -273,6 +303,16 @@ class DemoActivity: AppCompatActivity() {
 	private fun updateContentCoverColour() {
 		content_cover_colour.text = contentCoverColourOptions[contentCoverColour].first
 		fab.setContentCoverColour(contentCoverColourOptions[contentCoverColour].second)
+	}
+
+	private fun updateSnackbarEnabled() {
+		snackbar_enabled.text = snackbarEnabledOptions[snackbarEnabled].first
+		if (snackbarEnabled == 1) {
+			snackbar = Snackbar.make(root_view, "Hey there!", Snackbar.LENGTH_INDEFINITE)
+			snackbar?.show()
+		} else {
+			snackbar?.dismiss()
+		}
 	}
 
 	private fun startStressTest() {
