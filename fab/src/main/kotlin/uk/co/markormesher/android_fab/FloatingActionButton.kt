@@ -3,6 +3,7 @@ package uk.co.markormesher.android_fab
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
@@ -25,6 +26,8 @@ import kotlinx.android.synthetic.main.menu_item.view.*
 import kotlinx.android.synthetic.main.menu_item_icon.view.*
 import uk.co.markormesher.android_fab.extensions.clearParentAlignmentRules
 import uk.co.markormesher.android_fab.fab.R
+
+
 
 class FloatingActionButton: RelativeLayout {
 
@@ -439,10 +442,25 @@ class FloatingActionButton: RelativeLayout {
 		}
 		busyAnimatingContentCover = true
 
+		// calculate the cover scale only if we're going to need it
+		var coverScale = 0f
+		if (isSpeedDialMenuOpen) {
+			// get the diagonal size of the screen to determine the proper scale factor
+			val displayMetrics = Resources.getSystem().displayMetrics
+			val windowHeight = displayMetrics.heightPixels.toDouble()
+			val windowWidth = displayMetrics.widthPixels.toDouble()
+			val windowDiagonal = Math.sqrt(Math.pow(windowHeight, 2.0) + Math.pow(windowWidth, 2.0))
+
+			// the cover is the same size as the fab_card, so we use a ratio of that size
+			// using the width is fine: both shapes are circles so their diameter is the same at any angle
+			// we * 2 because only half of the cover will be on screen
+			coverScale = 2 * windowDiagonal.toFloat() / fab_card.width
+		}
+
 		content_cover.visibility = View.VISIBLE
 		content_cover.animate()
-				.scaleX(if (isSpeedDialMenuOpen) 50f else 0f)
-				.scaleY(if (isSpeedDialMenuOpen) 50f else 0f)
+				.scaleX(coverScale)
+				.scaleY(coverScale)
 				.alpha(if (isSpeedDialMenuOpen) 1f else 0f)
 				.setDuration(SPEED_DIAL_ANIMATION_DURATION)
 				.setListener(object: AnimatorListenerAdapter() {
