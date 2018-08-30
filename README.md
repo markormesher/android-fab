@@ -18,7 +18,7 @@ You can try the demo in one of two ways:
 
 ### Gradle
 
-    compile 'uk.co.markormesher:android-fab:2.3.1'
+    implementation 'uk.co.markormesher:android-fab:2.3.1'
 
 ### Maven
 
