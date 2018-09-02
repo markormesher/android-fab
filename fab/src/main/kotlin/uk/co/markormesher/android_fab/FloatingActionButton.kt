@@ -2,6 +2,7 @@ package uk.co.markormesher.android_fab
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.drawable.GradientDrawable
@@ -29,15 +30,15 @@ import uk.co.markormesher.android_fab.extensions.clearParentAlignmentRules
 import uk.co.markormesher.android_fab.fab.R
 
 
+@Suppress("MemberVisibilityCanBePrivate", "unused") // because we want to expose the methods to end users
 class FloatingActionButton: RelativeLayout {
 
 	private val SPEED_DIAL_ANIMATION_DURATION = 200L
 	private val HIDE_SHOW_ANIMATION_DURATION = 100L
 
-	val ORIGINAL_INTERNAL_OFFSET by lazy { container.paddingTop } // = @dimen/fab_offset
-
 	private val layoutInflater by lazy { LayoutInflater.from(context) }
 	private val isRightToLeft by lazy { resources.getBoolean(R.bool.is_right_to_left) }
+	val originalInternalOffset by lazy { resources.getDimension(R.dimen.fab_offset) }
 
 	private var isShown: Boolean = true
 	override fun isShown() = isShown
@@ -325,25 +326,25 @@ class FloatingActionButton: RelativeLayout {
 		// if left/right are explicitly set, use them
 		if (internalOffsetLeft != 0f || internalOffsetRight != 0f) {
 			container.setPadding(
-					(ORIGINAL_INTERNAL_OFFSET + internalOffsetLeft).toInt(),
-					(ORIGINAL_INTERNAL_OFFSET + internalOffsetTop).toInt(),
-					(ORIGINAL_INTERNAL_OFFSET + internalOffsetRight).toInt(),
-					(ORIGINAL_INTERNAL_OFFSET + internalOffsetBottom).toInt()
+					(originalInternalOffset + internalOffsetLeft).toInt(),
+					(originalInternalOffset + internalOffsetTop).toInt(),
+					(originalInternalOffset + internalOffsetRight).toInt(),
+					(originalInternalOffset + internalOffsetBottom).toInt()
 			)
 		} else {
 			if (Build.VERSION.SDK_INT >= 17) {
 				container.setPaddingRelative(
-						(ORIGINAL_INTERNAL_OFFSET + internalOffsetStart).toInt(),
-						(ORIGINAL_INTERNAL_OFFSET + internalOffsetTop).toInt(),
-						(ORIGINAL_INTERNAL_OFFSET + internalOffsetEnd).toInt(),
-						(ORIGINAL_INTERNAL_OFFSET + internalOffsetBottom).toInt()
+						(originalInternalOffset + internalOffsetStart).toInt(),
+						(originalInternalOffset + internalOffsetTop).toInt(),
+						(originalInternalOffset + internalOffsetEnd).toInt(),
+						(originalInternalOffset + internalOffsetBottom).toInt()
 				)
 			} else {
 				container.setPadding(
-						(ORIGINAL_INTERNAL_OFFSET + if (isRightToLeft) internalOffsetEnd else internalOffsetStart).toInt(),
-						(ORIGINAL_INTERNAL_OFFSET + internalOffsetTop).toInt(),
-						(ORIGINAL_INTERNAL_OFFSET + if (isRightToLeft) internalOffsetStart else internalOffsetEnd).toInt(),
-						(ORIGINAL_INTERNAL_OFFSET + internalOffsetBottom).toInt()
+						(originalInternalOffset + if (isRightToLeft) internalOffsetEnd else internalOffsetStart).toInt(),
+						(originalInternalOffset + internalOffsetTop).toInt(),
+						(originalInternalOffset + if (isRightToLeft) internalOffsetStart else internalOffsetEnd).toInt(),
+						(originalInternalOffset + internalOffsetBottom).toInt()
 				)
 			}
 		}
@@ -437,6 +438,7 @@ class FloatingActionButton: RelativeLayout {
 		for (i in (0 until adapter.getCount())) {
 			val menuItem = adapter.getMenuItem(context, i)
 
+			@SuppressLint("InflateParams") // because we handle attachment to root internally
 			val view = layoutInflater.inflate(R.layout.menu_item, null) as ViewGroup
 			container.addView(view)
 			speedDialMenuViews.add(view)
@@ -499,7 +501,7 @@ class FloatingActionButton: RelativeLayout {
 		content_cover.isClickable = isSpeedDialMenuOpen
 		content_cover.isFocusable = isSpeedDialMenuOpen
 		if (isSpeedDialMenuOpen) {
-			content_cover.setOnClickListener({ toggleSpeedDialMenu() })
+			content_cover.setOnClickListener { toggleSpeedDialMenu() }
 		} else {
 			content_cover.setOnClickListener(null)
 		}
