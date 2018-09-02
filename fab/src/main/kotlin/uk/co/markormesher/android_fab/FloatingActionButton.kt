@@ -33,8 +33,16 @@ import uk.co.markormesher.android_fab.fab.R
 @Suppress("MemberVisibilityCanBePrivate", "unused") // because we want to expose the methods to end users
 class FloatingActionButton: RelativeLayout {
 
-	private val SPEED_DIAL_ANIMATION_DURATION = 200L
-	private val HIDE_SHOW_ANIMATION_DURATION = 100L
+	companion object {
+		private const val SPEED_DIAL_ANIMATION_DURATION = 200L
+		private const val HIDE_SHOW_ANIMATION_DURATION = 100L
+		const val POSITION_TOP = 1
+		const val POSITION_BOTTOM = 2
+		const val POSITION_START = 4
+		const val POSITION_END = 8
+		const val POSITION_LEFT = 16
+		const val POSITION_RIGHT = 32
+	}
 
 	private val layoutInflater by lazy { LayoutInflater.from(context) }
 	private val isRightToLeft by lazy { resources.getBoolean(R.bool.is_right_to_left) }
@@ -74,15 +82,6 @@ class FloatingActionButton: RelativeLayout {
 	private var busyAnimatingSpeedDialMenuItems = false
 	private var isBusyAnimating = false
 		get() = busyAnimatingFabIconRotation || busyAnimatingContentCover || busyAnimatingSpeedDialMenuItems
-
-	companion object {
-		const val POSITION_TOP = 1
-		const val POSITION_BOTTOM = 2
-		const val POSITION_START = 4
-		const val POSITION_END = 8
-		const val POSITION_LEFT = 16
-		const val POSITION_RIGHT = 32
-	}
 
 	constructor(context: Context):
 			super(context) {
