@@ -291,33 +291,33 @@ class FloatingActionButton: RelativeLayout {
 		fab_icon_wrapper.setBackgroundResource(icon)
 	}
 
-	fun setInternalOffsetTop(@Dimension offset: Float) {
-		internalOffsetTop = offset
+	fun setInternalOffsetTop(@Dimension offsetPixels: Float) {
+		internalOffsetTop = offsetPixels
 		updateInternalOffset()
 	}
 
-	fun setInternalOffsetBottom(@Dimension offset: Float) {
-		internalOffsetBottom = offset
+	fun setInternalOffsetBottom(@Dimension offsetPixels: Float) {
+		internalOffsetBottom = offsetPixels
 		updateInternalOffset()
 	}
 
-	fun setInternalOffsetStart(@Dimension offset: Float) {
-		internalOffsetStart = offset
+	fun setInternalOffsetStart(@Dimension offsetPixels: Float) {
+		internalOffsetStart = offsetPixels
 		updateInternalOffset()
 	}
 
-	fun setInternalOffsetEnd(@Dimension offset: Float) {
-		internalOffsetEnd = offset
+	fun setInternalOffsetEnd(@Dimension offsetPixels: Float) {
+		internalOffsetEnd = offsetPixels
 		updateInternalOffset()
 	}
 
-	fun setInternalOffsetLeft(@Dimension offset: Float) {
-		internalOffsetLeft = offset
+	fun setInternalOffsetLeft(@Dimension offsetPixels: Float) {
+		internalOffsetLeft = offsetPixels
 		updateInternalOffset()
 	}
 
-	fun setInternalOffsetRight(@Dimension offset: Float) {
-		internalOffsetRight = offset
+	fun setInternalOffsetRight(@Dimension offsetPixels: Float) {
+		internalOffsetRight = offsetPixels
 		updateInternalOffset()
 	}
 

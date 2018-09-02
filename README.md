@@ -31,7 +31,7 @@ You can try the demo in one of two ways:
 
 ---
 
-Note: depending on your app's configuration, you may need to add the following to your ProGuard rules:
+**Note:** depending on your app's configuration, you may need to add the following to your ProGuard rules:
 
     -dontwarn java.lang.invoke.*
 
@@ -75,6 +75,24 @@ The FAB can be positioned in any of the four corners of the activity via XML or 
 		/>
 
 The FAB is aware of text-direction (right-to-left or left-to-right) and adjusts the meaning of "start" and "end" positions accordingly. This functionality can be overridden using the named constants for left and right.
+
+The FAB can be offset from any of the four edges to precisely control its location, although this is not needed in most applications. The offset can be added to the top, bottom, start, end, left or right of the view. Where left and/or right offsets are specified they will both take precedence over start/end offsets.
+
+	// Java
+	fab.setInternalOffsetBottom(40.0f); // pixels
+
+	// Kotlin
+	fab.setInternalOffsetBottom(40.0f) // pixels
+
+	// XML
+	<uk.co.markormesher.android_fab.FloatingActionButton
+		xmlns:app="http://schemas.android.com/apk/res-auto"
+		...
+		app:internalOffsetBottom="20dp"
+		app:internalOffsetEnd="@dimen/some_dimen"
+		/>
+
+**Note:** any offset is applied *in addition to* the default spacing around the FAB. If you need to counter this, subtract the default spacing (`fab.getOriginalInternalOffset()` in Java or `fab.originalInternalOffset` in Kotlin) from the value you want to use. 
 
 ### FAB Icon
 
