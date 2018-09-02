@@ -2,6 +2,7 @@ package uk.co.markormesher.android_fab
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.drawable.GradientDrawable
@@ -9,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.annotation.ColorInt
+import android.support.annotation.Dimension
 import android.support.annotation.DrawableRes
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
@@ -28,21 +30,39 @@ import uk.co.markormesher.android_fab.extensions.clearParentAlignmentRules
 import uk.co.markormesher.android_fab.fab.R
 
 
-
+@Suppress("MemberVisibilityCanBePrivate", "unused") // because we want to expose the methods to end users
 class FloatingActionButton: RelativeLayout {
 
-	private val SPEED_DIAL_ANIMATION_DURATION = 200L
-	private val HIDE_SHOW_ANIMATION_DURATION = 100L
+	companion object {
+		private const val SPEED_DIAL_ANIMATION_DURATION = 200L
+		private const val HIDE_SHOW_ANIMATION_DURATION = 100L
+		const val POSITION_TOP = 1
+		const val POSITION_BOTTOM = 2
+		const val POSITION_START = 4
+		const val POSITION_END = 8
+		const val POSITION_LEFT = 16
+		const val POSITION_RIGHT = 32
+	}
 
 	private val layoutInflater by lazy { LayoutInflater.from(context) }
+	private val isRightToLeft by lazy { resources.getBoolean(R.bool.is_right_to_left) }
+	val originalInternalOffset by lazy { resources.getDimension(R.dimen.fab_offset) }
 
 	private var isShown: Boolean = true
 	override fun isShown() = isShown
+
+	// defaults for all user-controllable parameters
 	private var buttonPosition = POSITION_BOTTOM.or(POSITION_END)
 	private var buttonBackgroundColour = 0xff0099ff.toInt()
 	private var buttonIconResource = 0
 	private var contentCoverColour = 0xccffffff.toInt()
 	var contentCoverEnabled = true
+	private var internalOffsetTop = 0f
+	private var internalOffsetBottom = 0f
+	private var internalOffsetStart = 0f
+	private var internalOffsetEnd = 0f
+	private var internalOffsetLeft = 0f
+	private var internalOffsetRight = 0f
 
 	private var onClickListener: OnClickListener? = null
 	private var speedDialMenuOpenListener: SpeedDialMenuOpenListener? = null
@@ -62,15 +82,6 @@ class FloatingActionButton: RelativeLayout {
 	private var busyAnimatingSpeedDialMenuItems = false
 	private var isBusyAnimating = false
 		get() = busyAnimatingFabIconRotation || busyAnimatingContentCover || busyAnimatingSpeedDialMenuItems
-
-	companion object {
-		const val POSITION_TOP = 1
-		const val POSITION_BOTTOM = 2
-		const val POSITION_START = 4
-		const val POSITION_END = 8
-		const val POSITION_LEFT = 16
-		const val POSITION_RIGHT = 32
-	}
 
 	constructor(context: Context):
 			super(context) {
@@ -97,6 +108,12 @@ class FloatingActionButton: RelativeLayout {
 		state.putInt("buttonIconResource", buttonIconResource)
 		state.putInt("contentCoverColour", contentCoverColour)
 		state.putBoolean("contentCoverEnabled", contentCoverEnabled)
+		state.putFloat("internalOffsetTop", internalOffsetTop)
+		state.putFloat("internalOffsetBottom", internalOffsetBottom)
+		state.putFloat("internalOffsetStart", internalOffsetStart)
+		state.putFloat("internalOffsetEnd", internalOffsetEnd)
+		state.putFloat("internalOffsetLeft", internalOffsetLeft)
+		state.putFloat("internalOffsetRight", internalOffsetRight)
 
 		return state
 	}
@@ -123,6 +140,24 @@ class FloatingActionButton: RelativeLayout {
 			setContentCoverColour(contentCoverColour)
 
 			contentCoverEnabled = state.getBoolean("contentCoverEnabled", contentCoverEnabled)
+
+			internalOffsetTop = state.getFloat("internalOffsetTop", internalOffsetTop)
+			setInternalOffsetTop(internalOffsetTop)
+
+			internalOffsetBottom = state.getFloat("internalOffsetBottom", internalOffsetBottom)
+			setInternalOffsetBottom(internalOffsetBottom)
+
+			internalOffsetStart = state.getFloat("internalOffsetStart", internalOffsetStart)
+			setInternalOffsetStart(internalOffsetStart)
+
+			internalOffsetEnd = state.getFloat("internalOffsetEnd", internalOffsetEnd)
+			setInternalOffsetEnd(internalOffsetEnd)
+
+			internalOffsetLeft = state.getFloat("internalOffsetLeft", internalOffsetLeft)
+			setInternalOffsetLeft(internalOffsetLeft)
+
+			internalOffsetRight = state.getFloat("internalOffsetRight", internalOffsetRight)
+			setInternalOffsetRight(internalOffsetRight)
 
 			super.onRestoreInstanceState(state.getParcelable("_super"))
 		} else {
@@ -153,6 +188,12 @@ class FloatingActionButton: RelativeLayout {
 			setButtonPosition(attrs.getInteger(R.styleable.FloatingActionButton_buttonPosition, buttonPosition))
 			setButtonBackgroundColour(attrs.getColor(R.styleable.FloatingActionButton_buttonBackgroundColour, buttonBackgroundColour))
 			setButtonIconResource(attrs.getResourceId(R.styleable.FloatingActionButton_buttonIcon, 0))
+			setInternalOffsetTop(attrs.getDimension(R.styleable.FloatingActionButton_internalOffsetTop, 0f))
+			setInternalOffsetBottom(attrs.getDimension(R.styleable.FloatingActionButton_internalOffsetBottom, 0f))
+			setInternalOffsetStart(attrs.getDimension(R.styleable.FloatingActionButton_internalOffsetStart, 0f))
+			setInternalOffsetEnd(attrs.getDimension(R.styleable.FloatingActionButton_internalOffsetEnd, 0f))
+			setInternalOffsetLeft(attrs.getDimension(R.styleable.FloatingActionButton_internalOffsetLeft, 0f))
+			setInternalOffsetRight(attrs.getDimension(R.styleable.FloatingActionButton_internalOffsetRight, 0f))
 		} finally {
 			attrs.recycle()
 		}
@@ -204,7 +245,6 @@ class FloatingActionButton: RelativeLayout {
 
 	private fun setSpeedDialMenuItemViewOrder(view: ViewGroup) {
 		var labelFirst = true
-		val isRightToLeft = resources.getBoolean(R.bool.is_right_to_left)
 		if (buttonPosition.and(POSITION_LEFT) > 0) {
 			labelFirst = false
 		}
@@ -233,7 +273,7 @@ class FloatingActionButton: RelativeLayout {
 	}
 
 	fun setButtonPosition(position: Int) {
-		this.buttonPosition = position
+		buttonPosition = position
 
 		setViewLayoutParams(fab_card)
 		setViewLayoutParams(content_cover)
@@ -242,7 +282,7 @@ class FloatingActionButton: RelativeLayout {
 	}
 
 	fun setButtonBackgroundColour(@ColorInt colour: Int) {
-		this.buttonBackgroundColour = colour
+		buttonBackgroundColour = colour
 		if (Build.VERSION.SDK_INT >= 21) {
 			(fab_card as CardView).setCardBackgroundColor(colour)
 		} else {
@@ -251,11 +291,65 @@ class FloatingActionButton: RelativeLayout {
 	}
 
 	fun setButtonIconResource(@DrawableRes icon: Int) {
-		this.buttonIconResource = icon
-		if (icon <= 0) {
-			fab_icon_wrapper.setBackgroundResource(0)
+		buttonIconResource = icon
+		fab_icon_wrapper.setBackgroundResource(icon)
+	}
+
+	fun setInternalOffsetTop(@Dimension offsetPixels: Float) {
+		internalOffsetTop = offsetPixels
+		updateInternalOffset()
+	}
+
+	fun setInternalOffsetBottom(@Dimension offsetPixels: Float) {
+		internalOffsetBottom = offsetPixels
+		updateInternalOffset()
+	}
+
+	fun setInternalOffsetStart(@Dimension offsetPixels: Float) {
+		internalOffsetStart = offsetPixels
+		updateInternalOffset()
+	}
+
+	fun setInternalOffsetEnd(@Dimension offsetPixels: Float) {
+		internalOffsetEnd = offsetPixels
+		updateInternalOffset()
+	}
+
+	fun setInternalOffsetLeft(@Dimension offsetPixels: Float) {
+		internalOffsetLeft = offsetPixels
+		updateInternalOffset()
+	}
+
+	fun setInternalOffsetRight(@Dimension offsetPixels: Float) {
+		internalOffsetRight = offsetPixels
+		updateInternalOffset()
+	}
+
+	private fun updateInternalOffset() {
+		// if left/right are explicitly set, use them
+		if (internalOffsetLeft != 0f || internalOffsetRight != 0f) {
+			container.setPadding(
+					(originalInternalOffset + internalOffsetLeft).toInt(),
+					(originalInternalOffset + internalOffsetTop).toInt(),
+					(originalInternalOffset + internalOffsetRight).toInt(),
+					(originalInternalOffset + internalOffsetBottom).toInt()
+			)
 		} else {
-			fab_icon_wrapper.setBackgroundResource(icon)
+			if (Build.VERSION.SDK_INT >= 17) {
+				container.setPaddingRelative(
+						(originalInternalOffset + internalOffsetStart).toInt(),
+						(originalInternalOffset + internalOffsetTop).toInt(),
+						(originalInternalOffset + internalOffsetEnd).toInt(),
+						(originalInternalOffset + internalOffsetBottom).toInt()
+				)
+			} else {
+				container.setPadding(
+						(originalInternalOffset + if (isRightToLeft) internalOffsetEnd else internalOffsetStart).toInt(),
+						(originalInternalOffset + internalOffsetTop).toInt(),
+						(originalInternalOffset + if (isRightToLeft) internalOffsetStart else internalOffsetEnd).toInt(),
+						(originalInternalOffset + internalOffsetBottom).toInt()
+				)
+			}
 		}
 	}
 
@@ -347,6 +441,7 @@ class FloatingActionButton: RelativeLayout {
 		for (i in (0 until adapter.getCount())) {
 			val menuItem = adapter.getMenuItem(context, i)
 
+			@SuppressLint("InflateParams") // because we handle attachment to root internally
 			val view = layoutInflater.inflate(R.layout.menu_item, null) as ViewGroup
 			container.addView(view)
 			speedDialMenuViews.add(view)
@@ -409,7 +504,7 @@ class FloatingActionButton: RelativeLayout {
 		content_cover.isClickable = isSpeedDialMenuOpen
 		content_cover.isFocusable = isSpeedDialMenuOpen
 		if (isSpeedDialMenuOpen) {
-			content_cover.setOnClickListener({ toggleSpeedDialMenu() })
+			content_cover.setOnClickListener { toggleSpeedDialMenu() }
 		} else {
 			content_cover.setOnClickListener(null)
 		}

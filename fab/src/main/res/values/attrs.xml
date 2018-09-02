@@ -15,5 +15,12 @@
 
 		<attr name="buttonBackgroundColour" format="color"/>
 
+		<attr name="internalOffsetTop" format="dimension"/>
+		<attr name="internalOffsetBottom" format="dimension"/>
+		<attr name="internalOffsetStart" format="dimension"/>
+		<attr name="internalOffsetEnd" format="dimension"/>
+		<attr name="internalOffsetLeft" format="dimension"/>
+		<attr name="internalOffsetRight" format="dimension"/>
+
 	</declare-styleable>
 </resources>
