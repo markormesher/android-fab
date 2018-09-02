@@ -28,7 +28,6 @@ import uk.co.markormesher.android_fab.extensions.clearParentAlignmentRules
 import uk.co.markormesher.android_fab.fab.R
 
 
-
 class FloatingActionButton: RelativeLayout {
 
 	private val SPEED_DIAL_ANIMATION_DURATION = 200L
@@ -252,11 +251,7 @@ class FloatingActionButton: RelativeLayout {
 
 	fun setButtonIconResource(@DrawableRes icon: Int) {
 		this.buttonIconResource = icon
-		if (icon <= 0) {
-			fab_icon_wrapper.setBackgroundResource(0)
-		} else {
-			fab_icon_wrapper.setBackgroundResource(icon)
-		}
+		fab_icon_wrapper.setBackgroundResource(icon)
 	}
 
 	override fun setOnClickListener(listener: OnClickListener?) {
