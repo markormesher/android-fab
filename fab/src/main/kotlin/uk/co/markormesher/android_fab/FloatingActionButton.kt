@@ -190,6 +190,10 @@ class FloatingActionButton: RelativeLayout {
 			setButtonIconResource(attrs.getResourceId(R.styleable.FloatingActionButton_buttonIcon, 0))
 			setInternalOffsetTop(attrs.getDimension(R.styleable.FloatingActionButton_internalOffsetTop, 0f))
 			setInternalOffsetBottom(attrs.getDimension(R.styleable.FloatingActionButton_internalOffsetBottom, 0f))
+			setInternalOffsetStart(attrs.getDimension(R.styleable.FloatingActionButton_internalOffsetStart, 0f))
+			setInternalOffsetEnd(attrs.getDimension(R.styleable.FloatingActionButton_internalOffsetEnd, 0f))
+			setInternalOffsetLeft(attrs.getDimension(R.styleable.FloatingActionButton_internalOffsetLeft, 0f))
+			setInternalOffsetRight(attrs.getDimension(R.styleable.FloatingActionButton_internalOffsetRight, 0f))
 		} finally {
 			attrs.recycle()
 		}
