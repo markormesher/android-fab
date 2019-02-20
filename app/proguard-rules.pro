@@ -13,7 +13,6 @@
 -keepattributes *Annotation*
 -keep public class com.google.vending.licensing.ILicensingService
 -keep public class com.android.vending.licensing.ILicensingService
--dontwarn android.support.**
 
 # hide warnings caused by Retrolamdba
 -dontwarn java.lang.invoke.*

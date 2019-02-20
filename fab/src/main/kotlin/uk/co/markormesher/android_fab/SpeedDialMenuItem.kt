@@ -3,8 +3,8 @@ package uk.co.markormesher.android_fab
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.support.annotation.DrawableRes
-import android.support.annotation.StringRes
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 
 /**
  * Represents an item to display in the speed-dial menu.

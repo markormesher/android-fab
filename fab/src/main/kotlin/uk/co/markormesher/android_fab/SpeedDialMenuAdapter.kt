@@ -2,10 +2,10 @@ package uk.co.markormesher.android_fab
 
 import android.content.Context
 import android.graphics.Color
-import android.support.annotation.ColorInt
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.ColorInt
 
 abstract class SpeedDialMenuAdapter {
 
@@ -37,7 +37,8 @@ abstract class SpeedDialMenuAdapter {
 	 * Note: this method should return an aRGB colour integer, *not* a colour resource ID.
 	 * @return the colour of the card behind the icon at the specified position
 	 */
-	@ColorInt open fun getBackgroundColour(position: Int): Int = Color.argb(255, 192, 192, 192)
+	@ColorInt
+	open fun getBackgroundColour(position: Int): Int = Color.argb(255, 192, 192, 192)
 
 	/**
 	 * Apply formatting to the `TextView` used for the label of the menu item at the given position.

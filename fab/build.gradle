@@ -8,7 +8,7 @@ buildscript {
 	}
 
 	dependencies {
-		classpath 'com.android.tools.build:gradle:3.1.2'
+		classpath 'com.android.tools.build:gradle:3.2.1'
 	}
 }
 
@@ -19,12 +19,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-	compileSdkVersion 27
-	buildToolsVersion '27.0.3'
+	compileSdkVersion 28
+	buildToolsVersion '28.0.3'
 
 	defaultConfig {
 		minSdkVersion 14
-		targetSdkVersion 27
+		targetSdkVersion 28
 
 		testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 	}
@@ -40,10 +40,10 @@ repositories {
 
 dependencies {
 	implementation fileTree(include: ['*.jar'], dir: 'libs')
-	implementation 'com.android.support:support-annotations:27.1.1'
-	implementation 'com.android.support:support-v4:27.1.1'
-	implementation 'com.android.support:design:27.1.1'
-	implementation 'com.android.support:cardview-v7:27.1.1'
+	implementation 'androidx.annotation:annotation:1.0.1'
+	implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+	implementation 'com.google.android.material:material:1.1.0-alpha03'
+	implementation 'androidx.cardview:cardview:1.0.0'
 	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
@@ -87,7 +87,7 @@ task zipRelease(type: Zip) {
 	archiveName "release-${properties['version_name']}.zip"
 }
 
-task generateRelease << {
+task generateRelease {
 	println "Release ${properties['version_name']} can be found at ${localReleaseDest}/"
 	println "Release ${properties['version_name']} zipped can be found ${buildDir}/release-${properties['version_name']}.zip"
 }
