@@ -41,9 +41,8 @@ repositories {
 dependencies {
 	implementation fileTree(include: ['*.jar'], dir: 'libs')
 	implementation 'androidx.annotation:annotation:1.0.1'
-	implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-	implementation 'com.google.android.material:material:1.1.0-alpha03'
 	implementation 'androidx.cardview:cardview:1.0.0'
+	implementation 'com.google.android.material:material:1.1.0-alpha03'
 	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
@@ -87,13 +86,12 @@ task zipRelease(type: Zip) {
 	archiveName "release-${properties['version_name']}.zip"
 }
 
-task generateRelease {
-	println "Release ${properties['version_name']} can be found at ${localReleaseDest}/"
-	println "Release ${properties['version_name']} zipped can be found ${buildDir}/release-${properties['version_name']}.zip"
+task generateRelease(dependsOn: [uploadArchives, zipRelease]) {
+	doLast {
+		println "Release ${properties['version_name']} can be found at ${localReleaseDest}/"
+		println "Release ${properties['version_name']} zipped can be found ${buildDir}/release-${properties['version_name']}.zip"
+	}
 }
-
-generateRelease.dependsOn(uploadArchives)
-generateRelease.dependsOn(zipRelease)
 
 artifacts {
 	archives androidSourcesJar
