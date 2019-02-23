@@ -173,6 +173,11 @@ class FloatingActionButton: RelativeLayout {
 
 		content_cover.alpha = 0f
 
+		isShown = visibility == View.VISIBLE
+		if (!isShown) {
+			hide(true)
+		}
+
 		addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
 			if (layoutParams is CoordinatorLayout.LayoutParams) {
 				val lp = (layoutParams as CoordinatorLayout.LayoutParams)
@@ -397,7 +402,7 @@ class FloatingActionButton: RelativeLayout {
 		}
 
 		closeSpeedDialMenu()
-		fab_card.visibility = View.VISIBLE
+		visibility = View.VISIBLE
 		fab_card.clearAnimation()
 		fab_card.animate()
 				.scaleX(1f)
@@ -422,7 +427,7 @@ class FloatingActionButton: RelativeLayout {
 				.setDuration(if (immediate) 0L else HIDE_SHOW_ANIMATION_DURATION)
 				.setListener(object: AnimatorListenerAdapter() {
 					override fun onAnimationEnd(animation: Animator) {
-						fab_card.visibility = View.GONE
+						visibility = View.GONE
 						isShown = false
 					}
 				})
