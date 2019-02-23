@@ -9,7 +9,7 @@
 		android:clipChildren="false"
 		android:clipToPadding="false"
 		android:padding="@dimen/fab_offset"
-		>
+>
 
 	<View
 			android:id="@+id/content_cover"
@@ -20,7 +20,7 @@
 			android:layout_alignParentEnd="true"
 			android:layout_alignParentRight="true"
 			android:background="@drawable/content_cover_circle"
-			/>
+	/>
 
 	<include layout="@layout/floating_action_button"/>
 
