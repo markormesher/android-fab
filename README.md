@@ -18,22 +18,22 @@ You can try the demo in one of two ways:
 
 ### Gradle
 
-    implementation 'uk.co.markormesher:android-fab:2.4.1'
+	implementation 'uk.co.markormesher:android-fab:2.5.0'
 
 ### Maven
 
-    <dependency>
-      <groupId>uk.co.markormesher</groupId>
-      <artifactId>android-fab</artifactId>
-      <version>2.4.1</version>
-      <type>pom</type>
-    </dependency>
+	<dependency>
+		<groupId>uk.co.markormesher</groupId>
+		<artifactId>android-fab</artifactId>
+		<version>2.5.0</version>
+		<type>pom</type>
+	</dependency>
 
 ---
 
 **Note:** depending on your app's configuration, you may need to add the following to your ProGuard rules:
 
-    -dontwarn java.lang.invoke.*
+	-dontwarn java.lang.invoke.*
 
 See [app/proguard-rules.pro](app/proguard-rules.pro) for an example.
 
@@ -42,20 +42,20 @@ See [app/proguard-rules.pro](app/proguard-rules.pro) for an example.
 **Note:** all of the instructions below assume that the FAB is referenced by the variable `fab`, i.e.
 
 	// Java
-    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+	FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
-    // Kotlin (without Android extensions)
-    val fab = findViewById(R.id.fab) as FloatingActionButton
+	// Kotlin (without Android extensions)
+	val fab = findViewById(R.id.fab) as FloatingActionButton
 
 ### Placing the FAB in Your Layout
 
 The `FloatingActionButton` view must be placed at the **root** of your layout, **above** all other views, and with **maximum width and height**. This allows the semi-transparent layer to expand and cover the entire layout when the speed-dial menu is opened.
 
-    <uk.co.markormesher.android_fab.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+	<uk.co.markormesher.android_fab.FloatingActionButton
+		android:id="@+id/fab"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		/>
 
 ### FAB Position
 
@@ -92,7 +92,7 @@ The FAB can be offset from any of the four edges to precisely control its locati
 		app:internalOffsetEnd="@dimen/some_dimen"
 		/>
 
-**Note:** any offset is applied *in addition to* the default spacing around the FAB. If you need to counter this, subtract the default spacing (`fab.getOriginalInternalOffset()` in Java or `fab.originalInternalOffset` in Kotlin) from the value you want to use. 
+**Note:** any offset is applied *in addition to* the default spacing around the FAB. If you need to counter this, subtract the default spacing (`fab.getOriginalInternalOffset()` in Java or `fab.originalInternalOffset` in Kotlin) from the value you want to use.
 
 ### FAB Icon
 
@@ -190,7 +190,9 @@ State change events are fired when the speed-dial menu opens or closes, which ca
 
 ### Show/Hide Controls
 
-The FAB can be hidden and shown with the `fab.hide()` and `fab.show()` methods, and the method `fab.isShown()` will return a boolean indicating the current state. These methods animate the FAB in and out of visibility. If the speed-dial menu is open when `.hide()` is called it will be closed.
+The FAB can be hidden and shown with the `fab.hide()` and `fab.show()` methods, and the method `fab.isShown()` will return a boolean indicating the current state. These methods animate the FAB in and out of visibility and set the entire view container's visibility to `GONE`. If the speed-dial menu is open when `.hide()` is called it will be closed.
+
+If the FAB is hidden in the XML layout (i.e. with `android:visibility="gone"`) when initialise the FAB will start in the correct hidden state and can still be shown/hidden with the `fab.hide()` and `fab.show()` methods.
 
 The speed-dial menu can be manually opened and closed with `fab.openSpeedDialMenu()` and `fab.closeSpeedDialMenu()`. These methods will do nothing if no speed-dial menu adapter is set, if an adapter is set but disabled, if the FAB is hidden, or if they are called when the menu is already in the indicated state (i.e. `fab.openSpeedDialMenu()` will do nothing if the menu is already open).
 

@@ -9,19 +9,19 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.annotation.ColorInt
-import android.support.annotation.Dimension
-import android.support.annotation.DrawableRes
-import android.support.design.widget.CoordinatorLayout
-import android.support.design.widget.Snackbar
-import android.support.v4.view.ViewCompat
-import android.support.v7.widget.CardView
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import androidx.annotation.ColorInt
+import androidx.annotation.Dimension
+import androidx.annotation.DrawableRes
+import androidx.cardview.widget.CardView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.ViewCompat
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fab_container.view.*
 import kotlinx.android.synthetic.main.floating_action_button.view.*
 import kotlinx.android.synthetic.main.menu_item.view.*
@@ -172,6 +172,11 @@ class FloatingActionButton: RelativeLayout {
 		rebuildSpeedDialMenu()
 
 		content_cover.alpha = 0f
+
+		isShown = visibility == View.VISIBLE
+		if (!isShown) {
+			hide(true)
+		}
 
 		addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
 			if (layoutParams is CoordinatorLayout.LayoutParams) {
@@ -397,7 +402,7 @@ class FloatingActionButton: RelativeLayout {
 		}
 
 		closeSpeedDialMenu()
-		fab_card.visibility = View.VISIBLE
+		visibility = View.VISIBLE
 		fab_card.clearAnimation()
 		fab_card.animate()
 				.scaleX(1f)
@@ -422,7 +427,7 @@ class FloatingActionButton: RelativeLayout {
 				.setDuration(if (immediate) 0L else HIDE_SHOW_ANIMATION_DURATION)
 				.setListener(object: AnimatorListenerAdapter() {
 					override fun onAnimationEnd(animation: Animator) {
-						fab_card.visibility = View.GONE
+						visibility = View.GONE
 						isShown = false
 					}
 				})

@@ -1,6 +1,6 @@
 <merge
 		xmlns:android="http://schemas.android.com/apk/res/android"
-		>
+>
 
 	<LinearLayout
 			android:id="@+id/menu_item_card"
@@ -8,7 +8,7 @@
 			android:layout_height="@dimen/speed_dial_disc_size"
 			android:layout_margin="@dimen/speed_dial_disc_padding"
 			style="@style/speed_dial_item_card"
-			>
+	>
 
 		<LinearLayout
 				android:id="@+id/menu_item_icon_wrapper"
@@ -17,7 +17,7 @@
 				android:layout_margin="@dimen/speed_dial_disc_icon_margin"
 				android:gravity="center"
 				android:orientation="vertical"
-				/>
+		/>
 
 	</LinearLayout>
 
