@@ -37,6 +37,24 @@ You can try the demo in one of two ways:
 
 See [app/proguard-rules.pro](app/proguard-rules.pro) for an example.
 
+## Known Issues
+
+- In Android 4.x, there is an issue about Vector Drawable icons. If you want to use Vector Drawable as a icons (e.g `app:buttonIcon="@drawable/ic_add"`, according to this [StackOverflow](https://stackoverflow.com/a/38012842), you need to add the following snippet in your Activity classes.
+
+```
+// Java
+static {
+    AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+}
+
+// Kotlin
+companion object {
+    init() {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+}
+```
+
 ## Usage & Customisation
 
 **Note:** all of the instructions below assume that the FAB is referenced by the variable `fab`, i.e.
