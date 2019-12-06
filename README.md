@@ -214,6 +214,24 @@ The card view is implemented as a `CardView` on SDK 21+ and a `LinearLayout` on 
 
 The content cover view and icon wrapper are implemented as a `View` and `LinearLayout` respectively on all SDKs.
 
+## Note: Known Compatibility Issues
+
+In Android 4.x there is an issue with Vector Drawable icons. If you want to use Vector Drawables as icons (e.g `app:buttonIcon="@drawable/ic_add"`) you will need to add the following snippet in your Activity classes.
+
+  // Java
+  static {
+    AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+  }
+
+  // Kotlin
+  companion object {
+    init() {
+      AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+  }
+
+Source: [Stack Overflow](https://stackoverflow.com/a/38012842)
+
 ### Note: Click Action Priority
 
 As per Material Design specs, the FAB functions as a regular button **or** a trigger for the speed-dial menu, but not both. For this reason, the click listener and the speed-dial menu are never invoked at the same time.
