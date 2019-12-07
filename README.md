@@ -218,17 +218,17 @@ The content cover view and icon wrapper are implemented as a `View` and `LinearL
 
 In Android 4.x there is an issue with Vector Drawable icons. If you want to use Vector Drawables as icons (e.g `app:buttonIcon="@drawable/ic_add"`) you will need to add the following snippet in your Activity classes.
 
-  // Java
-  static {
-    AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-  }
+	// Java
+	static {
+		AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+	}
 
-  // Kotlin
-  companion object {
-    init() {
-      AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-    }
-  }
+	// Kotlin
+	companion object {
+		init() {
+			AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+		}
+	}
 
 Source: [Stack Overflow](https://stackoverflow.com/a/38012842)
 
